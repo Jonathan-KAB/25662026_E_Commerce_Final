@@ -23,7 +23,7 @@ function email_exists_ctr($email)
 {
     $user = new User();
     $existing_user = $user->getUserByEmail($email);
-    return $existing_user !== false;
+    return ($existing_user !== false && !empty($existing_user));
 }
 
 // for login authentication

@@ -45,11 +45,17 @@ class User extends db_connection
         }
     }
 
-    public function createUser($name, $email, $password, $phone_number, $role)
+    public function createUser($name, $email, $password, $phone_number, $country, $city, $role)
     {
+        // Check if email already exists
+        $existing = $this->getUserByEmail($email);
+        if ($existing && !empty($existing)) {
+            return false;
+        }
+        
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-        $stmt = $this->db->prepare("INSERT INTO customer (customer_name, customer_email, customer_pass, customer_contact, user_role) VALUES (?, ?, ?, ?, ?)");
-        $stmt->bind_param("ssssi", $name, $email, $hashed_password, $phone_number, $role);
+        $stmt = $this->db->prepare("INSERT INTO customer (customer_name, customer_email, customer_pass, customer_contact, customer_country, customer_city, user_role) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("ssssssi", $name, $email, $hashed_password, $phone_number, $country, $city, $role);
         if ($stmt->execute()) {
             return $this->db->insert_id;
         }
@@ -61,7 +67,8 @@ class User extends db_connection
         $stmt = $this->db->prepare("SELECT * FROM customer WHERE customer_email = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
-        return $stmt->get_result()->fetch_assoc();
+        $result = $stmt->get_result()->fetch_assoc();
+        return $result ? $result : false;
     }
 
     public function authenticateUser($email, $password)
