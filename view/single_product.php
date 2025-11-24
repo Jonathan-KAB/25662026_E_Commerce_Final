@@ -117,7 +117,7 @@ if (isset($_SESSION['customer_id']) && $check_table) {
                   WHERE product_id = $product_id 
                   AND customer_id = {$_SESSION['customer_id']}";
     $existing = $db->db_fetch_one($check_sql);
-    $has_reviewed = ($existing !== false);
+    $has_reviewed = ($existing !== false && $existing !== null && !empty($existing));
 }
 ?>
 

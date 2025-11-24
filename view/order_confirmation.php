@@ -112,8 +112,33 @@ if (!$order || $order['customer_id'] != $customerId) {
                     <a href="orders.php" class="btn btn-primary">View All Orders</a>
                     <a href="all_product.php" class="btn btn-outline-secondary">Continue Shopping</a>
                 </div>
+                
+                <div id="autoRedirect" style="margin-top: 24px; font-size: 0.875rem; color: var(--gray-600);">
+                    Redirecting to shop in <span id="countdown">10</span> seconds...
+                </div>
             </div>
         </div>
     </div>
+    
+    <script>
+        // Auto-redirect to all_product.php after 10 seconds
+        let countdown = 10;
+        const countdownElement = document.getElementById('countdown');
+        
+        const timer = setInterval(function() {
+            countdown--;
+            if (countdownElement) {
+                countdownElement.textContent = countdown;
+            }
+            
+            if (countdown <= 0) {
+                clearInterval(timer);
+                window.location.href = 'all_product.php';
+            }
+        }, 1000);
+        
+        // Clear sessionStorage checkout data
+        sessionStorage.removeItem('checkout_cart');
+    </script>
 </body>
 </html>

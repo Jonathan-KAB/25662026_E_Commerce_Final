@@ -12,7 +12,7 @@ require_once '../settings/paystack_config.php';
 error_log("=== PAYSTACK CALLBACK/VERIFICATION ===");
 
 // Check if user is logged in
-if (!is_logged_in()) {
+if (!isLoggedIn()) {
     echo json_encode([
         'status' => 'error',
         'message' => 'Session expired. Please login again.'
@@ -93,7 +93,8 @@ try {
     // Ensure we have expected total server-side (calculate from cart if frontend didn't send it)
     require_once '../controllers/cart_controller.php';
     if (!$cart_items || count($cart_items) == 0) {
-        $cart_items = get_user_cart_ctr(get_user_id());
+        $ip_address = $_SERVER['REMOTE_ADDR'];
+        $cart_items = get_cart_items_ctr($ip_address, get_user_id());
     }
 
     $calculated_total = 0.00;
@@ -137,7 +138,8 @@ try {
     
     // Get fresh cart items if not provided
     if (!$cart_items || count($cart_items) == 0) {
-        $cart_items = get_user_cart_ctr($customer_id);
+        $ip_address = $_SERVER['REMOTE_ADDR'];
+        $cart_items = get_cart_items_ctr($ip_address, $customer_id);
     }
     
     if (!$cart_items || count($cart_items) == 0) {
@@ -199,13 +201,15 @@ try {
         error_log("Payment recorded - ID: $payment_id, Reference: $reference");
         
         // Empty the customer's cart
-        $empty_result = empty_cart_ctr($customer_id);
+        $ip_address = $_SERVER['REMOTE_ADDR'];
+        $empty_result = empty_cart_ctr($ip_address, $customer_id);
         
         if (!$empty_result) {
-            throw new Exception("Failed to empty cart");
+            error_log("Warning: Failed to empty cart for customer: $customer_id");
+            // Don't throw exception - order is already created
+        } else {
+            error_log("Cart emptied for customer: $customer_id");
         }
-        
-        error_log("Cart emptied for customer: $customer_id");
         
         // Commit database transaction
         mysqli_commit($conn);

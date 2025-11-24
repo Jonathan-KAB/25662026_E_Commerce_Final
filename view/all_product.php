@@ -60,6 +60,30 @@ $brands = $db->db_fetch_all("SELECT brand_id, brand_name FROM brands ORDER BY br
 <body>
     <?php include __DIR__ . '/includes/menu.php'; ?>
 
+    <!-- Success Message for Payment -->
+    <?php if (isset($_GET['payment_success'])): ?>
+    <div id="paymentSuccessAlert" style="background: #d4edda; border: 1px solid #c3e6cb; color: #155724; padding: 16px 20px; text-align: center; position: sticky; top: 0; z-index: 999;">
+        <strong>✓ Payment Successful!</strong> Your order has been confirmed. 
+        <?php if (isset($_GET['order_id'])): ?>
+            <a href="orders.php" style="color: #155724; text-decoration: underline; margin-left: 8px;">View Order Details</a>
+        <?php endif; ?>
+        <button onclick="this.parentElement.style.display='none'" style="background: none; border: none; color: #155724; float: right; cursor: pointer; font-size: 20px; line-height: 1;">&times;</button>
+    </div>
+    <script>
+        // Auto-hide success message after 10 seconds
+        setTimeout(function() {
+            const alert = document.getElementById('paymentSuccessAlert');
+            if (alert) {
+                alert.style.transition = 'opacity 0.5s';
+                alert.style.opacity = '0';
+                setTimeout(function() {
+                    alert.style.display = 'none';
+                }, 500);
+            }
+        }, 10000);
+    </script>
+    <?php endif; ?>
+
     <!-- Page Header -->
     <div class="page-header">
         <div class="container">

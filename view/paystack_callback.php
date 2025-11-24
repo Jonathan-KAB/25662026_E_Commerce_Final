@@ -7,15 +7,21 @@ session_start();
 require_once '../settings/core.php';
 
 // Check if user is logged in
-if (!is_logged_in()) {
+if (!isLoggedIn()) {
     header('Location: ../login/login.php');
     exit();
 }
 
-// Get reference from URL parameter
-$reference = isset($_GET['reference']) ? trim($_GET['reference']) : null;
+// Get reference from URL parameter (PayStack sends this as trxref or reference)
+$reference = null;
+if (isset($_GET['reference'])) {
+    $reference = trim($_GET['reference']);
+} elseif (isset($_GET['trxref'])) {
+    $reference = trim($_GET['trxref']);
+}
 
 if (!$reference) {
+    error_log("PayStack callback - No reference found in URL. GET params: " . print_r($_GET, true));
     header('Location: payment_failed.php?error=no_reference');
     exit();
 }
@@ -96,8 +102,11 @@ error_log("PayStack callback received - Reference: $reference");
         <div class="spinner"></div>
         <h1 class="loader-text">Processing Your Payment...</h1>
         <p class="loader-subtext">Please wait while we verify your payment with PayStack. Do not close this window.</p>
+        <p class="loader-subtext" style="font-size: 0.875rem; margin-top: 16px; opacity: 0.8;">
+            If you just completed payment, please wait a moment for verification.
+        </p>
         <div id="errorMessage" class="error-message"></div>
-        <a href="../view/checkout.php" class="retry-button" id="retryButton" style="display: none;">Return to Checkout</a>
+        <a href="../view/cart.php" class="retry-button" id="retryButton" style="display: none;">Return to Cart</a>
     </div>
 
     <script>
@@ -139,8 +148,14 @@ error_log("PayStack callback received - Reference: $reference");
                     // Clear cart data from session storage
                     sessionStorage.removeItem('checkout_cart');
                     
-                    // Redirect to order confirmation page
-                    window.location.href = `order_confirmation.php?order_id=${result.order_id}&invoice=${result.invoice_no}`;
+                    // Show success message briefly before redirect
+                    document.querySelector('.loader-text').textContent = 'Payment Successful!';
+                    document.querySelector('.loader-subtext').textContent = 'Redirecting to your order confirmation...';
+                    
+                    // Redirect to all_product.php with success message
+                    setTimeout(function() {
+                        window.location.href = 'all_product.php?payment_success=1&order_id=' + result.order_id;
+                    }, 2000);
                 } else {
                     // Payment verification failed
                     const errorMsg = result.message || 'Payment verification failed';
