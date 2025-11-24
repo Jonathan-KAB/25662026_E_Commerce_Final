@@ -405,6 +405,48 @@ class Product extends db_connection
         return $result ? (int)$result['total'] : 0;
     }
 
+    /**
+     * Reduce product stock when order is placed
+     */
+    public function reduceStock($product_id, $quantity)
+    {
+        if (!$this->db_connect()) {
+            return false;
+        }
+        
+        $product_id = (int)$product_id;
+        $quantity = (int)$quantity;
+        
+        $sql = "UPDATE products 
+                SET product_stock = product_stock - $quantity 
+                WHERE product_id = $product_id 
+                AND product_stock >= $quantity";
+        
+        return $this->db_write_query($sql);
+    }
+
+    /**
+     * Check if product has enough stock
+     */
+    public function checkStock($product_id, $quantity)
+    {
+        if (!$this->db_connect()) {
+            return false;
+        }
+        
+        $product_id = (int)$product_id;
+        $quantity = (int)$quantity;
+        
+        $sql = "SELECT product_stock FROM products WHERE product_id = $product_id";
+        $result = $this->db_fetch_one($sql);
+        
+        if ($result && $result['product_stock'] >= $quantity) {
+            return true;
+        }
+        
+        return false;
+    }
+
 }
 
 ?>

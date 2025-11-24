@@ -1,10 +1,9 @@
 <?php
-session_start();
 require_once __DIR__ . '/../settings/core.php';
 require_once __DIR__ . '/../controllers/cart_controller.php';
 
 // Check if user is logged in
-if (!isset($_SESSION['customer_id'])) {
+if (!isLoggedIn()) {
     header('Location: ../login/login.php');
     exit;
 }

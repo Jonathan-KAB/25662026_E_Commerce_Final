@@ -1,14 +1,14 @@
 <?php
-session_start();
-if (!isset($_SESSION['customer_id'])) {
-    header("Location: ../login/login.php");
-    exit();
-}
-
 require_once __DIR__ . '/../settings/core.php';
 require_once __DIR__ . '/../controllers/customer_controller.php';
 require_once __DIR__ . '/../controllers/order_controller.php';
 require_once __DIR__ . '/../controllers/cart_controller.php';
+
+// Check if logged in
+if (!isLoggedIn()) {
+    header("Location: ../login/login.php");
+    exit();
+}
 
 $customer = get_customer_by_id_ctr($_SESSION['customer_id']);
 $customer_name = $customer['customer_name'] ?? 'User';
@@ -36,6 +36,7 @@ $recentOrders = array_slice($orders, 0, 5);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - SeamLink</title>
     <link rel="stylesheet" href="../css/app.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
     <?php include __DIR__ . '/includes/menu.php'; ?>
@@ -51,7 +52,7 @@ $recentOrders = array_slice($orders, 0, 5);
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-bottom: 40px;">
             <div class="card">
                 <div class="card-body" style="text-align: center;">
-                    <div style="font-size: 48px; color: var(--primary); margin-bottom: 16px;">👤</div>
+                    <div style="font-size: 48px; color: var(--primary); margin-bottom: 16px;"><i class="fas fa-user-circle"></i></div>
                     <h3 class="card-title">Profile</h3>
                     <p style="color: var(--gray-600); margin-bottom: 20px;">Manage your account information</p>
                     <a href="profile.php" class="btn btn-primary">View Profile</a>
@@ -59,7 +60,7 @@ $recentOrders = array_slice($orders, 0, 5);
             </div>
             <div class="card">
                 <div class="card-body" style="text-align: center;">
-                    <div style="font-size: 48px; color: var(--success); margin-bottom: 16px;">📦</div>
+                    <div style="font-size: 48px; color: var(--success); margin-bottom: 16px;"><i class="fas fa-box"></i></div>
                     <h3 class="card-title">My Orders</h3>
                     <p style="color: var(--gray-600); margin-bottom: 20px;">Track your order history</p>
                     <a href="orders.php" class="btn btn-primary">View Orders</a>
@@ -67,7 +68,7 @@ $recentOrders = array_slice($orders, 0, 5);
             </div>
             <div class="card">
                 <div class="card-body" style="text-align: center;">
-                    <div style="font-size: 48px; color: var(--warning); margin-bottom: 16px;">🛒</div>
+                    <div style="font-size: 48px; color: var(--warning); margin-bottom: 16px;"><i class="fas fa-shopping-cart"></i></div>
                     <h3 class="card-title">Shopping</h3>
                     <p style="color: var(--gray-600); margin-bottom: 20px;">Continue shopping</p>
                     <a href="all_product.php" class="btn btn-primary">Browse Products</a>

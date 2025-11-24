@@ -1,12 +1,11 @@
 <?php
-session_start();
-if (!isset($_SESSION['customer_id'])) {
+require_once __DIR__ . '/../settings/core.php';
+require_once __DIR__ . '/../controllers/cart_controller.php';
+
+if (!isLoggedIn()) {
     header("Location: ../login/login.php");
     exit();
 }
-
-require_once __DIR__ . '/../settings/core.php';
-require_once __DIR__ . '/../controllers/cart_controller.php';
 
 $ipAddress = $_SERVER['REMOTE_ADDR'];
 $cartCount = get_cart_count_ctr($ipAddress, $_SESSION['customer_id']);
@@ -21,8 +20,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $contact = $_POST['contact'] ?? $customer['customer_contact'];
     $country = $_POST['country'] ?? $customer['customer_country'];
     $city = $_POST['city'] ?? $customer['customer_city'];
+    $service_type = $_POST['service_type'] ?? $customer['service_type'];
     
-    $updated = update_customer_ctr($_SESSION['customer_id'], $name, $contact, $country, $city);
+    $updated = update_customer_ctr($_SESSION['customer_id'], $name, $contact, $country, $city, $service_type);
     
     if ($updated) {
         $customer = get_customer_by_id_ctr($_SESSION['customer_id']);
@@ -42,6 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Profile - SeamLink</title>
     <link rel="stylesheet" href="../css/app.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
     <?php include __DIR__ . '/includes/menu.php'; ?>
@@ -81,6 +82,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                    disabled style="width: 100%; padding: 12px 16px; border: 1px solid var(--gray-300); border-radius: 8px; font-size: 15px; background: var(--gray-100); cursor: not-allowed;">
                             <small style="color: var(--gray-600); font-size: 0.875rem; display: block; margin-top: 6px;">Email cannot be changed</small>
                         </div>
+
+                        <!-- Service Type Display (for sellers) -->
+                        <?php if (isset($customer['user_role']) && $customer['user_role'] == 3): ?>
+                        <div>
+                            <label for="service_type" class="form-label" style="display: block; margin-bottom: 8px; font-weight: 600;">
+                                <i class="fas fa-scissors"></i> Service Type
+                            </label>
+                            <select class="form-select" id="service_type" name="service_type" 
+                                style="width: 100%; padding: 12px 16px; border: 2px solid var(--gray-300); border-radius: 8px; font-size: 15px; background: white; cursor: pointer;">
+                                <option value="none" <?= (!isset($customer['service_type']) || $customer['service_type'] === 'none') ? 'selected' : '' ?>>General Vendor</option>
+                                <option value="tailor" <?= (isset($customer['service_type']) && $customer['service_type'] === 'tailor') ? 'selected' : '' ?>>✂️ Tailor</option>
+                                <option value="seamstress" <?= (isset($customer['service_type']) && $customer['service_type'] === 'seamstress') ? 'selected' : '' ?>>🪡 Seamstress</option>
+                                <option value="general" <?= (isset($customer['service_type']) && $customer['service_type'] === 'general') ? 'selected' : '' ?>>👔 General Service Provider</option>
+                            </select>
+                            <small style="color: var(--gray-600); font-size: 0.875rem; display: block; margin-top: 6px;">This is displayed on your seller profile</small>
+                        </div>
+                        <?php endif; ?>
 
                         <div>
                             <label for="contact" class="form-label" style="display: block; margin-bottom: 8px; font-weight: 600;">Phone Number</label>

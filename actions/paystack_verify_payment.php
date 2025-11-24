@@ -182,6 +182,17 @@ try {
             error_log("Order detail added - Product: {$item['p_id']}, Qty: {$item['qty']}");
         }
         
+        // Reduce stock for each product in the order
+        require_once '../controllers/product_controller.php';
+        foreach ($cart_items as $item) {
+            $stock_reduced = reduce_product_stock_ctr($item['p_id'], $item['qty']);
+            if ($stock_reduced) {
+                error_log("Stock reduced - Product: {$item['p_id']}, Qty: {$item['qty']}");
+            } else {
+                error_log("Warning: Failed to reduce stock for product: {$item['p_id']}");
+            }
+        }
+        
         // Record payment in database with PayStack details
         $payment_id = add_payment_with_paystack_ctr(
             $customer_id,

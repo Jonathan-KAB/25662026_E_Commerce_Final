@@ -93,3 +93,21 @@ function count_products_by_type_ctr($type) {
     return $p->count_products_by_type($type);
 }
 
+/**
+ * Reduce product stock
+ */
+function reduce_product_stock_ctr($product_id, $quantity)
+{
+    $p = new Product();
+    return $p->reduceStock($product_id, $quantity);
+}
+
+/**
+ * Check product stock availability
+ */
+function check_product_stock_ctr($product_id, $quantity)
+{
+    $p = new Product();
+    return $p->checkStock($product_id, $quantity);
+}
+

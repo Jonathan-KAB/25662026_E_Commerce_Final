@@ -1,15 +1,14 @@
 <?php
-session_start();
-if (!isset($_SESSION['customer_id']) || $_SESSION['user_role'] != 3) {
-    header("Location: ../login/login.php");
-    exit();
-}
-
 require_once __DIR__ . '/../settings/core.php';
 require_once __DIR__ . '/../controllers/customer_controller.php';
 require_once __DIR__ . '/../controllers/product_controller.php';
 require_once __DIR__ . '/../controllers/order_controller.php';
 require_once __DIR__ . '/../controllers/cart_controller.php';
+
+if (!isLoggedIn() || $_SESSION['user_role'] != 3) {
+    header("Location: ../login/login.php");
+    exit();
+}
 
 $customer = get_customer_by_id_ctr($_SESSION['customer_id']);
 $customer_name = $customer['customer_name'] ?? 'Seller';
@@ -31,6 +30,7 @@ $sellerOrders = get_orders_by_seller_ctr($_SESSION['customer_id']);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Seller Dashboard - SeamLink</title>
     <link rel="stylesheet" href="../css/app.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
     <?php include __DIR__ . '/includes/menu.php'; ?>
@@ -46,21 +46,21 @@ $sellerOrders = get_orders_by_seller_ctr($_SESSION['customer_id']);
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; margin-bottom: 40px;">
             <div class="card">
                 <div class="card-body" style="text-align: center;">
-                    <div style="font-size: 48px; color: var(--primary); margin-bottom: 16px;">📦</div>
+                    <div style="font-size: 48px; color: var(--primary); margin-bottom: 16px;"><i class="fas fa-box"></i></div>
                     <h3 class="card-title"><?= count($sellerProducts) ?></h3>
                     <p style="color: var(--gray-600);">Total Products</p>
                 </div>
             </div>
             <div class="card">
                 <div class="card-body" style="text-align: center;">
-                    <div style="font-size: 48px; color: var(--success); margin-bottom: 16px;">🛒</div>
+                    <div style="font-size: 48px; color: var(--success); margin-bottom: 16px;"><i class="fas fa-shopping-bag"></i></div>
                     <h3 class="card-title"><?= count($sellerOrders) ?></h3>
                     <p style="color: var(--gray-600);">Total Orders</p>
                 </div>
             </div>
             <div class="card">
                 <div class="card-body" style="text-align: center;">
-                    <div style="font-size: 48px; color: var(--warning); margin-bottom: 16px;">💰</div>
+                    <div style="font-size: 48px; color: var(--warning); margin-bottom: 16px;"><i class="fas fa-money-bill-wave"></i></div>
                     <h3 class="card-title">GH₵ <?= number_format(array_sum(array_column($sellerOrders, 'order_total')), 2) ?></h3>
                     <p style="color: var(--gray-600);">Total Sales</p>
                 </div>
@@ -75,7 +75,7 @@ $sellerOrders = get_orders_by_seller_ctr($_SESSION['customer_id']);
             <div class="card-body">
                 <?php if (empty($sellerProducts)): ?>
                     <div style="text-align: center; padding: 40px 20px;">
-                        <div style="font-size: 64px; margin-bottom: 16px;">📦</div>
+                        <div style="font-size: 64px; margin-bottom: 16px; color: var(--gray-400);"><i class="fas fa-box-open"></i></div>
                         <h3 style="margin-bottom: 12px;">No Products Yet</h3>
                         <p style="color: var(--gray-600); margin-bottom: 24px;">Start by adding your first product!</p>
                         <a href="seller_add_product.php" class="btn btn-primary">Add Product</a>

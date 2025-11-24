@@ -80,7 +80,8 @@ $(function() {
             product_title: $('#product_title').val(),
             product_price: $('#product_price').val(),
             product_desc: $('#product_desc').val(),
-            product_keywords: $('#product_keywords').val()
+            product_keywords: $('#product_keywords').val(),
+            product_stock: $('#product_stock').val()
         };
         if (!payload.product_cat || !payload.product_brand || !payload.product_title) {
             alert('Category, Brand and Title are required');
@@ -153,6 +154,7 @@ $(function() {
                 setTimeout(function(){ $('#product_brand').val(p.product_brand); }, 120);
                 $('#product_title').val(p.product_title);
                 $('#product_price').val(p.product_price);
+                $('#product_stock').val(p.product_stock || 0);
                 $('#product_desc').val(p.product_desc);
                 $('#product_keywords').val(p.product_keywords);
                 if (p.product_image) $('#image-preview').html('<img src="../'+p.product_image+'" style="max-width:200px;max-height:150px;object-fit:cover;"/>'); else $('#image-preview').html('');

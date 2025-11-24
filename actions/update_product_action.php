@@ -23,6 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data['product_price'] = isset($_POST['product_price']) ? (float)$_POST['product_price'] : 0;
     $data['product_desc'] = isset($_POST['product_desc']) ? trim($_POST['product_desc']) : '';
     $data['product_keywords'] = isset($_POST['product_keywords']) ? trim($_POST['product_keywords']) : '';
+    $data['product_stock'] = isset($_POST['product_stock']) ? (int)$_POST['product_stock'] : 0;
     $res = update_product_ctr($product_id, $data);
     if ($res) {
         $response = ['status' => 'success'];

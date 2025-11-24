@@ -7,7 +7,6 @@ if (!$seller_id) {
     exit();
 }
 
-session_start();
 require_once __DIR__ . '/../settings/core.php';
 require_once __DIR__ . '/../settings/db_class.php';
 require_once __DIR__ . '/../controllers/cart_controller.php';
@@ -21,7 +20,7 @@ $db->db_connect();
 
 // Get seller profile info
 $seller_sql = "SELECT c.customer_id, c.customer_name, c.customer_email, c.customer_contact, 
-               c.customer_city, c.customer_country, c.created_at,
+               c.customer_city, c.customer_country, c.created_at, c.service_type,
                sp.store_name, sp.store_description, sp.store_logo, sp.store_banner,
                sp.contact_phone, sp.contact_email, sp.business_address,
                sp.social_facebook, sp.social_instagram, sp.social_twitter,
@@ -157,6 +156,19 @@ $total_reviews = $review_stats['total'] ?? 0;
                         <?php if ($seller['verified']): ?>
                             <span class="verified-badge">✓ Verified Seller</span>
                         <?php endif; ?>
+                        <?php if (!empty($seller['service_type']) && $seller['service_type'] !== 'none'): ?>
+                            <span class="service-type-badge" style="background: #6366f1; color: white; padding: 4px 12px; border-radius: var(--radius-sm); font-size: 0.75rem; font-weight: 600; text-transform: capitalize;">
+                                <?php 
+                                $service_icons = [
+                                    'tailor' => '✂️',
+                                    'seamstress' => '🪡',
+                                    'general' => '👔'
+                                ];
+                                $icon = $service_icons[$seller['service_type']] ?? '🎯';
+                                echo $icon . ' ' . htmlspecialchars(ucfirst($seller['service_type']));
+                                ?>
+                            </span>
+                        <?php endif; ?>
                     </div>
 
                     <?php if ($seller['store_description']): ?>
@@ -265,8 +277,28 @@ $total_reviews = $review_stats['total'] ?? 0;
                                 
                                 <div class="price">GH₵ <?= number_format($product['product_price'], 2) ?></div>
                                 
-                                <button onclick="addToCart(<?= $product['product_id'] ?>)" class="btn btn-primary btn-sm" style="width: 100%; margin-top: 8px;">
-                                    Add to Cart
+                                <!-- Stock Display -->
+                                <?php if (isset($product['product_stock'])): ?>
+                                    <?php if ($product['product_stock'] > 0): ?>
+                                        <?php if ($product['product_stock'] <= 10): ?>
+                                            <div style="color: #dc3545; font-size: 0.875rem; font-weight: 600; margin: 8px 0;">
+                                                ⚠️ Only <?= $product['product_stock'] ?> left!
+                                            </div>
+                                        <?php else: ?>
+                                            <div style="color: #28a745; font-size: 0.875rem; margin: 8px 0;">
+                                                ✓ In Stock (<?= $product['product_stock'] ?> available)
+                                            </div>
+                                        <?php endif; ?>
+                                    <?php else: ?>
+                                        <div style="color: #dc3545; font-size: 0.875rem; font-weight: 600; margin: 8px 0;">
+                                            ❌ Out of Stock
+                                        </div>
+                                    <?php endif; ?>
+                                <?php endif; ?>
+                                
+                                <button onclick="addToCart(<?= $product['product_id'] ?>)" class="btn btn-primary btn-sm" style="width: 100%; margin-top: 8px;"
+                                    <?= (isset($product['product_stock']) && $product['product_stock'] <= 0) ? 'disabled style="background: #ccc; cursor: not-allowed; width: 100%; margin-top: 8px;"' : '' ?>>
+                                    <?= (isset($product['product_stock']) && $product['product_stock'] <= 0) ? 'Out of Stock' : 'Add to Cart' ?>
                                 </button>
                             </div>
                         </div>

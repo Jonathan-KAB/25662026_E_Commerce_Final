@@ -38,14 +38,12 @@ if ($user) {
     $_SESSION['user_email'] = $user['customer_email'];
     $_SESSION['user_role'] = $user['user_role'];
     
-    // Debug logging
-    error_log("Login successful - Session ID: " . session_id());
-    error_log("Login successful - user_id set to: " . $_SESSION['user_id']);
-    error_log("Login successful - Session data: " . print_r($_SESSION, true));
+    // Force session write
+    session_write_close();
+    session_start();
 
     $response['status'] = 'success';
     $response['message'] = 'Login successful';
-    $response['session_id'] = session_id(); // Debug
     
     // Role-based redirects
     if ($user['user_role'] == 2) {

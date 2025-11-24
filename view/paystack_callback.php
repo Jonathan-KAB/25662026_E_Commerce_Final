@@ -3,7 +3,6 @@
  * PayStack Payment Callback Page
  * User is redirected here after completing payment on PayStack gateway
  */
-session_start();
 require_once '../settings/core.php';
 
 // Check if user is logged in

@@ -341,6 +341,22 @@
                         </div>
                     </div>
 
+                    <!-- Service Type Selection (only for vendors) -->
+                    <div class="form-group" id="service-type-group" style="display: none;">
+                        <label for="service_type">
+                            <i class="fas fa-scissors"></i> Service Type
+                        </label>
+                        <select class="form-select" id="service_type" name="service_type">
+                            <option value="none">General Vendor</option>
+                            <option value="tailor">✂️ Tailor</option>
+                            <option value="seamstress">🪡 Seamstress</option>
+                            <option value="general">👔 General Service Provider</option>
+                        </select>
+                        <small style="color: #718096; display: block; margin-top: 4px; font-size: 12px;">
+                            This will be displayed on your seller profile
+                        </small>
+                    </div>
+
                     <button type="submit" class="btn-register">
                         <i class="fas fa-user-plus"></i> Create Account
                     </button>
@@ -354,6 +370,19 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Show/hide service type based on role selection
+        $(document).ready(function() {
+            $('input[name="role"]').on('change', function() {
+                if ($(this).val() === '3') {
+                    $('#service-type-group').slideDown(300);
+                } else {
+                    $('#service-type-group').slideUp(300);
+                    $('#service_type').val('none');
+                }
+            });
+        });
+    </script>
     <script src="../js/register.js"></script>
 </body>
 

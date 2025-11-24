@@ -35,6 +35,7 @@ $phone_number = trim($_POST['phone_number']);
 $country = trim($_POST['country']);
 $city = trim($_POST['city']);
 $role = intval($_POST['role']);
+$service_type = isset($_POST['service_type']) ? trim($_POST['service_type']) : 'none';
 
 // Validate email format
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -61,7 +62,7 @@ if (strlen($password) < 6) {
 }
 
 // Attempt to register the user
-$user_id = register_user_ctr($name, $email, $password, $phone_number, $country, $city, $role);
+$user_id = register_user_ctr($name, $email, $password, $phone_number, $country, $city, $role, $service_type);
 
 if ($user_id) {
     $response['status'] = 'success';

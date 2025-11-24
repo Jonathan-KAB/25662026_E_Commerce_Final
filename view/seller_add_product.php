@@ -1,12 +1,11 @@
 <?php
-session_start();
-if (!isset($_SESSION['customer_id']) || $_SESSION['user_role'] != 3) {
+require_once __DIR__ . '/../settings/core.php';
+require_once __DIR__ . '/../controllers/cart_controller.php';
+
+if (!isLoggedIn() || $_SESSION['user_role'] != 3) {
     header("Location: ../login/login.php");
     exit();
 }
-
-require_once __DIR__ . '/../settings/core.php';
-require_once __DIR__ . '/../controllers/cart_controller.php';
 
 $ipAddress = $_SERVER['REMOTE_ADDR'];
 $cartCount = get_cart_count_ctr($ipAddress, $_SESSION['customer_id']);
@@ -76,9 +75,17 @@ $brands = $db->db_fetch_all("SELECT brand_id, brand_name FROM brands ORDER BY br
                             </div>
                         </div>
 
-                        <div>
-                            <label for="product_price" class="form-label">Price (GH₵)</label>
-                            <input type="number" class="form-input" id="product_price" name="product_price" step="0.01" min="0" required>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                            <div>
+                                <label for="product_price" class="form-label">Price (GH₵)</label>
+                                <input type="number" class="form-input" id="product_price" name="product_price" step="0.01" min="0" required>
+                            </div>
+
+                            <div>
+                                <label for="product_stock" class="form-label">Stock Quantity</label>
+                                <input type="number" class="form-input" id="product_stock" name="product_stock" min="0" value="0" required>
+                                <small style="color: var(--gray-600); font-size: 0.875rem;">Number of items available</small>
+                            </div>
                         </div>
 
                         <div>

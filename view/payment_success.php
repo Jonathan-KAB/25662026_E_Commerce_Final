@@ -1,5 +1,4 @@
 <?php
-session_start();
 require_once __DIR__ . '/../settings/core.php';
 
 // Get order details from URL

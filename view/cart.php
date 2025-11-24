@@ -3,12 +3,11 @@
  * Shopping Cart View
  */
 
-session_start();
-require_once __DIR__ . '/../controllers/cart_controller.php';
 require_once __DIR__ . '/../settings/core.php';
+require_once __DIR__ . '/../controllers/cart_controller.php';
 
 // Require login to view cart
-if (!isset($_SESSION['customer_id'])) {
+if (!isLoggedIn()) {
     header('Location: ../login/login.php');
     exit;
 }
@@ -18,7 +17,7 @@ $customerId = (int)$_SESSION['customer_id'];
 
 $cartItems = get_cart_items_ctr($ipAddress, $customerId);
 $cartTotal = get_cart_total_ctr($ipAddress, $customerId);
-$cartCount = count($cartItems);
+$cartCount = get_cart_count_ctr($ipAddress, $customerId); // Get actual quantity sum
 ?>
 
 <!DOCTYPE html>

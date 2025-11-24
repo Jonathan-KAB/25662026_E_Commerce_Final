@@ -3,10 +3,10 @@
 require_once '../classes/user_class.php';
 
 // added country and city parameters
-function register_user_ctr($name, $email, $password, $phone_number, $country, $city, $role)
+function register_user_ctr($name, $email, $password, $phone_number, $country, $city, $role, $service_type = 'none')
 {
     $user = new User();
-    $user_id = $user->createUser($name, $email, $password, $phone_number, $country, $city, $role);
+    $user_id = $user->createUser($name, $email, $password, $phone_number, $country, $city, $role, $service_type);
     if ($user_id) {
         return $user_id;
     }
@@ -41,10 +41,10 @@ function get_customer_by_id_ctr($customerId)
 }
 
 // update customer profile
-function update_customer_ctr($customerId, $name, $contact, $country, $city)
+function update_customer_ctr($customerId, $name, $contact, $country, $city, $service_type = null)
 {
     $user = new User();
-    return $user->updateCustomer($customerId, $name, $contact, $country, $city);
+    return $user->updateCustomer($customerId, $name, $contact, $country, $city, $service_type);
 }
 
 ?>

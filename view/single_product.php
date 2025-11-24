@@ -1,8 +1,7 @@
 <?php
-session_start();
+require_once __DIR__ . '/../settings/core.php';
 require_once __DIR__ . '/../controllers/product_controller.php';
 require_once __DIR__ . '/../settings/db_class.php';
-require_once __DIR__ . '/../settings/core.php';
 
 // Get product ID from URL
 $product_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
@@ -835,6 +834,41 @@ if (isset($_SESSION['customer_id']) && $check_table) {
 
                 <div class="product-price">GH₵ <?= number_format($product['product_price'], 2) ?></div>
 
+                <!-- Stock Availability -->
+                <?php if (isset($product['product_stock'])): ?>
+                    <div style="margin: 20px 0; padding: 15px; border-radius: 8px; 
+                        <?php if ($product['product_stock'] > 0): ?>
+                            background: #d4edda; border: 1px solid #c3e6cb;
+                        <?php else: ?>
+                            background: #f8d7da; border: 1px solid #f5c6cb;
+                        <?php endif; ?>">
+                        <?php if ($product['product_stock'] > 0): ?>
+                            <?php if ($product['product_stock'] <= 10): ?>
+                                <div style="color: #dc3545; font-size: 18px; font-weight: 700; margin-bottom: 5px;">
+                                    ⚠️ Limited Stock!
+                                </div>
+                                <div style="color: #721c24; font-size: 16px;">
+                                    Only <strong><?= $product['product_stock'] ?></strong> units remaining
+                                </div>
+                            <?php else: ?>
+                                <div style="color: #155724; font-size: 18px; font-weight: 700; margin-bottom: 5px;">
+                                    ✓ In Stock
+                                </div>
+                                <div style="color: #155724; font-size: 16px;">
+                                    <strong><?= $product['product_stock'] ?></strong> units available
+                                </div>
+                            <?php endif; ?>
+                        <?php else: ?>
+                            <div style="color: #721c24; font-size: 18px; font-weight: 700; margin-bottom: 5px;">
+                                ❌ Out of Stock
+                            </div>
+                            <div style="color: #721c24; font-size: 16px;">
+                                This item is currently unavailable
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                <?php endif; ?>
+
                 <div class="product-id-info">Product ID: #<?= $product['product_id'] ?></div>
 
                 <div class="divider"></div>
@@ -869,8 +903,9 @@ if (isset($_SESSION['customer_id']) && $check_table) {
 
                 <!-- Action Buttons -->
                 <div class="product-actions">
-                    <button class="add-to-cart-btn" onclick="addToCart(<?= $product['product_id'] ?>)">
-                        Add to Cart
+                    <button class="add-to-cart-btn" onclick="addToCart(<?= $product['product_id'] ?>)"
+                        <?= (isset($product['product_stock']) && $product['product_stock'] <= 0) ? 'disabled style="background: #ccc; cursor: not-allowed; border: 1px solid #999;"' : '' ?>>
+                        <?= (isset($product['product_stock']) && $product['product_stock'] <= 0) ? '❌ Out of Stock' : 'Add to Cart' ?>
                     </button>
                     <a href="all_product.php" class="back-btn">Back to Fabrics</a>
                 </div>

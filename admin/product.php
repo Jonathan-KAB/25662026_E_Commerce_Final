@@ -52,7 +52,11 @@ if (!isLoggedIn() || !isAdmin()) {
                             <label class="form-label">Price</label>
                             <input id="product_price" name="product_price" type="number" step="0.01" class="form-control" required>
                         </div>
-                        <div class="col-md-8 mb-3">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Stock Quantity</label>
+                            <input id="product_stock" name="product_stock" type="number" min="0" value="0" class="form-control" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
                             <label class="form-label">Keywords</label>
                             <input id="product_keywords" name="product_keywords" class="form-control">
                         </div>

@@ -1,17 +1,13 @@
 <?php
 // Configure session settings
-ini_set('session.cookie_path', '/');
-ini_set('session.cookie_domain', '');
 ini_set('session.cookie_httponly', 1);
 ini_set('session.use_only_cookies', 1);
+ini_set('session.cookie_lifetime', 0);
+session_name('SEAMLINK_SESSION');
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-
-// Debug session
-error_log("Core.php - Session started. ID: " . session_id());
-error_log("Core.php - Session data: " . print_r($_SESSION, true));
 
 //for header redirection
 ob_start();

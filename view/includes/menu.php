@@ -1,17 +1,13 @@
 <!-- Navigation Menu Tray -->
 <div class="menu-tray">
-    <button class="menu-toggle" onclick="toggleMenu()">☰ Menu</button>
+    <button class="menu-toggle" onclick="toggleMenu()"><i class="fas fa-bars"></i> <span class="menu-text">Menu</span></button>
     <div class="menu-items" id="menuItems">
         <?php
         $currentPage = basename($_SERVER['PHP_SELF']);
         $isHomePage = ($currentPage === 'index.php');
         $homePrefix = $isHomePage ? '' : '../';
         $viewPrefix = $isHomePage ? 'view/' : '';
-        
-        // Debug - comment out after checking
-        echo "<!-- Debug: isLoggedIn = " . (isLoggedIn() ? 'true' : 'false') . " -->";
-        echo "<!-- Debug: user_id = " . ($_SESSION['user_id'] ?? 'not set') . " -->";
-        echo "<!-- Debug: customer_id = " . ($_SESSION['customer_id'] ?? 'not set') . " -->";
+        $userRole = $_SESSION['user_role'] ?? 1;
         ?>
         
         <a href="<?= $homePrefix ?>index.php" class="btn btn-sm <?= $currentPage === 'index.php' ? 'btn-primary' : 'btn-outline-secondary' ?>">Home</a>
@@ -21,10 +17,20 @@
         </a>
         
         <?php if (isLoggedIn()): ?>
-            <?php 
-            $userRole = $_SESSION['user_role'] ?? 1;
-            if ($userRole == 2): ?>
-                <a href="<?= $homePrefix ?>admin/category.php" class="btn btn-sm btn-outline-secondary">Admin</a>
+            <?php if ($userRole == 2): ?>
+                <!-- Admin Section with Dropdown -->
+                <div class="dropdown-menu-container">
+                    <button class="btn btn-sm btn-outline-primary dropdown-toggle" onclick="toggleDropdown(event)">
+                        <i class="fas fa-cog"></i> Admin
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="<?= $homePrefix ?>admin/category.php"><i class="fas fa-tags"></i> Categories</a>
+                        <a href="<?= $homePrefix ?>admin/brand.php"><i class="fas fa-copyright"></i> Brands</a>
+                        <a href="<?= $homePrefix ?>admin/product.php"><i class="fas fa-box"></i> Products</a>
+                        <a href="<?= $homePrefix ?>admin/orders.php"><i class="fas fa-shopping-bag"></i> Orders</a>
+                    </div>
+                </div>
+                <a href="<?= $viewPrefix ?>dashboard.php" class="btn btn-sm btn-outline-secondary">My Account</a>
             <?php elseif ($userRole == 3): ?>
                 <a href="<?= $viewPrefix ?>seller_dashboard.php" class="btn btn-sm btn-outline-secondary">Seller Dashboard</a>
             <?php else: ?>
@@ -38,32 +44,50 @@
     </div>
 </div>
 
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
 <script>
     function toggleMenu() {
         const menuItems = document.getElementById('menuItems');
         const menuToggle = document.querySelector('.menu-toggle');
         menuItems.classList.toggle('active');
         
-        // Update button text
+        // Update button content
         if (menuItems.classList.contains('active')) {
-            menuToggle.innerHTML = '✕ Close';
+            menuToggle.innerHTML = '<i class="fas fa-times"></i> <span class="menu-text">Close</span>';
         } else {
-            menuToggle.innerHTML = '☰ Menu';
+            menuToggle.innerHTML = '<i class="fas fa-bars"></i> <span class="menu-text">Menu</span>';
         }
+    }
+    
+    function toggleDropdown(event) {
+        event.stopPropagation();
+        const dropdown = event.target.nextElementSibling;
+        dropdown.classList.toggle('show');
     }
     
     // Close menu when clicking outside
     document.addEventListener('click', function(event) {
         const menuTray = document.querySelector('.menu-tray');
         const menuToggle = document.querySelector('.menu-toggle');
+        
+        // Close main menu
         if (menuTray && !menuTray.contains(event.target)) {
             const menuItems = document.getElementById('menuItems');
             if (menuItems && menuItems.classList.contains('active')) {
                 menuItems.classList.remove('active');
                 if (menuToggle) {
-                    menuToggle.innerHTML = '☰ Menu';
+                    menuToggle.innerHTML = '<i class="fas fa-bars"></i> <span class="menu-text">Menu</span>';
                 }
             }
         }
+        
+        // Close all dropdowns
+        const dropdowns = document.querySelectorAll('.dropdown-content');
+        dropdowns.forEach(dropdown => {
+            if (!dropdown.previousElementSibling.contains(event.target) && !dropdown.contains(event.target)) {
+                dropdown.classList.remove('show');
+            }
+        });
     });
 </script>

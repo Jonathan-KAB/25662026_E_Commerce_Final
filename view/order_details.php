@@ -1,12 +1,11 @@
 <?php
-session_start();
-if (!isset($_SESSION['customer_id'])) {
+require_once __DIR__ . '/../settings/core.php';
+require_once __DIR__ . '/../controllers/cart_controller.php';
+
+if (!isLoggedIn()) {
     header("Location: ../login/login.php");
     exit();
 }
-
-require_once __DIR__ . '/../settings/core.php';
-require_once __DIR__ . '/../controllers/cart_controller.php';
 
 $ipAddress = $_SERVER['REMOTE_ADDR'];
 $cartCount = get_cart_count_ctr($ipAddress, $_SESSION['customer_id']);

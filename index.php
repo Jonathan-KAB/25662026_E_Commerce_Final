@@ -1,3 +1,41 @@
+<?php
+// ALL PHP CODE MUST BE AT THE TOP - BEFORE ANY HTML OUTPUT
+require_once 'settings/core.php';
+require_once 'settings/db_class.php';
+require_once 'controllers/cart_controller.php';
+
+// Get cart count
+$ipAddress = $_SERVER['REMOTE_ADDR'];
+$customerId = isset($_SESSION['customer_id']) ? (int)$_SESSION['customer_id'] : null;
+$cartCount = get_cart_count_ctr($ipAddress, $customerId);
+
+// Fetch featured products
+$db = new db_connection();
+$db->db_connect();
+$featured_products = $db->db_fetch_all("
+	SELECT p.*, c.cat_name, b.brand_name,
+	COALESCE(p.rating_average, 0) as rating_average,
+	COALESCE(p.rating_count, 0) as rating_count
+	FROM products p
+	LEFT JOIN categories c ON p.product_cat = c.cat_id
+	LEFT JOIN brands b ON p.product_brand = b.brand_id
+	WHERE p.rating_count >= 3
+	ORDER BY p.rating_average DESC, p.rating_count DESC
+	LIMIT 3
+");
+if (!$featured_products) {
+	$featured_products = $db->db_fetch_all("
+		SELECT p.*, c.cat_name, b.brand_name,
+		COALESCE(p.rating_average, 0) as rating_average,
+		COALESCE(p.rating_count, 0) as rating_count
+		FROM products p
+		LEFT JOIN categories c ON p.product_cat = c.cat_id
+		LEFT JOIN brands b ON p.product_brand = b.brand_id
+		ORDER BY p.product_id DESC
+		LIMIT 3
+	");
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -342,57 +380,8 @@
 </head>
 <body>
 	<?php
-	require_once 'settings/core.php';
-	require_once 'settings/db_class.php';
-	require_once 'controllers/cart_controller.php';
-	
-	// Debug session information
-	error_log("Index.php - Session ID: " . session_id());
-	error_log("Index.php - Session data: " . print_r($_SESSION, true));
-	error_log("Index.php - isLoggedIn: " . (isLoggedIn() ? 'true' : 'false'));
-	
-	// Get cart count
-	$ipAddress = $_SERVER['REMOTE_ADDR'];
-	$customerId = isset($_SESSION['customer_id']) ? (int)$_SESSION['customer_id'] : null;
-	$cartCount = get_cart_count_ctr($ipAddress, $customerId);
-	
-	// Fetch featured products
-	$db = new db_connection();
-	$db->db_connect();
-	$featured_products = $db->db_fetch_all("
-		SELECT p.*, c.cat_name, b.brand_name,
-		COALESCE(p.rating_average, 0) as rating_average,
-		COALESCE(p.rating_count, 0) as rating_count
-		FROM products p
-		LEFT JOIN categories c ON p.product_cat = c.cat_id
-		LEFT JOIN brands b ON p.product_brand = b.brand_id
-		WHERE p.rating_count >= 3
-		ORDER BY p.rating_average DESC, p.rating_count DESC
-		LIMIT 3
-	");
-	if (!$featured_products) {
-		$featured_products = $db->db_fetch_all("
-			SELECT p.*, c.cat_name, b.brand_name,
-			COALESCE(p.rating_average, 0) as rating_average,
-			COALESCE(p.rating_count, 0) as rating_count
-			FROM products p
-			LEFT JOIN categories c ON p.product_cat = c.cat_id
-			LEFT JOIN brands b ON p.product_brand = b.brand_id
-			ORDER BY p.product_id DESC
-			LIMIT 3
-		");
-	}
-	
+	// Include menu
 	include __DIR__ . '/view/includes/menu.php';
-	
-	// Temporary debug output - remove after fixing
-	echo "<!-- INDEX DEBUG -->";
-	echo "<!-- Session ID: " . session_id() . " -->";
-	echo "<!-- user_id: " . ($_SESSION['user_id'] ?? 'NOT SET') . " -->";
-	echo "<!-- customer_id: " . ($_SESSION['customer_id'] ?? 'NOT SET') . " -->";
-	echo "<!-- user_role: " . ($_SESSION['user_role'] ?? 'NOT SET') . " -->";
-	echo "<!-- isLoggedIn: " . (isLoggedIn() ? 'TRUE' : 'FALSE') . " -->";
-	echo "<!-- All session data: " . print_r($_SESSION, true) . " -->";
 	?>
 
 	<!-- Hero Section -->

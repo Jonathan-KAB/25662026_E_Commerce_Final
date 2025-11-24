@@ -1,9 +1,8 @@
 <?php
-session_start();
+require_once __DIR__ . '/../settings/core.php';
 require_once __DIR__ . '/../controllers/product_controller.php';
 require_once __DIR__ . '/../controllers/cart_controller.php';
 require_once __DIR__ . '/../settings/db_class.php';
-require_once __DIR__ . '/../settings/core.php';
 
 // Get cart count
 $ipAddress = $_SERVER['REMOTE_ADDR'];
@@ -248,8 +247,29 @@ $brands = $db->db_fetch_all("SELECT brand_id, brand_name FROM brands ORDER BY br
                             <?php endif; ?>
                             
                             <div class="price">GH₵ <?= number_format($product['product_price'], 2) ?></div>
-                            <button class="add-to-cart-btn" onclick="addToCart(<?= $product['product_id'] ?>)">
-                                Add to Cart
+                            
+                            <!-- Stock Display -->
+                            <?php if (isset($product['product_stock'])): ?>
+                                <?php if ($product['product_stock'] > 0): ?>
+                                    <?php if ($product['product_stock'] <= 10): ?>
+                                        <div style="color: #dc3545; font-size: 0.875rem; font-weight: 600; margin: 8px 0;">
+                                            ⚠️ Only <?= $product['product_stock'] ?> left!
+                                        </div>
+                                    <?php else: ?>
+                                        <div style="color: #28a745; font-size: 0.875rem; margin: 8px 0;">
+                                            ✓ In Stock (<?= $product['product_stock'] ?> available)
+                                        </div>
+                                    <?php endif; ?>
+                                <?php else: ?>
+                                    <div style="color: #dc3545; font-size: 0.875rem; font-weight: 600; margin: 8px 0;">
+                                        ❌ Out of Stock
+                                    </div>
+                                <?php endif; ?>
+                            <?php endif; ?>
+                            
+                            <button class="add-to-cart-btn" onclick="addToCart(<?= $product['product_id'] ?>)" 
+                                <?= (isset($product['product_stock']) && $product['product_stock'] <= 0) ? 'disabled style="background: #ccc; cursor: not-allowed;"' : '' ?>>
+                                <?= (isset($product['product_stock']) && $product['product_stock'] <= 0) ? 'Out of Stock' : 'Add to Cart' ?>
                             </button>
                         </div>
                     </div>

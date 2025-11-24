@@ -1,12 +1,11 @@
 <?php
-session_start();
-if (!isset($_SESSION['customer_id']) || $_SESSION['user_role'] != 2) {
+require_once __DIR__ . '/../settings/core.php';
+require_once __DIR__ . '/../controllers/order_controller.php';
+
+if (!isLoggedIn() || $_SESSION['user_role'] != 2) {
     header("Location: ../login/login.php");
     exit();
 }
-
-require_once __DIR__ . '/../settings/core.php';
-require_once __DIR__ . '/../controllers/order_controller.php';
 
 $orders = get_all_orders_ctr();
 ?>
