@@ -184,23 +184,36 @@ class ImageUploadHelper
         $userDir = $this->uploadsBaseDir . '/u' . $userId;
         $entityDir = $userDir . '/' . $prefix . $entityId;
         
-        if (!is_dir($entityDir)) {
-            // Try creating with 0777 permissions
+        // Create user directory first if it doesn't exist
+        if (!is_dir($userDir)) {
             $oldmask = umask(0);
-            $result = mkdir($entityDir, 0777, true);
-            umask($oldmask);
-            
-            if (!$result) {
-                error_log("Failed to create directory: " . $entityDir);
-                error_log("Base dir exists: " . (is_dir($this->uploadsBaseDir) ? 'yes' : 'no'));
-                error_log("Base dir writable: " . (is_writable($this->uploadsBaseDir) ? 'yes' : 'no'));
+            if (!mkdir($userDir, 0777, true)) {
+                umask($oldmask);
+                error_log("Failed to create user directory: " . $userDir);
                 return false;
             }
-            
-            // Ensure the directory has proper permissions
+            umask($oldmask);
+            chmod($userDir, 0777);
+        }
+        
+        // Create entity directory if it doesn't exist
+        if (!is_dir($entityDir)) {
+            $oldmask = umask(0);
+            if (!mkdir($entityDir, 0777, true)) {
+                umask($oldmask);
+                error_log("Failed to create entity directory: " . $entityDir);
+                return false;
+            }
+            umask($oldmask);
             chmod($entityDir, 0777);
-            if (is_dir($userDir)) {
-                chmod($userDir, 0777);
+        }
+        
+        // Double-check and fix permissions
+        if (!is_writable($entityDir)) {
+            chmod($entityDir, 0777);
+            if (!is_writable($entityDir)) {
+                error_log("Directory not writable after chmod: " . $entityDir);
+                return false;
             }
         }
         
