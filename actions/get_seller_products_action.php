@@ -30,7 +30,7 @@ try {
             b.brand_name,
             COALESCE(p.rating_average, 0) as avg_rating,
             COALESCE(p.rating_count, 0) as review_count,
-            COALESCE(p.stock_quantity, 0) as in_stock
+            COALESCE(p.product_stock, 0) as in_stock
             FROM products p
             LEFT JOIN categories c ON p.product_cat = c.cat_id
             LEFT JOIN brands b ON p.product_brand = b.brand_id
