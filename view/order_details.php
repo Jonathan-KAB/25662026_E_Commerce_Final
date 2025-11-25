@@ -22,7 +22,7 @@ $customerId = $_SESSION['customer_id'];
 
 // Get order details
 $order = get_order_by_id_ctr($orderId);
-$orderItems = get_order_details_ctr($orderId);
+$orderItems = get_order_items_ctr($orderId);
 
 // Verify order belongs to customer (or if seller, they sell products in this order)
 $userRole = $_SESSION['user_role'] ?? 1;

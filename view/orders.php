@@ -21,6 +21,7 @@ $orders = get_orders_by_customer_ctr($_SESSION['customer_id']);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Orders - SeamLink</title>
     <link rel="stylesheet" href="../css/app.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <?php include __DIR__ . '/includes/menu.php'; ?>
@@ -37,7 +38,7 @@ $orders = get_orders_by_customer_ctr($_SESSION['customer_id']);
             <div class="card-body">
                 <?php if (empty($orders)): ?>
                     <div style="text-align: center; padding: 60px 20px;">
-                        <div style="font-size: 64px; margin-bottom: 16px;">📦</div>
+                        <div style="font-size: 64px; margin-bottom: 16px; color: var(--gray-400);"><i class="fas fa-box-open"></i></div>
                         <h3 style="margin-bottom: 12px;">No Orders Yet</h3>
                         <p style="color: var(--gray-600); margin-bottom: 24px;">Start shopping to see your orders here!</p>
                         <a href="all_product.php" class="btn btn-primary">Browse Products</a>
