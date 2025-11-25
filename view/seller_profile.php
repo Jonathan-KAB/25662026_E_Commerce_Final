@@ -73,7 +73,7 @@ $check_reviews_table = $db->db_fetch_one("SHOW TABLES LIKE 'product_reviews'");
 if ($check_reviews_table) {
     $reviews_sql = "SELECT COUNT(*) as total FROM product_reviews pr
                     JOIN products p ON pr.product_id = p.product_id
-                    WHERE p.seller_id = $seller_id AND pr.status = 'approved'";
+                    WHERE p.seller_id = $seller_id";
     $review_stats = $db->db_fetch_one($reviews_sql);
     $total_reviews = $review_stats['total'] ?? 0;
 }
