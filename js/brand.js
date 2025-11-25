@@ -87,10 +87,12 @@ $(document).ready(function() {
                         fetchBrands();
                     } else {
                     alert(resp.message || 'Failed to add brand');
+                    console.error('Add brand error:', resp);
                 }
             },
-            error: function() {
-                alert('Failed to add brand');
+            error: function(xhr, status, error) {
+                alert('Failed to add brand: ' + error);
+                console.error('AJAX error:', xhr.responseText);
             }
         });
     });

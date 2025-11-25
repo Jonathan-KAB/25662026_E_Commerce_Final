@@ -33,7 +33,7 @@ if (!isset($_POST['brand_id']) || !isset($_FILES['image'])) {
 }
 
 $brandId = (int)$_POST['brand_id'];
-$userId = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 0;
+$userId = isset($_SESSION['customer_id']) ? (int)$_SESSION['customer_id'] : 0;
 
 if ($brandId <= 0 || $userId <= 0) {
     $response['message'] = 'Invalid brand ID or user ID';
