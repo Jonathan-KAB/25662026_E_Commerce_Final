@@ -1,16 +1,15 @@
-1# Image Storage System Documentation
+# Image Storage System Documentation
 
 ## Overview
-This e-commerce platform includes a comprehensive image storage system for products, brands, and users. The system uses a centralized `ImageUploadHelper` class for consistent, secure, and organized image handling.
+This e-commerce platform has a centralized image storage system for products, brands, and users. Everything goes through the `ImageUploadHelper` class to keep things consistent and secure.
 
 ## Database Setup
 
 ### Running the Migration
-Before using brand images, you must run the database migration:
+Before you can use brand images, run this SQL:
 
 ```bash
-# Navigate to your MySQL/phpMyAdmin
-# Import the migration file or run the SQL:
+# Open MySQL/phpMyAdmin and run this:
 ```
 
 ```sql
@@ -46,15 +45,15 @@ uploads/
 
 ### Image Upload Helper (`classes/image_helper.php`)
 
-Centralized class that handles all image uploads with:
+One class that handles all image uploads with:
 
-- ✅ **File validation** - Type, size, and integrity checks
-- ✅ **Secure uploads** - Only allowed extensions (jpg, jpeg, png, gif, webp)
-- ✅ **Size limits** - Maximum 5MB per file
-- ✅ **Organized storage** - User and item-based directory structure
-- ✅ **Unique filenames** - Prevents conflicts and overwrites
-- ✅ **Image verification** - Validates actual image content
-- ✅ **Resize capability** - Optional image resizing
+- ✅ **File validation** - Checks type, size, and makes sure it's actually an image
+- ✅ **Secure uploads** - Only allows jpg, jpeg, png, gif, webp
+- ✅ **Size limits** - Max 5MB per file
+- ✅ **Organized storage** - Files are organized by user and item
+- ✅ **Unique filenames** - No conflicts or accidental overwrites
+- ✅ **Image verification** - Actually checks the file content
+- ✅ **Resize capability** - Can resize images if needed
 
 ### Supported Image Types
 
@@ -201,11 +200,11 @@ fetch('../actions/upload_brand_image_action.php', {
 
 ## Security Features
 
-1. **Authentication Required** - Only logged-in admins can upload
-2. **File Type Validation** - Only image files allowed
-3. **Size Limits** - 5MB maximum
-4. **MIME Type Checking** - Uses `getimagesize()` to verify
-5. **Path Sanitization** - Prevents directory traversal
+1. **Authentication Required** - Only logged-in admins can upload stuff
+2. **File Type Validation** - Only images allowed
+3. **Size Limits** - 5MB max
+4. **MIME Type Checking** - Uses `getimagesize()` to make sure it's really an image
+5. **Path Sanitization** - Stops directory traversal attacks
 6. **Unique Filenames** - Prevents overwrite attacks
 
 ## Error Handling
@@ -241,7 +240,7 @@ Common error responses:
 ```php
 $imageHelper = new ImageUploadHelper();
 
-// Resize to max 800x800 while maintaining aspect ratio
+// Resize to max 800x800 but keep the aspect ratio
 $imageHelper->resizeImage(
     $sourcePath, 
     $destPath, 
@@ -271,19 +270,19 @@ chown -R _www:_www uploads/  # macOS/Apache
 ## Troubleshooting
 
 ### "Failed to create upload directory"
-- Check directory permissions
-- Ensure parent directory is writable
-- Verify PHP `open_basedir` restrictions
+- Check folder permissions
+- Make sure the parent folder is writable
+- Check if PHP has `open_basedir` restrictions
 
 ### "Failed to move uploaded file"
-- Check upload_tmp_dir in php.ini
-- Verify destination directory permissions
-- Check disk space
+- Check `upload_tmp_dir` in php.ini
+- Check destination folder permissions
+- Make sure you have enough disk space
 
 ### "File size exceeds maximum"
 - Check `upload_max_filesize` in php.ini
 - Check `post_max_size` in php.ini
-- Adjust `$maxFileSize` in ImageUploadHelper class
+- Or change `$maxFileSize` in the ImageUploadHelper class
 
 ## Configuration
 
@@ -296,13 +295,13 @@ private $maxFileSize = 5242880; // 5MB in bytes
 
 ## Future Enhancements
 
-- [ ] Thumbnail generation
-- [ ] Multiple image support per product
-- [ ] Image compression/optimization
-- [ ] Cloud storage integration (S3, Cloudinary)
+- [ ] Auto-generate thumbnails
+- [ ] Support multiple images per product
+- [ ] Compress/optimize images automatically
+- [ ] Cloud storage (S3, Cloudinary, etc.)
 - [ ] Image cropping tool
-- [ ] Watermarking
-- [ ] WebP conversion for better performance
+- [ ] Watermarks
+- [ ] Convert everything to WebP for better performance
 
 ## Support
 

@@ -25,7 +25,7 @@ class Product extends db_connection
         $seller_id = isset($data['seller_id']) ? (int)$data['seller_id'] : 0;
         $product_type = isset($data['product_type']) ? $this->esc($data['product_type']) : 'fabric';
         
-        // Elegant handling: Services always get stock=999, others use provided value or default to 0
+        // Services don't track inventory, so they always get stock 999. Other products use whatever was passed in.
         $stock = ($product_type === 'service') ? 999 : (isset($data['product_stock']) ? (int)$data['product_stock'] : 0);
 
         $sql = "INSERT INTO products (product_cat, product_brand, product_title, product_price, product_desc, product_keywords, product_stock, seller_id, product_type) "
@@ -54,10 +54,10 @@ class Product extends db_connection
         if (isset($data['product_image'])) $sets[] = "product_image = '" . $this->esc($data['product_image']) . "'";
         if (isset($data['product_type'])) $sets[] = "product_type = '" . $this->esc($data['product_type']) . "'";
         
-        // Elegant handling: Services always get stock=999, others use provided value
+        // Again, services don't need inventory tracking
         if (isset($data['product_stock'])) {
             $product_type = isset($data['product_type']) ? $data['product_type'] : null;
-            // If we know the type, enforce stock=999 for services; otherwise trust the data
+            // If it's a service, force stock to 999
             $stock = ($product_type === 'service') ? 999 : (int)$data['product_stock'];
             $sets[] = 'product_stock = ' . $stock;
         }

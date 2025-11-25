@@ -90,7 +90,7 @@ try {
         exit();
     }
     
-    // Ensure we have expected total server-side (calculate from cart if frontend didn't send it)
+    // Calculate the total from the cart if the frontend didn't send it
     require_once '../controllers/cart_controller.php';
     if (!$cart_items || count($cart_items) == 0) {
         $ip_address = $_SERVER['REMOTE_ADDR'];

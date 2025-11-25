@@ -19,7 +19,7 @@ class ImageUploadHelper
         $this->uploadsBaseDir = $baseDir ?? UPLOAD_BASE_PATH;
         $this->uploadsWebPath = UPLOAD_WEB_PATH;
         
-        // Ensure uploads directory exists
+        // Create uploads folder if it doesn't exist yet
         if (!is_dir($this->uploadsBaseDir)) {
             mkdir($this->uploadsBaseDir, 0755, true);
         }
@@ -235,7 +235,7 @@ class ImageUploadHelper
         // Create new image
         $newImage = imagecreatetruecolor($newWidth, $newHeight);
         
-        // Preserve transparency for PNG and GIF
+        // Keep transparency for PNGs and GIFs
         if ($type == IMAGETYPE_PNG || $type == IMAGETYPE_GIF) {
             imagealphablending($newImage, false);
             imagesavealpha($newImage, true);

@@ -3,25 +3,25 @@
 ## ✅ Completed Features
 
 ### 1. Stock Quantity Display
-Stock quantities are now displayed throughout the application:
+Stock levels are shown everywhere now:
 
 #### **Product Listing Page** (`all_product.php`)
-- Shows "In Stock (X available)" for items with stock > 10
-- Shows "⚠️ Only X left!" for low stock (≤ 10 items)
-- Shows "❌ Out of Stock" for items with 0 stock
-- Disables "Add to Cart" button for out-of-stock items
+- Shows "In Stock (X available)" when there's plenty (> 10)
+- Shows "⚠️ Only X left!" when running low (≤ 10 items)
+- Shows "❌ Out of Stock" when it's gone (0 stock)
+- "Add to Cart" button gets disabled when out of stock
 
 #### **Product Detail Page** (`single_product.php`)
-- Large prominent stock availability box
-- Green box for in-stock items
-- Red box for out-of-stock items
-- Yellow/orange warning for low stock
-- Shows exact quantity available
-- Disables "Add to Cart" button when out of stock
+- Big prominent box showing stock status
+- Green for in stock
+- Red for out of stock
+- Yellow/orange warning when running low
+- Shows exactly how many are left
+- Disables "Add to Cart" when out of stock
 
 #### **Seller Profile Page** (`seller_profile.php`)
-- Same stock display on seller's product listings
-- Matches the styling from all_product.php
+- Same stock display on the seller's product listings
+- Looks just like all_product.php
 
 ### 2. Service Type Display
 
@@ -39,13 +39,13 @@ Stock quantities are now displayed throughout the application:
 
 ## Database Requirements
 
-Make sure you've run this SQL:
+Make sure you ran this SQL:
 
 ```sql
--- Add stock column
+-- Add the stock column
 ALTER TABLE products ADD COLUMN product_stock INT DEFAULT 0;
 
--- Add service type column (if not already added)
+-- Add service type column (if you haven't already)
 ALTER TABLE customer ADD COLUMN service_type ENUM('tailor', 'seamstress', 'general', 'none') DEFAULT 'none';
 ```
 
@@ -80,10 +80,10 @@ UPDATE customer SET service_type = 'general' WHERE customer_id = 125 AND user_ro
 ## How It Works
 
 ### Stock Management Flow:
-1. **Initial Setup**: Set stock quantities in database
-2. **Display**: Stock shown on all product pages
-3. **Order Placement**: When payment is verified, stock is automatically reduced
-4. **Prevention**: Out-of-stock items cannot be added to cart (button disabled)
+1. **Initial Setup**: Add stock numbers in the database
+2. **Display**: Stock shows on all product pages
+3. **Order Placement**: When payment goes through, stock drops automatically
+4. **Prevention**: Out-of-stock items can't be added to cart (button's disabled)
 
 ### Service Type Flow:
 1. **Database**: Service type stored in `customer` table

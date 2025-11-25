@@ -1,7 +1,7 @@
 # Upload Configuration for Multiple Environments
 
 ## Overview
-This system automatically detects whether you're running on **local XAMPP** or your **school's server** and adjusts the upload paths accordingly.
+This system automatically figures out if you're on **local XAMPP** or your **school's server** and sets up the upload paths for you.
 
 ## How It Works
 
@@ -12,7 +12,7 @@ This system automatically detects whether you're running on **local XAMPP** or y
 - **HTML Displays**: `<img src="../uploads/u1/p5/image123.jpg">`
 
 ### School Server Environment
-- **File System Path**: `/home/username/uploads/` (outside public_html)
+- **File System Path**: `/home/username/uploads/` (sits outside public_html)
 - **Web Path**: `/uploads/` (absolute from root)
 - **Database Stores**: `/uploads/u1/p5/image123.jpg`
 - **HTML Displays**: `<img src="/uploads/u1/p5/image123.jpg">`
@@ -74,9 +74,9 @@ This will show:
 
 ## How Images Are Displayed
 
-The view files now check if the path starts with `/`:
-- If YES → It's an absolute path (school server): `<img src="/uploads/...">`
-- If NO → It's relative (local): `<img src="../uploads/...">`
+The view files check if the path starts with `/`:
+- If YES → Absolute path (school server): `<img src="/uploads/...">`
+- If NO → Relative path (local): `<img src="../uploads/...">`
 
 ## Testing
 
@@ -111,15 +111,15 @@ chmod -R 755 ~/uploads
 ```
 
 ### Path detection not working:
-The system detects school server by checking if the path contains `public_html`.
-If your server uses a different structure, edit `settings/upload_config.php`:
+The system looks for `public_html` in the path to detect if you're on the school server.
+If your server uses something different, edit `settings/upload_config.php`:
 ```php
-// Change this line to match your server's structure
+// Change this line to match your server
 if (strpos(__DIR__, 'public_html') !== false && is_dir($uploadsOutside)) {
 ```
 
 ## Benefits
-✅ No code changes needed when deploying  
+✅ No code changes when you deploy  
 ✅ Works on both local and remote servers  
-✅ Single codebase for all environments  
-✅ Automatic path detection  
+✅ One codebase for everything  
+✅ Figures out the paths automatically  

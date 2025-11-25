@@ -32,22 +32,22 @@
 ## How It Works
 
 ### During Registration:
-1. User selects "Vendor" role
-2. Service Type dropdown appears automatically
-3. User selects their service type (or leaves as "General Vendor")
-4. Service type is saved to database during registration
+1. User picks "Vendor" role
+2. Service Type dropdown pops up automatically
+3. User picks their service type (or keeps it as "General Vendor")
+4. Service type gets saved to the database
 
 ### After Registration (Profile Update):
-1. Vendor logs in and goes to Profile page
-2. Service Type dropdown is visible
-3. Can change service type at any time
-4. Click "Save Changes" to update
+1. Vendor logs in and goes to their Profile page
+2. Service Type dropdown is there waiting
+3. Can change it whenever they want
+4. Hit "Save Changes" to update
 
 ### Display on Public Profile:
-1. Service type badge appears on `seller_profile.php?id=X`
-2. Shows icon and label (e.g., "✂️ Tailor")
+1. Service type badge shows up on `seller_profile.php?id=X`
+2. Has an icon and label (like "✂️ Tailor")
 3. Purple badge next to seller name
-4. Only shows if service_type is not 'none'
+4. Only shows if service_type isn't 'none'
 
 ## Database Structure
 
@@ -126,8 +126,8 @@ PUBLIC VIEW
 
 ## Notes
 
-- Service type is **optional** - defaults to 'none' (General Vendor)
-- Only **vendors** (user_role = 3) can set/see service type
-- **Customers** (user_role = 1) don't see this field at all
-- Badge only displays if service_type is NOT 'none'
-- Can be updated at any time from profile page
+- Service type is **optional** - it defaults to 'none' (General Vendor)
+- Only **vendors** (user_role = 3) can set or see this
+- **Customers** (user_role = 1) never see this field
+- Badge only shows up if service_type isn't 'none'
+- You can change it anytime from your profile

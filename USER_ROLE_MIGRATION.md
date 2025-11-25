@@ -1,7 +1,7 @@
 # User Role System Migration
 
 ## Overview
-Migrated from service_type-based detection to a proper user role system with distinct roles for Fabric Sellers and Service Providers.
+Switched from using service_type to a proper user role system. Now we have separate roles for Fabric Sellers and Service Providers.
 
 ## New User Roles
 - **Role 1**: Customer (Buyer) - Can browse and purchase products/services
@@ -12,11 +12,11 @@ Migrated from service_type-based detection to a proper user role system with dis
 ## Key Changes
 
 ### Database Migration
-SQL script provided to:
-1. Create `user_roles` reference table
-2. Split existing role 3 vendors into roles 3 and 4 based on `service_type`
-3. Update all users with `service_type IN ('tailor', 'seamstress', 'general')` to role 4
-4. Keep users with `service_type = 'none'` as role 3
+SQL script that:
+1. Creates a `user_roles` reference table
+2. Splits existing role 3 vendors into roles 3 and 4 based on their `service_type`
+3. Updates all users with `service_type IN ('tailor', 'seamstress', 'general')` to role 4
+4. Keeps users with `service_type = 'none'` as role 3
 
 ### Files Updated
 
@@ -109,11 +109,11 @@ if (!isLoggedIn() || ($_SESSION['user_role'] != 3 && $_SESSION['user_role'] != 4
 
 ## service_type Field Usage
 
-- **Role 3 (Fabric Seller)**: `service_type = 'none'` (not used)
+- **Role 3 (Fabric Seller)**: `service_type = 'none'` (we don't use it)
 - **Role 4 (Service Provider)**: `service_type IN ('general', 'tailor', 'seamstress')`
-  - Used to specify the provider's specialty
-  - Displayed on public profiles and service listings
-  - Can be edited in profile settings
+  - This tells us what kind of service they offer
+  - Shows up on their public profile and service listings
+  - Can be changed in profile settings
 
 ## UI Theme Differentiation
 
@@ -131,12 +131,12 @@ if (!isLoggedIn() || ($_SESSION['user_role'] != 3 && $_SESSION['user_role'] != 4
 
 ## Benefits of New System
 
-1. **Clear Separation**: Roles explicitly define user capabilities
-2. **Simpler Logic**: `user_role == 4` instead of `in_array(service_type, [...])`
-3. **Better Access Control**: Role-based permissions are cleaner
-4. **Scalability**: Easy to add new roles (e.g., role 5 for wholesalers)
+1. **Clear Separation**: Roles tell you exactly what someone can do
+2. **Simpler Logic**: Just check `user_role == 4` instead of `in_array(service_type, [...])`
+3. **Better Access Control**: Role-based permissions are way cleaner
+4. **Scalability**: Easy to add new roles later (like role 5 for wholesalers)
 5. **Correct Terminology**: Service providers never see "products", fabric sellers never see "services"
-6. **Permanent Roles**: Users can't accidentally switch between seller types
+6. **Permanent Roles**: Users can't accidentally switch between being a seller and service provider
 
 ## Testing Checklist
 
@@ -157,13 +157,13 @@ if (!isLoggedIn() || ($_SESSION['user_role'] != 3 && $_SESSION['user_role'] != 4
 
 ## Migration SQL
 
-Run the provided SQL script to:
-1. Create user_roles reference table
-2. Update existing vendors based on service_type
-3. Verify all role assignments
+Run the SQL script to:
+1. Create the user_roles reference table
+2. Update existing vendors based on their service_type
+3. Double check all role assignments are right
 
 ---
 
-**Migration Completed**: All service_type checks replaced with user_role checks
+**Migration Completed**: All service_type checks swapped out for user_role checks
 **Date**: 2024
-**Status**: ✅ Complete
+**Status**: ✅ Done

@@ -7,20 +7,20 @@
 ### For Customers
 - **Find Tailors & Seamstresses** - Browse verified master tailors with ratings and portfolios
 - **Shop Authentic Fabrics** - Discover local and international fabrics from trusted vendors
-- **Custom Orders** - Commission bespoke clothing with detailed specifications
-- **Review System** - Read and write reviews with 5-star ratings for tailors and fabrics
-- **Tailor Profiles** - View artisan storefronts with ratings and completed work
-- **Order Tracking** - Monitor your custom orders from consultation to delivery
-- **Shopping Cart** - Purchase fabrics and materials easily
-- **Wishlist** - Save favorite fabrics and tailors for later
+- **Custom Orders** - Commission custom clothing with detailed specifications
+- **Review System** - Read and write 5-star reviews for tailors and fabrics
+- **Tailor Profiles** - Check out artisan storefronts with ratings and completed work
+- **Order Tracking** - Keep tabs on your orders from start to finish
+- **Shopping Cart** - Purchase fabrics and materials
+- **Wishlist** - Save your favorite fabrics and tailors for later
 
 ### For Tailors & Seamstresses (User Role 3)
-- **Professional Storefront** - Showcase your skills with custom profile and portfolio
-- **Manage Orders** - Accept and track custom tailoring commissions
-- **Fabric Listings** - Sell fabrics alongside tailoring services
-- **Client Communication** - Connect directly with customers about their vision
-- **Rating & Reviews** - Build reputation through customer feedback
-- **Business Analytics** - Track orders, ratings, and customer satisfaction
+- **Professional Storefront** - Show off your skills with a custom profile and portfolio
+- **Manage Orders** - Accept and track custom tailoring jobs
+- **Fabric Listings** - Sell fabrics on top of your tailoring services
+- **Client Communication** - Talk directly with customers about what they want
+- **Rating & Reviews** - Build your reputation through customer feedback
+- **Business Analytics** - Track your orders, ratings, and how happy customers are
 
 ### For Fabric Vendors (User Role 3)
 - **Product Catalog** - List authentic fabrics with descriptions and prices
@@ -39,21 +39,21 @@
 
 ### Review System
 - ✅ 5-star rating system for tailors and fabrics
-- ✅ Verified purchase badges for authentic reviews
+- ✅ Verified purchase badges so you know the review is real
 - ✅ Review titles and detailed customer experiences
-- ✅ Rating breakdown and statistics
+- ✅ Rating breakdown and stats
 - ✅ One review per customer per product/tailor
-- ✅ Automatic rating calculations
-- ✅ Helpful vote tracking
+- ✅ Ratings calculated automatically
+- ✅ Vote on helpful reviews
 
 ### Tailor/Vendor Features
-- ✅ Public professional storefronts
-- ✅ Custom branding (logo, banner, bio)
-- ✅ Artisan ratings and verification badges
-- ✅ Portfolio and work samples
-- ✅ Social media integration
+- ✅ Public storefronts
+- ✅ Custom branding with your own logo, banner, and bio
+- ✅ Ratings and verification badges
+- ✅ Portfolio to show off your work
+- ✅ Link to your social media
 - ✅ Client testimonials and reviews
-- ✅ Order and sales statistics
+- ✅ Stats on orders and sales
 
 ## 🚀 Installation
 
@@ -64,13 +64,13 @@
 
 ### Setup Steps
 
-1. **Clone or download** this repository to your XAMPP htdocs folder:
+1. **Clone or download** this repo to your XAMPP htdocs folder:
    ```bash
    cd /Applications/XAMPP/xamppfiles/htdocs/
    git clone [repository-url] 25662026_Lab_02_Register_Login
    ```
 
-2. **Start XAMPP** - Start Apache and MySQL services
+2. **Start XAMPP** - Fire up Apache and MySQL
 
 3. **Create Database**:
    - Open phpMyAdmin: `http://localhost/phpmyadmin`
@@ -78,8 +78,8 @@
 
 4. **Import Database**:
    - Import the base schema: `db/dbforlab.sql`
-   - Import reviews and seller features: `db/add_reviews_and_seller_features.sql`
-   - (Optional) Import sample products: `db/seed_products.sql`
+   - Import reviews and seller stuff: `db/add_reviews_and_seller_features.sql`
+   - (Optional) Import some sample products: `db/seed_products.sql`
 
 5. **Configure Database Connection**:
    - Edit `settings/db_cred.php` with your database credentials:
@@ -174,12 +174,12 @@
 
 ## 🎨 Design Features
 
-- **SeamLink Branding** - Custom green theme (#198754) representing Ghana's colors
-- **Momo Trust Display Font** - Professional typography
+- **SeamLink Branding** - Custom green theme (#198754) inspired by Ghana's colors
+- **Momo Trust Display Font** - Clean, professional typography
 - **Kente Pattern Hero** - Celebrating Ghanaian textile heritage
-- **Responsive Design** - Mobile-friendly for tailors and customers on-the-go
-- **Modern UI** - Clean cards and smooth transitions
-- **Star Ratings** - Interactive 5-star review system for artisans
+- **Responsive Design** - Works great on mobile for tailors and customers on the go
+- **Modern UI** - Clean cards with smooth transitions
+- **Star Ratings** - Interactive 5-star reviews for artisans
 - **Fashion-Focused Icons** - Tailoring and fabric-specific imagery
 
 ## 🛠️ Technologies Used
@@ -225,8 +225,8 @@ Edit `settings/upload_config.php` to configure image uploads:
 ## 🐛 Known Issues
 
 - ~~Fix logout functionality when going back to register page~~ ✅ Fixed
-- Email notifications not yet implemented
-- Multiple product images feature needs frontend implementation
+- Email notifications aren't hooked up yet
+- Multiple product images work on the backend but need frontend work
 
 ## 📝 Recent Updates
 
@@ -242,14 +242,14 @@ Edit `settings/upload_config.php` to configure image uploads:
 ## 🚧 Roadmap
 
 - [ ] Direct messaging between customers and tailors
-- [ ] Custom order request forms with measurements
-- [ ] Multiple fabric image galleries
-- [ ] Tailor portfolio/gallery feature
-- [ ] Advanced search (by fabric type, tailor specialty, price range)
+- [ ] Custom order forms with measurements
+- [ ] Image galleries for fabrics
+- [ ] Portfolio section for tailors
+- [ ] Better search (filter by fabric type, tailor specialty, price)
 - [ ] Appointment booking for fittings
-- [ ] Payment gateway integration (Mobile Money, card payments)
-- [ ] Email notifications for orders and messages
-- [ ] Mobile app for iOS and Android
+- [ ] Payment integration (Mobile Money, cards)
+- [ ] Email notifications
+- [ ] Mobile apps
 
 ---
 

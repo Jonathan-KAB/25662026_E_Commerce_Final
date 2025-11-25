@@ -76,32 +76,32 @@ $brands = $db->db_fetch_all("SELECT brand_id, brand_name FROM brands ORDER BY br
                 padding: 20px 16px !important;
             }
             
-            /* Make two-column grids single column on mobile */
+            /* Stack two-column grids on mobile */
             div[style*="grid-template-columns: 1fr 1fr"] {
                 grid-template-columns: 1fr !important;
             }
             
-            /* Adjust input padding for mobile */
+            /* Bigger touch targets for mobile */
             input.form-input, 
             select.form-input, 
             textarea.form-input {
                 padding: 12px 14px !important;
-                font-size: 16px !important; /* Prevents zoom on iOS */
+                font-size: 16px !important; /* Stops iOS from zooming in on focus */
             }
             
-            /* Adjust button layout for mobile */
+            /* Stack buttons vertically on mobile */
             div[style*="display: flex; gap: 16px"] {
                 flex-direction: column !important;
             }
             
-            /* Make buttons full width on mobile */
+            /* Full width buttons are easier to tap */
             button.btn, 
             a.btn {
                 width: 100% !important;
                 justify-content: center !important;
             }
             
-            /* Reduce gap spacing on mobile */
+            /* Tighten up spacing a bit */
             div[style*="gap: 28px"] {
                 gap: 20px !important;
             }
@@ -110,7 +110,7 @@ $brands = $db->db_fetch_all("SELECT brand_id, brand_name FROM brands ORDER BY br
                 gap: 16px !important;
             }
             
-            /* Adjust card padding on mobile */
+            /* Less padding on small screens */
             div[style*="padding: 20px"] {
                 padding: 16px !important;
             }

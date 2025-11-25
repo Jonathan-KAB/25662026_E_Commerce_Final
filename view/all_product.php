@@ -150,7 +150,7 @@ $brands = $db->db_fetch_all("SELECT brand_id, brand_name FROM brands ORDER BY br
                     <button type="submit">Search</button>
                 </div>
 
-                <!-- Hidden field to preserve type filter -->
+                <!-- Keeps the fabric/service filter when searching -->
                 <?php if (!empty($type_filter)): ?>
                     <input type="hidden" name="type" value="<?= htmlspecialchars($type_filter) ?>">
                 <?php endif; ?>

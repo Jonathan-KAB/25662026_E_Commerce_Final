@@ -1,7 +1,7 @@
 # SeamLink Theme Updates - Final Project Integration
 
 ## Overview
-Successfully integrated ECommRepo (SeamLink) styling and branding into the lab assignment to create a cohesive final project submission.
+Integrated the SeamLink branding and styling into the lab assignment to make it look like one cohesive project.
 
 ## Color Scheme Changes
 
@@ -59,11 +59,11 @@ Updated navigation menu tray branding in:
 - view/seller_dashboard.php: Changed "Shop" to "SeamLink"
 
 ## Design Philosophy
-The SeamLink theme emphasizes:
+The SeamLink theme is all about:
 - **Clean, modern interface** with subtle shadows and rounded corners
-- **Green color palette** representing growth, trust, and commerce
+- **Green color palette** for trust and growth
 - **Seamless experience** connecting buyers and sellers
-- **Professional branding** throughout all pages
+- **Professional branding** across every page
 
 ## Files Modified
 1. css/app.css (color variables)
@@ -73,15 +73,15 @@ The SeamLink theme emphasizes:
 5. Both login/*.php files (titles)
 
 ## Testing Recommendations
-- Verify green buttons and primary colors appear correctly
-- Check navigation branding displays "SeamLink"
-- Confirm all page titles show "SeamLink"
-- Test responsive design on mobile devices
-- Validate color contrast for accessibility
+- Make sure green buttons and colors show up right
+- Check that navigation says "SeamLink"
+- Confirm all page titles include "SeamLink"
+- Test responsive design on mobile
+- Check color contrast for accessibility
 
 ## Next Steps (Optional Enhancements)
-- Add SeamLink logo image to navigation
-- Create custom favicon with SeamLink branding
-- Add footer with SeamLink copyright
-- Consider adding "About SeamLink" page
-- Implement email templates with SeamLink branding
+- Add a SeamLink logo to the nav
+- Create a custom favicon
+- Add a footer with SeamLink copyright
+- Maybe an "About SeamLink" page
+- Email templates with SeamLink branding

@@ -29,7 +29,7 @@ if (!$cat || !$brand || $title === '') {
     exit;
 }
 
-// Ensure controller function exists
+// Double check the controller function exists
 if (!function_exists('add_product_ctr')) {
     $response['message'] = 'Server error: product controller is missing';
     echo json_encode($response);
