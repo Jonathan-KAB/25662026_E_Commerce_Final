@@ -99,12 +99,17 @@ class ImageUploadHelper
         
         // Move uploaded file
         if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
+            error_log("Failed to move file from " . $file['tmp_name'] . " to " . $targetPath);
+            error_log("Target dir writable: " . (is_writable($targetDir) ? 'yes' : 'no'));
             return [
                 'success' => false,
                 'path' => '',
-                'message' => 'Failed to move uploaded file to: ' . $targetPath
+                'message' => 'Failed to move uploaded file. Check directory permissions: ' . $targetDir
             ];
         }
+        
+        // Set file permissions
+        chmod($targetPath, 0644);
         
         // Optional: Resize image if needed
         $this->resizeImage($targetPath, 1200, 1200);
@@ -180,8 +185,22 @@ class ImageUploadHelper
         $entityDir = $userDir . '/' . $prefix . $entityId;
         
         if (!is_dir($entityDir)) {
-            if (!mkdir($entityDir, 0755, true)) {
+            // Try creating with 0777 permissions
+            $oldmask = umask(0);
+            $result = mkdir($entityDir, 0777, true);
+            umask($oldmask);
+            
+            if (!$result) {
+                error_log("Failed to create directory: " . $entityDir);
+                error_log("Base dir exists: " . (is_dir($this->uploadsBaseDir) ? 'yes' : 'no'));
+                error_log("Base dir writable: " . (is_writable($this->uploadsBaseDir) ? 'yes' : 'no'));
                 return false;
+            }
+            
+            // Ensure the directory has proper permissions
+            chmod($entityDir, 0777);
+            if (is_dir($userDir)) {
+                chmod($userDir, 0777);
             }
         }
         
