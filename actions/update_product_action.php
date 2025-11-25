@@ -5,7 +5,8 @@ session_start();
 header('Content-Type: application/json');
 $response = ['status' => 'error', 'message' => 'Invalid request'];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!isLoggedIn() || !isAdmin()) {
+    // Allow admin or sellers (roles 3 and 4) to update products
+    if (!isLoggedIn() || (!isAdmin() && $_SESSION['user_role'] != 3 && $_SESSION['user_role'] != 4)) {
         $response['message'] = 'Not authorized';
         echo json_encode($response);
         exit;
@@ -16,6 +17,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo json_encode($response);
         exit;
     }
+    
+    // If seller, verify they own this product
+    if (!isAdmin()) {
+        require_once __DIR__ . '/../classes/product_class.php';
+        $product_obj = new Product();
+        $existing_product = $product_obj->getProductById($product_id);
+        if (!$existing_product || $existing_product['seller_id'] != $_SESSION['customer_id']) {
+            $response['message'] = 'You can only edit your own products';
+            echo json_encode($response);
+            exit;
+        }
+    }
+    
     $data = [];
     $data['product_cat'] = isset($_POST['product_cat']) ? (int)$_POST['product_cat'] : 0;
     $data['product_brand'] = isset($_POST['product_brand']) ? (int)$_POST['product_brand'] : 0;
@@ -24,6 +38,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data['product_desc'] = isset($_POST['product_desc']) ? trim($_POST['product_desc']) : '';
     $data['product_keywords'] = isset($_POST['product_keywords']) ? trim($_POST['product_keywords']) : '';
     $data['product_stock'] = isset($_POST['product_stock']) ? (int)$_POST['product_stock'] : 0;
+    
+    // Include product_type if provided (for maintaining service vs fabric distinction)
+    if (isset($_POST['product_type'])) {
+        $data['product_type'] = trim($_POST['product_type']);
+    }
+    
     $res = update_product_ctr($product_id, $data);
     if ($res) {
         $response = ['status' => 'success'];

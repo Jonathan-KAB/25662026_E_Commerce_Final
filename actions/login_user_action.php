@@ -49,8 +49,8 @@ if ($user) {
     if ($user['user_role'] == 2) {
         // Admin -> Admin panel
         $response['redirect'] = '../admin/category.php';
-    } elseif ($user['user_role'] == 3) {
-        // Seller -> Seller dashboard
+    } elseif ($user['user_role'] == 3 || $user['user_role'] == 4) {
+        // Fabric Seller (3) or Service Provider (4) -> Seller dashboard
         $response['redirect'] = '../view/seller_dashboard.php';
     } else {
         // Buyer -> User dashboard

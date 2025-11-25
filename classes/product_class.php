@@ -18,14 +18,19 @@ class Product extends db_connection
     {
         $cat = isset($data['product_cat']) ? (int)$data['product_cat'] : 0;
         $brand = isset($data['product_brand']) ? (int)$data['product_brand'] : 0;
-    $title = isset($data['product_title']) ? $this->esc($data['product_title']) : '';
+        $title = isset($data['product_title']) ? $this->esc($data['product_title']) : '';
         $price = isset($data['product_price']) ? (float)$data['product_price'] : 0.0;
-    $desc = isset($data['product_desc']) ? $this->esc($data['product_desc']) : '';
-    $keywords = isset($data['product_keywords']) ? $this->esc($data['product_keywords']) : '';
+        $desc = isset($data['product_desc']) ? $this->esc($data['product_desc']) : '';
+        $keywords = isset($data['product_keywords']) ? $this->esc($data['product_keywords']) : '';
+        $seller_id = isset($data['seller_id']) ? (int)$data['seller_id'] : 0;
+        $product_type = isset($data['product_type']) ? $this->esc($data['product_type']) : 'fabric';
+        
+        // Elegant handling: Services always get stock=999, others use provided value or default to 0
+        $stock = ($product_type === 'service') ? 999 : (isset($data['product_stock']) ? (int)$data['product_stock'] : 0);
 
-       $sql = "INSERT INTO products (product_cat, product_brand, product_title, product_price, product_desc, product_keywords) "
-           . "VALUES ($cat, $brand, '$title', $price, '$desc', '$keywords')";
-       $this->last_query = $sql;
+        $sql = "INSERT INTO products (product_cat, product_brand, product_title, product_price, product_desc, product_keywords, product_stock, seller_id, product_type) "
+            . "VALUES ($cat, $brand, '$title', $price, '$desc', '$keywords', $stock, $seller_id, '$product_type')";
+        $this->last_query = $sql;
 
         if ($this->db_write_query($sql)) {
             return $this->last_insert_id();
@@ -40,13 +45,22 @@ class Product extends db_connection
     {
         $product_id = (int)$product_id;
         $sets = [];
-    if (isset($data['product_cat'])) $sets[] = 'product_cat = ' . (int)$data['product_cat'];
-    if (isset($data['product_brand'])) $sets[] = 'product_brand = ' . (int)$data['product_brand'];
-    if (isset($data['product_title'])) $sets[] = "product_title = '" . $this->esc($data['product_title']) . "'";
-    if (isset($data['product_price'])) $sets[] = 'product_price = ' . (float)$data['product_price'];
-    if (isset($data['product_desc'])) $sets[] = "product_desc = '" . $this->esc($data['product_desc']) . "'";
-    if (isset($data['product_keywords'])) $sets[] = "product_keywords = '" . $this->esc($data['product_keywords']) . "'";
-    if (isset($data['product_image'])) $sets[] = "product_image = '" . $this->esc($data['product_image']) . "'";
+        if (isset($data['product_cat'])) $sets[] = 'product_cat = ' . (int)$data['product_cat'];
+        if (isset($data['product_brand'])) $sets[] = 'product_brand = ' . (int)$data['product_brand'];
+        if (isset($data['product_title'])) $sets[] = "product_title = '" . $this->esc($data['product_title']) . "'";
+        if (isset($data['product_price'])) $sets[] = 'product_price = ' . (float)$data['product_price'];
+        if (isset($data['product_desc'])) $sets[] = "product_desc = '" . $this->esc($data['product_desc']) . "'";
+        if (isset($data['product_keywords'])) $sets[] = "product_keywords = '" . $this->esc($data['product_keywords']) . "'";
+        if (isset($data['product_image'])) $sets[] = "product_image = '" . $this->esc($data['product_image']) . "'";
+        if (isset($data['product_type'])) $sets[] = "product_type = '" . $this->esc($data['product_type']) . "'";
+        
+        // Elegant handling: Services always get stock=999, others use provided value
+        if (isset($data['product_stock'])) {
+            $product_type = isset($data['product_type']) ? $data['product_type'] : null;
+            // If we know the type, enforce stock=999 for services; otherwise trust the data
+            $stock = ($product_type === 'service') ? 999 : (int)$data['product_stock'];
+            $sets[] = 'product_stock = ' . $stock;
+        }
 
         if (empty($sets)) return false;
 

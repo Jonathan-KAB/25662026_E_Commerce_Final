@@ -20,7 +20,7 @@ $ipAddress = $_SERVER['REMOTE_ADDR'];
 $cartCount = get_cart_count_ctr($ipAddress, $_SESSION['customer_id']);
 
 // Redirect sellers to seller dashboard
-if ($user_role == 3) {
+if ($user_role == 3 || $user_role == 4) {
     header('Location: seller_dashboard.php');
     exit();
 }

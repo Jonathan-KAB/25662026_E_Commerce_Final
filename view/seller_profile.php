@@ -20,14 +20,14 @@ $db->db_connect();
 
 // Get seller profile info
 $seller_sql = "SELECT c.customer_id, c.customer_name, c.customer_email, c.customer_contact, 
-               c.customer_city, c.customer_country, c.created_at, c.service_type,
+               c.customer_city, c.customer_country, c.created_at, c.service_type, c.user_role,
                sp.store_name, sp.store_description, sp.store_logo, sp.store_banner,
                sp.contact_phone, sp.contact_email, sp.business_address,
                sp.social_facebook, sp.social_instagram, sp.social_twitter,
                sp.rating_average, sp.total_sales, sp.verified, sp.created_at as seller_since
                FROM customer c
                LEFT JOIN seller_profiles sp ON c.customer_id = sp.seller_id
-               WHERE c.customer_id = $seller_id AND c.user_role = 3";
+               WHERE c.customer_id = $seller_id AND (c.user_role = 3 OR c.user_role = 4)";
 
 $seller = $db->db_fetch_one($seller_sql);
 
@@ -156,17 +156,25 @@ $total_reviews = $review_stats['total'] ?? 0;
                         <?php if ($seller['verified']): ?>
                             <span class="verified-badge">✓ Verified Seller</span>
                         <?php endif; ?>
-                        <?php if (!empty($seller['service_type']) && $seller['service_type'] !== 'none'): ?>
-                            <span class="service-type-badge" style="background: #6366f1; color: white; padding: 4px 12px; border-radius: var(--radius-sm); font-size: 0.75rem; font-weight: 600; text-transform: capitalize;">
+                        <?php 
+                        // Check if this is a service provider (role 4)
+                        $is_service_provider = ($seller['user_role'] == 4);
+                        if ($is_service_provider && !empty($seller['service_type']) && $seller['service_type'] !== 'none'): 
+                        ?>
+                            <span class="service-type-badge" style="background: linear-gradient(135deg, #9b87f5 0%, #7c3aed 100%); color: white; padding: 4px 12px; border-radius: var(--radius-sm); font-size: 0.75rem; font-weight: 600; text-transform: capitalize;">
                                 <?php 
                                 $service_icons = [
-                                    'tailor' => '✂️',
-                                    'seamstress' => '🪡',
-                                    'general' => '👔'
+                                    'tailor' => '<i class="fas fa-user-tie"></i>',
+                                    'seamstress' => '<i class="fas fa-cut"></i>',
+                                    'general' => '<i class="fas fa-star"></i>'
                                 ];
-                                $icon = $service_icons[$seller['service_type']] ?? '🎯';
+                                $icon = $service_icons[$seller['service_type']] ?? '<i class="fas fa-briefcase"></i>';
                                 echo $icon . ' ' . htmlspecialchars(ucfirst($seller['service_type']));
                                 ?>
+                            </span>
+                        <?php elseif ($seller['user_role'] == 3): ?>
+                            <span class="service-type-badge" style="background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%); color: white; padding: 4px 12px; border-radius: var(--radius-sm); font-size: 0.75rem; font-weight: 600;">
+                                <i class="fas fa-store"></i> Fabric Seller
                             </span>
                         <?php endif; ?>
                     </div>
@@ -217,7 +225,7 @@ $total_reviews = $review_stats['total'] ?? 0;
             <div class="seller-stats">
                 <div class="stat-card">
                     <div class="stat-value"><?= count($products) ?></div>
-                    <div class="stat-label">Products</div>
+                    <div class="stat-label"><?= $is_service_provider ? 'Service Listings' : 'Products' ?></div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-value"><?= number_format($seller['rating_average'] ?? 0, 1) ?> ⭐</div>
@@ -229,14 +237,14 @@ $total_reviews = $review_stats['total'] ?? 0;
                 </div>
                 <div class="stat-card">
                     <div class="stat-value"><?= $seller['total_sales'] ?? 0 ?></div>
-                    <div class="stat-label">Sales</div>
+                    <div class="stat-label"><?= $is_service_provider ? 'Bookings' : 'Sales' ?></div>
                 </div>
             </div>
         </div>
 
         <!-- Seller's Products -->
         <div style="margin-bottom: 60px;">
-            <h2 style="margin-bottom: 24px;">Products from this Store</h2>
+            <h2 style="margin-bottom: 24px;"><?= $is_service_provider ? 'Services from this Provider' : 'Products from this Store' ?></h2>
             
             <?php if (empty($products)): ?>
                 <div class="card">

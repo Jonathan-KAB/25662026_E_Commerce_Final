@@ -4,9 +4,47 @@
     <div class="menu-items" id="menuItems">
         <?php
         $currentPage = basename($_SERVER['PHP_SELF']);
-        $isHomePage = ($currentPage === 'index.php');
-        $homePrefix = $isHomePage ? '' : '../';
-        $viewPrefix = $isHomePage ? 'view/' : '';
+        $currentDir = basename(dirname($_SERVER['PHP_SELF']));
+        
+        // Detect the directory we're in and set appropriate prefixes
+        if ($currentDir === 'htdocs' || $currentPage === 'index.php') {
+            // Root level (index.php)
+            $homePrefix = '';
+            $viewPrefix = 'view/';
+            $loginPrefix = 'login/';
+            $adminPrefix = 'admin/';
+        } elseif ($currentDir === 'view') {
+            // In view folder
+            $homePrefix = '../';
+            $viewPrefix = '';
+            $loginPrefix = '../login/';
+            $adminPrefix = '../admin/';
+        } elseif ($currentDir === 'actions') {
+            // In actions folder
+            $homePrefix = '../';
+            $viewPrefix = '../view/';
+            $loginPrefix = '../login/';
+            $adminPrefix = '../admin/';
+        } elseif ($currentDir === 'admin') {
+            // In admin folder
+            $homePrefix = '../';
+            $viewPrefix = '../view/';
+            $loginPrefix = '../login/';
+            $adminPrefix = '';
+        } elseif ($currentDir === 'login') {
+            // In login folder
+            $homePrefix = '../';
+            $viewPrefix = '../view/';
+            $loginPrefix = '';
+            $adminPrefix = '../admin/';
+        } else {
+            // Default fallback
+            $homePrefix = '../';
+            $viewPrefix = '../view/';
+            $loginPrefix = '../login/';
+            $adminPrefix = '../admin/';
+        }
+        
         $userRole = $_SESSION['user_role'] ?? 1;
         ?>
         
@@ -24,22 +62,22 @@
                         <i class="fas fa-cog"></i> Admin
                     </button>
                     <div class="dropdown-content">
-                        <a href="<?= $homePrefix ?>admin/category.php"><i class="fas fa-tags"></i> Categories</a>
-                        <a href="<?= $homePrefix ?>admin/brand.php"><i class="fas fa-copyright"></i> Brands</a>
-                        <a href="<?= $homePrefix ?>admin/product.php"><i class="fas fa-box"></i> Products</a>
-                        <a href="<?= $homePrefix ?>admin/orders.php"><i class="fas fa-shopping-bag"></i> Orders</a>
+                        <a href="<?= $adminPrefix ?>category.php"><i class="fas fa-tags"></i> Categories</a>
+                        <a href="<?= $adminPrefix ?>brand.php"><i class="fas fa-copyright"></i> Brands</a>
+                        <a href="<?= $adminPrefix ?>product.php"><i class="fas fa-box"></i> Products</a>
+                        <a href="<?= $adminPrefix ?>orders.php"><i class="fas fa-shopping-bag"></i> Orders</a>
                     </div>
                 </div>
                 <a href="<?= $viewPrefix ?>dashboard.php" class="btn btn-sm btn-outline-secondary">My Account</a>
-            <?php elseif ($userRole == 3): ?>
+            <?php elseif ($userRole == 3 || $userRole == 4): ?>
                 <a href="<?= $viewPrefix ?>seller_dashboard.php" class="btn btn-sm btn-outline-secondary">Seller Dashboard</a>
             <?php else: ?>
                 <a href="<?= $viewPrefix ?>dashboard.php" class="btn btn-sm btn-outline-secondary">Dashboard</a>
             <?php endif; ?>
-            <a href="<?= $homePrefix ?>login/logout.php" class="btn btn-sm btn-outline-danger">Logout</a>
+            <a href="<?= $loginPrefix ?>logout.php" class="btn btn-sm btn-outline-danger">Logout</a>
         <?php else: ?>
-            <a href="<?= $homePrefix ?>login/login.php" class="btn btn-sm btn-outline-secondary">Login</a>
-            <a href="<?= $homePrefix ?>login/register.php" class="btn btn-sm btn-outline-primary">Register</a>
+            <a href="<?= $loginPrefix ?>login.php" class="btn btn-sm btn-outline-secondary">Login</a>
+            <a href="<?= $loginPrefix ?>register.php" class="btn btn-sm btn-outline-primary">Register</a>
         <?php endif; ?>
     </div>
 </div>

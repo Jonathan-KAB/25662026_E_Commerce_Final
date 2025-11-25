@@ -20,7 +20,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $contact = $_POST['contact'] ?? $customer['customer_contact'];
     $country = $_POST['country'] ?? $customer['customer_country'];
     $city = $_POST['city'] ?? $customer['customer_city'];
-    $service_type = $_POST['service_type'] ?? $customer['service_type'];
+    
+    // Handle service type - only for role 4 (Service Provider)
+    if (isset($customer['user_role']) && $customer['user_role'] == 4) {
+        $service_type = $_POST['service_type'] ?? 'general';
+    } else {
+        $service_type = 'none';
+    }
     
     $updated = update_customer_ctr($_SESSION['customer_id'], $name, $contact, $country, $city, $service_type);
     
@@ -83,20 +89,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <small style="color: var(--gray-600); font-size: 0.875rem; display: block; margin-top: 6px;">Email cannot be changed</small>
                         </div>
 
-                        <!-- Service Type Display (for sellers) -->
+                        <!-- Service Provider Settings (role 4 only) -->
+                        <?php if (isset($customer['user_role']) && $customer['user_role'] == 4): ?>
+                        <div style="padding: 20px; background: linear-gradient(135deg, #f8f4ff 0%, #fff 100%); border-radius: var(--radius-lg); border: 2px solid #9b87f5;">
+                            <h4 style="margin-bottom: 16px; color: #7c3aed; display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-scissors"></i> Service Provider Settings
+                            </h4>
+                            
+                            <div>
+                                <label for="service_type" class="form-label" style="display: block; margin-bottom: 8px; font-weight: 600;">
+                                    <i class="fas fa-user-tag"></i> Service Specialty
+                                </label>
+                                <select class="form-select" id="service_type" name="service_type" 
+                                    style="width: 100%; padding: 12px 16px; border: 2px solid #9b87f5; border-radius: 8px; font-size: 15px; background: white; cursor: pointer;">
+                                    <option value="general" <?= (isset($customer['service_type']) && $customer['service_type'] === 'general') ? 'selected' : '' ?>>
+                                        <i class="fas fa-star"></i> General Service Provider
+                                    </option>
+                                    <option value="tailor" <?= (isset($customer['service_type']) && $customer['service_type'] === 'tailor') ? 'selected' : '' ?>>
+                                        <i class="fas fa-user-tie"></i> Tailor
+                                    </option>
+                                    <option value="seamstress" <?= (isset($customer['service_type']) && $customer['service_type'] === 'seamstress') ? 'selected' : '' ?>>
+                                        <i class="fas fa-cut"></i> Seamstress
+                                    </option>
+                                </select>
+                                <small style="color: var(--gray-600); font-size: 0.875rem; display: block; margin-top: 6px;">Choose your area of expertise</small>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+                        
+                        <!-- Fabric Seller Badge (role 3 only) -->
                         <?php if (isset($customer['user_role']) && $customer['user_role'] == 3): ?>
-                        <div>
-                            <label for="service_type" class="form-label" style="display: block; margin-bottom: 8px; font-weight: 600;">
-                                <i class="fas fa-scissors"></i> Service Type
-                            </label>
-                            <select class="form-select" id="service_type" name="service_type" 
-                                style="width: 100%; padding: 12px 16px; border: 2px solid var(--gray-300); border-radius: 8px; font-size: 15px; background: white; cursor: pointer;">
-                                <option value="none" <?= (!isset($customer['service_type']) || $customer['service_type'] === 'none') ? 'selected' : '' ?>>General Vendor</option>
-                                <option value="tailor" <?= (isset($customer['service_type']) && $customer['service_type'] === 'tailor') ? 'selected' : '' ?>>✂️ Tailor</option>
-                                <option value="seamstress" <?= (isset($customer['service_type']) && $customer['service_type'] === 'seamstress') ? 'selected' : '' ?>>🪡 Seamstress</option>
-                                <option value="general" <?= (isset($customer['service_type']) && $customer['service_type'] === 'general') ? 'selected' : '' ?>>👔 General Service Provider</option>
-                            </select>
-                            <small style="color: var(--gray-600); font-size: 0.875rem; display: block; margin-top: 6px;">This is displayed on your seller profile</small>
+                        <div style="padding: 20px; background: linear-gradient(135deg, #f0fdf4 0%, #fff 100%); border-radius: var(--radius-lg); border: 2px solid var(--primary-light);">
+                            <h4 style="margin-bottom: 8px; color: var(--primary); display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-store"></i> Fabric Seller Account
+                            </h4>
+                            <p style="color: var(--gray-600); margin: 0; font-size: 0.875rem;">
+                                You can list physical products like fabrics, materials, and sewing supplies.
+                            </p>
                         </div>
                         <?php endif; ?>
 

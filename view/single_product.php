@@ -350,40 +350,50 @@ if (isset($_SESSION['customer_id']) && $check_table) {
         /* Action Buttons */
         .product-actions {
             display: flex;
-            gap: 15px;
+            gap: 16px;
             margin-top: auto;
         }
 
         .add-to-cart-btn,
         .back-btn {
-            padding: 12px 24px;
+            padding: 14px 32px;
             font-size: 16px;
             font-weight: 600;
             border: none;
-            border-radius: 4px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s;
             text-decoration: none;
             text-align: center;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .add-to-cart-btn {
             flex: 1;
-            background-color: #007bff;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
             color: white;
+            box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
         }
 
         .add-to-cart-btn:hover {
-            background-color: #0056b3;
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            box-shadow: 0 4px 8px rgba(59, 130, 246, 0.4);
+            transform: translateY(-1px);
         }
 
         .back-btn {
-            background-color: #6c757d;
-            color: white;
+            background: white;
+            color: #6b7280;
+            border: 2px solid #e5e7eb;
         }
 
         .back-btn:hover {
-            background-color: #5a6268;
+            background: #f9fafb;
+            border-color: #d1d5db;
+            color: #374151;
         }
 
         /* Reviews Section Styles */
@@ -837,12 +847,21 @@ if (isset($_SESSION['customer_id']) && $check_table) {
                 <!-- Stock Availability -->
                 <?php if (isset($product['product_stock'])): ?>
                     <div style="margin: 20px 0; padding: 15px; border-radius: 8px; 
-                        <?php if ($product['product_stock'] > 0): ?>
+                        <?php if ($product['product_stock'] >= 999): ?>
+                            background: #f3f0ff; border: 1px solid #d8b4fe;
+                        <?php elseif ($product['product_stock'] > 0): ?>
                             background: #d4edda; border: 1px solid #c3e6cb;
                         <?php else: ?>
                             background: #f8d7da; border: 1px solid #f5c6cb;
                         <?php endif; ?>">
-                        <?php if ($product['product_stock'] > 0): ?>
+                        <?php if ($product['product_stock'] >= 999): ?>
+                            <div style="color: #7c3aed; font-size: 18px; font-weight: 700; margin-bottom: 5px;">
+                                ✓ Available for Production
+                            </div>
+                            <div style="color: #6b21a8; font-size: 16px;">
+                                This service is ready to fulfill your custom orders
+                            </div>
+                        <?php elseif ($product['product_stock'] > 0): ?>
                             <?php if ($product['product_stock'] <= 10): ?>
                                 <div style="color: #dc3545; font-size: 18px; font-weight: 700; margin-bottom: 5px;">
                                     ⚠️ Limited Stock!
@@ -904,10 +923,14 @@ if (isset($_SESSION['customer_id']) && $check_table) {
                 <!-- Action Buttons -->
                 <div class="product-actions">
                     <button class="add-to-cart-btn" onclick="addToCart(<?= $product['product_id'] ?>)"
-                        <?= (isset($product['product_stock']) && $product['product_stock'] <= 0) ? 'disabled style="background: #ccc; cursor: not-allowed; border: 1px solid #999;"' : '' ?>>
-                        <?= (isset($product['product_stock']) && $product['product_stock'] <= 0) ? '❌ Out of Stock' : 'Add to Cart' ?>
+                        <?= (isset($product['product_stock']) && $product['product_stock'] <= 0) ? 'disabled style="background: #e5e7eb; cursor: not-allowed; border: 1px solid #d1d5db; color: #9ca3af; box-shadow: none;"' : '' ?>>
+                        <i class="fas fa-shopping-cart"></i>
+                        <?= (isset($product['product_stock']) && $product['product_stock'] <= 0) ? 'Out of Stock' : 'Add to Cart' ?>
                     </button>
-                    <a href="all_product.php" class="back-btn">Back to Fabrics</a>
+                    <a href="all_product.php" class="back-btn">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to Store
+                    </a>
                 </div>
             </div>
         </div>

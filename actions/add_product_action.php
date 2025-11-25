@@ -12,8 +12,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-// Auth check - Allow admin or seller
-if (!isLoggedIn() || (!isAdmin() && $_SESSION['user_role'] != 3)) {
+// Auth check - Allow admin or seller (roles 3 and 4)
+if (!isLoggedIn() || (!isAdmin() && $_SESSION['user_role'] != 3 && $_SESSION['user_role'] != 4)) {
     $response['message'] = 'Not authorized';
     echo json_encode($response);
     exit;
@@ -53,9 +53,10 @@ $data['product_desc'] = isset($_POST['product_desc']) ? trim($_POST['product_des
 $data['product_keywords'] = isset($_POST['product_keywords']) ? trim($_POST['product_keywords']) : '';
 $data['product_stock'] = isset($_POST['product_stock']) ? (int)$_POST['product_stock'] : 0;
 
-// Add seller_id if user is a seller
-if ($_SESSION['user_role'] == 3) {
+// Add seller_id and product_type if user is a seller (role 3 or 4)
+if ($_SESSION['user_role'] == 3 || $_SESSION['user_role'] == 4) {
     $data['seller_id'] = $_SESSION['customer_id'];
+    $data['product_type'] = ($_SESSION['user_role'] == 4) ? 'service' : 'fabric';
 }
 
 // attempt insert and include DB error when available

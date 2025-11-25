@@ -195,7 +195,16 @@ $brands = $db->db_fetch_all("SELECT brand_id, brand_name FROM brands ORDER BY br
         <!-- Results Count -->
         <?php if ($total_products > 0): ?>
             <div class="results-count">
-                Showing <?= (($page - 1) * $limit) + 1 ?> - <?= min($page * $limit, $total_products) ?> of <?= $total_products ?> fabrics
+                Showing <?= (($page - 1) * $limit) + 1 ?> - <?= min($page * $limit, $total_products) ?> of <?= $total_products ?> 
+                <?php 
+                if ($type_filter === 'service') {
+                    echo 'service providers';
+                } elseif ($type_filter === 'fabric') {
+                    echo 'fabrics & materials';
+                } else {
+                    echo 'results';
+                }
+                ?>
             </div>
         <?php endif; ?>
 
@@ -224,11 +233,28 @@ $brands = $db->db_fetch_all("SELECT brand_id, brand_name FROM brands ORDER BY br
                             </div>
                         <?php endif; ?>
                         <div class="card-body">
-                            <div class="product-category"><?= htmlspecialchars($product['cat_name'] ?? 'Uncategorized') ?></div>
-                            <a href="single_product.php?id=<?= $product['product_id'] ?>" class="product-title">
-                                <?= htmlspecialchars($product['product_title']) ?>
-                            </a>
-                            <div class="product-brand">Vendor: <?= htmlspecialchars($product['brand_name'] ?? 'Unknown') ?></div>
+                            <?php if ($type_filter === 'service'): ?>
+                                <!-- Service Provider Display -->
+                                <div class="product-category" style="background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); color: white; padding: 8px 14px; border-radius: 8px; font-weight: 600; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px; margin-bottom: 12px;">
+                                    <i class="fas fa-scissors"></i> SERVICE LISTING
+                                </div>
+                                <a href="single_product.php?id=<?= $product['product_id'] ?>" class="product-title" style="font-size: 1.25rem; font-weight: 700; color: #1f2937; display: block; margin-bottom: 10px; line-height: 1.4;">
+                                    <?= htmlspecialchars($product['product_title']) ?>
+                                </a>
+                                <div class="product-brand" style="color: #059669; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; font-size: 0.95rem;">
+                                    <i class="fas fa-store" style="color: #10b981;"></i> By: <?= htmlspecialchars($product['brand_name'] ?? 'Unknown') ?>
+                                </div>
+                                <div style="margin: 12px 0; padding: 12px; background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%); border-left: 3px solid #8b5cf6; border-radius: 8px; font-size: 0.9rem; color: #4c1d95;">
+                                    <i class="fas fa-cut" style="color: #8b5cf6;"></i> <strong>Can Make:</strong> <?= htmlspecialchars($product['cat_name'] ?? 'Various Garments') ?>
+                                </div>
+                            <?php else: ?>
+                                <!-- Product Display -->
+                                <div class="product-category"><?= htmlspecialchars($product['cat_name'] ?? 'Uncategorized') ?></div>
+                                <a href="single_product.php?id=<?= $product['product_id'] ?>" class="product-title">
+                                    <?= htmlspecialchars($product['product_title']) ?>
+                                </a>
+                                <div class="product-brand">Vendor: <?= htmlspecialchars($product['brand_name'] ?? 'Unknown') ?></div>
+                            <?php endif; ?>
                             
                             <?php if (isset($product['rating_average']) && $product['rating_average'] > 0): ?>
                                 <div style="font-size: 14px; color: #666; margin: 8px 0;">
@@ -246,11 +272,22 @@ $brands = $db->db_fetch_all("SELECT brand_id, brand_name FROM brands ORDER BY br
                                 </div>
                             <?php endif; ?>
                             
-                            <div class="price">GH₵ <?= number_format($product['product_price'], 2) ?></div>
+                            <div class="price" style="<?= $type_filter === 'service' ? 'background: linear-gradient(135deg, #059669 0%, #047857 100%); color: white; padding: 12px 16px; border-radius: 8px; font-size: 1.1rem; font-weight: 700; margin: 12px 0; display: flex; align-items: center; gap: 8px;' : '' ?>">
+                                <?php if ($type_filter === 'service'): ?>
+                                    <i class="fas fa-money-bill-wave"></i> Starting at GH₵ <?= number_format($product['product_price'], 2) ?>
+                                <?php else: ?>
+                                    GH₵ <?= number_format($product['product_price'], 2) ?>
+                                <?php endif; ?>
+                            </div>
                             
                             <!-- Stock Display -->
                             <?php if (isset($product['product_stock'])): ?>
-                                <?php if ($product['product_stock'] > 0): ?>
+                                <?php if ($product['product_stock'] >= 999): ?>
+                                    <!-- Services or unlimited availability -->
+                                    <div style="color: #8b5cf6; font-size: 0.875rem; font-weight: 600; margin: 12px 0; padding: 8px 12px; background: #f5f3ff; border-radius: 6px; display: inline-flex; align-items: center; gap: 6px;">
+                                        <i class="fas fa-check-circle"></i> Available for Production
+                                    </div>
+                                <?php elseif ($product['product_stock'] > 0): ?>
                                     <?php if ($product['product_stock'] <= 10): ?>
                                         <div style="color: #dc3545; font-size: 0.875rem; font-weight: 600; margin: 8px 0;">
                                             ⚠️ Only <?= $product['product_stock'] ?> left!
@@ -267,10 +304,16 @@ $brands = $db->db_fetch_all("SELECT brand_id, brand_name FROM brands ORDER BY br
                                 <?php endif; ?>
                             <?php endif; ?>
                             
-                            <button class="add-to-cart-btn" onclick="addToCart(<?= $product['product_id'] ?>)" 
-                                <?= (isset($product['product_stock']) && $product['product_stock'] <= 0) ? 'disabled style="background: #ccc; cursor: not-allowed;"' : '' ?>>
-                                <?= (isset($product['product_stock']) && $product['product_stock'] <= 0) ? 'Out of Stock' : 'Add to Cart' ?>
-                            </button>
+                            <?php if ($type_filter === 'service'): ?>
+                                <a href="single_product.php?id=<?= $product['product_id'] ?>" class="add-to-cart-btn" style="background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); color: white; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 20px; border-radius: 8px; font-weight: 600; margin-top: 16px; box-shadow: 0 2px 4px rgba(139, 92, 246, 0.3); transition: all 0.2s;">
+                                    <i class="fas fa-info-circle"></i> View Service Details
+                                </a>
+                            <?php else: ?>
+                                <button class="add-to-cart-btn" onclick="addToCart(<?= $product['product_id'] ?>)" 
+                                    <?= (isset($product['product_stock']) && $product['product_stock'] <= 0) ? 'disabled style="background: #ccc; cursor: not-allowed;"' : '' ?>>
+                                    <?= (isset($product['product_stock']) && $product['product_stock'] <= 0) ? 'Out of Stock' : 'Add to Cart' ?>
+                                </button>
+                            <?php endif; ?>
                         </div>
                     </div>
                 <?php endforeach; ?>
@@ -319,11 +362,35 @@ $brands = $db->db_fetch_all("SELECT brand_id, brand_name FROM brands ORDER BY br
             <?php endif; ?>
         <?php else: ?>
             <div class="no-products">
-                <h3>No Fabrics Found</h3>
-                <p>Try adjusting your search or filter criteria, or browse our full catalog</p>
+                <h3>
+                    <?php 
+                    if ($type_filter === 'service') {
+                        echo 'No Tailors or Seamstresses Found';
+                    } elseif ($type_filter === 'fabric') {
+                        echo 'No Fabrics or Materials Found';
+                    } else {
+                        echo 'No Results Found';
+                    }
+                    ?>
+                </h3>
+                <p>
+                    <?php 
+                    if ($type_filter === 'service') {
+                        echo 'No service providers match your criteria. Try browsing all services or adjusting your filters.';
+                    } elseif ($type_filter === 'fabric') {
+                        echo 'No fabrics or materials match your criteria. Try browsing all products or adjusting your filters.';
+                    } else {
+                        echo 'Try adjusting your search or filter criteria, or browse our full catalog.';
+                    }
+                    ?>
+                </p>
+                <a href="all_product.php" class="btn btn-primary" style="margin-top: 16px;">Browse All Products</a>
             </div>
         <?php endif; ?>
     </div>
+
+    <!-- Footer Spacing -->
+    <div style="height: 60px;"></div>
 
     <!-- Load jQuery first -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

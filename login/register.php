@@ -332,28 +332,34 @@
                                 </label>
                             </div>
                             <div class="role-option">
-                                <input type="radio" name="role" id="seller" value="3">
-                                <label for="seller" class="role-label">
-                                    <i class="fas fa-store"></i>
-                                    Vendor
+                                <input type="radio" name="role" id="fabric_seller" value="3">
+                                <label for="fabric_seller" class="role-label">
+                                    <i class="fas fa-box"></i>
+                                    Fabric Seller
+                                </label>
+                            </div>
+                            <div class="role-option">
+                                <input type="radio" name="role" id="service_provider" value="4">
+                                <label for="service_provider" class="role-label">
+                                    <i class="fas fa-scissors"></i>
+                                    Service Provider
                                 </label>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Service Type Selection (only for vendors) -->
+                    <!-- Service Type Selection (only for service providers) -->
                     <div class="form-group" id="service-type-group" style="display: none;">
                         <label for="service_type">
-                            <i class="fas fa-scissors"></i> Service Type
+                            <i class="fas fa-cut"></i> Service Specialty
                         </label>
                         <select class="form-select" id="service_type" name="service_type">
-                            <option value="none">General Vendor</option>
+                            <option value="general">General Service Provider</option>
                             <option value="tailor">✂️ Tailor</option>
                             <option value="seamstress">🪡 Seamstress</option>
-                            <option value="general">👔 General Service Provider</option>
                         </select>
                         <small style="color: #718096; display: block; margin-top: 4px; font-size: 12px;">
-                            This will be displayed on your seller profile
+                            Choose your area of expertise in tailoring and alterations
                         </small>
                     </div>
 
@@ -374,11 +380,13 @@
         // Show/hide service type based on role selection
         $(document).ready(function() {
             $('input[name="role"]').on('change', function() {
-                if ($(this).val() === '3') {
+                if ($(this).val() === '4') { // Service Provider role
                     $('#service-type-group').slideDown(300);
+                    $('#service_type').prop('required', true);
                 } else {
                     $('#service-type-group').slideUp(300);
-                    $('#service_type').val('none');
+                    $('#service_type').prop('required', false);
+                    $('#service_type').val('general');
                 }
             });
         });
