@@ -1,4 +1,8 @@
 <?php
+// Enable error display for debugging (remove in production)
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
 // Get seller ID from URL or show error
 $seller_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
@@ -59,13 +63,20 @@ $products_sql = "SELECT p.*, c.cat_name, b.brand_name,
                  ORDER BY p.product_id DESC";
 
 $products = $db->db_fetch_all($products_sql);
+if (!$products) {
+    $products = [];
+}
 
-// Get total reviews for this seller
-$reviews_sql = "SELECT COUNT(*) as total FROM product_reviews pr
-                JOIN products p ON pr.product_id = p.product_id
-                WHERE p.seller_id = $seller_id AND pr.status = 'approved'";
-$review_stats = $db->db_fetch_one($reviews_sql);
-$total_reviews = $review_stats['total'] ?? 0;
+// Get total reviews for this seller (if product_reviews table exists)
+$total_reviews = 0;
+$check_reviews_table = $db->db_fetch_one("SHOW TABLES LIKE 'product_reviews'");
+if ($check_reviews_table) {
+    $reviews_sql = "SELECT COUNT(*) as total FROM product_reviews pr
+                    JOIN products p ON pr.product_id = p.product_id
+                    WHERE p.seller_id = $seller_id AND pr.status = 'approved'";
+    $review_stats = $db->db_fetch_one($reviews_sql);
+    $total_reviews = $review_stats['total'] ?? 0;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
