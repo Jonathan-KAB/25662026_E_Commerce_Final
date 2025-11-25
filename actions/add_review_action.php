@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../settings/core.php';
 require_once __DIR__ . '/../settings/db_class.php';
-session_start();
+
 header('Content-Type: application/json');
 $response = ['status' => 'error', 'message' => 'Invalid request'];
 
@@ -74,21 +74,48 @@ $verified_purchase = $db->db_fetch_one("
 
 $verified = $verified_purchase ? 1 : 0;
 
-// Insert review
-$sql = "INSERT INTO product_reviews (product_id, customer_id, rating, review_title, review_text, verified_purchase, status) 
-        VALUES ($product_id, $customer_id, $rating, " . $db->db_conn()->real_escape_string($review_title) . ", " . 
-        $db->db_conn()->real_escape_string($review_text) . ", $verified, 'approved')";
+// Escape strings properly
+$review_text_escaped = $db->db_conn()->real_escape_string($review_text);
+$review_title_escaped = $db->db_conn()->real_escape_string($review_title);
+
+// Check if review_title and status columns exist
+$columns = $db->db_fetch_all("SHOW COLUMNS FROM product_reviews");
+$has_title = false;
+$has_status = false;
+foreach ($columns as $col) {
+    if ($col['Field'] == 'review_title') $has_title = true;
+    if ($col['Field'] == 'status') $has_status = true;
+}
+
+// Build INSERT query based on available columns
+if ($has_title && $has_status) {
+    $sql = "INSERT INTO product_reviews (product_id, customer_id, rating, review_title, review_text, verified_purchase, status) 
+            VALUES ($product_id, $customer_id, $rating, '$review_title_escaped', '$review_text_escaped', $verified, 'approved')";
+} elseif ($has_title) {
+    $sql = "INSERT INTO product_reviews (product_id, customer_id, rating, review_title, review_text, verified_purchase) 
+            VALUES ($product_id, $customer_id, $rating, '$review_title_escaped', '$review_text_escaped', $verified)";
+} else {
+    $sql = "INSERT INTO product_reviews (product_id, customer_id, rating, review_text, verified_purchase) 
+            VALUES ($product_id, $customer_id, $rating, '$review_text_escaped', $verified)";
+}
 
 $result = $db->db_query($sql);
 
 if ($result) {
     $review_id = $db->db_conn()->insert_id;
     
-    // Update product rating average and count
-    $update_sql = "UPDATE products p SET 
-        rating_average = (SELECT AVG(rating) FROM product_reviews WHERE product_id = $product_id AND status = 'approved'),
-        rating_count = (SELECT COUNT(*) FROM product_reviews WHERE product_id = $product_id AND status = 'approved')
-        WHERE product_id = $product_id";
+    // Build UPDATE query for product rating based on status column existence
+    if ($has_status) {
+        $update_sql = "UPDATE products p SET 
+            rating_average = (SELECT AVG(rating) FROM product_reviews WHERE product_id = $product_id AND status = 'approved'),
+            rating_count = (SELECT COUNT(*) FROM product_reviews WHERE product_id = $product_id AND status = 'approved')
+            WHERE product_id = $product_id";
+    } else {
+        $update_sql = "UPDATE products p SET 
+            rating_average = (SELECT AVG(rating) FROM product_reviews WHERE product_id = $product_id),
+            rating_count = (SELECT COUNT(*) FROM product_reviews WHERE product_id = $product_id)
+            WHERE product_id = $product_id";
+    }
     $db->db_query($update_sql);
     
     $response = [

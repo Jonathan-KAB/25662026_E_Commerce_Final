@@ -68,6 +68,7 @@ if ($check_table) {
     
     // Build query based on available columns
     $date_field = $has_created_at ? "DATE_FORMAT(pr.created_at, '%M %d, %Y')" : "DATE_FORMAT(pr.review_date, '%M %d, %Y')";
+    $order_field = $has_created_at ? "pr.created_at" : "pr.review_date";
     $status_filter = $has_status ? "AND pr.status = 'approved'" : "";
     
     $reviews_sql = "SELECT pr.*, 
@@ -77,7 +78,7 @@ if ($check_table) {
                     JOIN customer c ON pr.customer_id = c.customer_id
                     WHERE pr.product_id = $product_id 
                     $status_filter
-                    ORDER BY pr.review_date DESC";
+                    ORDER BY $order_field DESC";
     
     $reviews = $db->db_fetch_all($reviews_sql);
     if ($reviews === false) {
@@ -127,6 +128,7 @@ if (isset($_SESSION['customer_id']) && $check_table) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($product['product_title']) ?> - SeamLink</title>
     <link rel="stylesheet" href="../css/app.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         /* Breadcrumb */
         .breadcrumb {
@@ -979,8 +981,8 @@ if (isset($_SESSION['customer_id']) && $check_table) {
             </div>
 
             <!-- Review Form -->
-            <?php if (isset($_SESSION['customer_id']) && !$has_reviewed): ?>
-            <div id="reviewForm" class="review-form">
+            <?php if (isset($_SESSION['customer_id'])): ?>
+            <div id="reviewForm" class="review-form" data-has-reviewed="<?= $has_reviewed ? 'true' : 'false' ?>" <?= $has_reviewed ? 'style="display: none;"' : '' ?>>
                 <h3 style="margin-bottom: 20px;">Write Your Review</h3>
                 
                 <div id="reviewMessage"></div>
@@ -1068,6 +1070,24 @@ if (isset($_SESSION['customer_id']) && $check_table) {
                             <?= nl2br(htmlspecialchars($review['review_text'])) ?>
                         </div>
 
+                        <?php if (isset($_SESSION['customer_id']) && $_SESSION['customer_id'] == $review['customer_id']): ?>
+                        <div class="review-actions" style="margin-top: 12px; display: flex; gap: 8px;">
+                            <button class="btn-edit-review" 
+                                    data-review-id="<?= $review['review_id'] ?>"
+                                    data-rating="<?= $review['rating'] ?>"
+                                    data-title="<?= htmlspecialchars($review['review_title'] ?? '') ?>"
+                                    data-text="<?= htmlspecialchars($review['review_text']) ?>"
+                                    style="padding: 6px 12px; background: #3b82f6; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px;">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="btn-delete-review" 
+                                    data-review-id="<?= $review['review_id'] ?>"
+                                    style="padding: 6px 12px; background: #ef4444; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px;">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </div>
+                        <?php endif; ?>
+
                         <?php if (isset($review['helpful_count']) && $review['helpful_count'] > 0): ?>
                             <div style="font-size: 13px; color: #666;">
                                 <?= $review['helpful_count'] ?> person<?= $review['helpful_count'] != 1 ? 's' : '' ?> found this helpful
@@ -1087,27 +1107,31 @@ if (isset($_SESSION['customer_id']) && $check_table) {
         // Star rating functionality
         let selectedRating = 0;
         
-        document.querySelectorAll('#starRating span').forEach(star => {
-            star.addEventListener('click', function() {
-                selectedRating = parseInt(this.getAttribute('data-rating'));
-                document.getElementById('ratingValue').value = selectedRating;
-                updateStars();
+        const starRatingElement = document.getElementById('starRating');
+        
+        if (starRatingElement) {
+            document.querySelectorAll('#starRating span').forEach(star => {
+                star.addEventListener('click', function() {
+                    selectedRating = parseInt(this.getAttribute('data-rating'));
+                    document.getElementById('ratingValue').value = selectedRating;
+                    updateStars();
+                });
+                
+                star.addEventListener('mouseenter', function() {
+                    const rating = parseInt(this.getAttribute('data-rating'));
+                    highlightStars(rating);
+                });
             });
             
-            star.addEventListener('mouseenter', function() {
-                const rating = parseInt(this.getAttribute('data-rating'));
-                highlightStars(rating);
+            starRatingElement.addEventListener('mouseleave', function() {
+                updateStars();
             });
-        });
-        
-        document.getElementById('starRating').addEventListener('mouseleave', function() {
-            updateStars();
-        });
+        }
         
         function highlightStars(rating) {
             document.querySelectorAll('#starRating span').forEach(star => {
                 const starRating = parseInt(star.getAttribute('data-rating'));
-                if (starRating >= rating) {
+                if (starRating <= rating) {
                     star.classList.add('active');
                     star.textContent = '★';
                 } else {
@@ -1121,12 +1145,61 @@ if (isset($_SESSION['customer_id']) && $check_table) {
             highlightStars(selectedRating);
         }
         
+        // Reset form to add mode
+        function resetReviewForm() {
+            const formElement = document.getElementById('submitReviewForm');
+            const submitBtn = document.querySelector('#submitReviewForm button[type="submit"]');
+            const existingInput = document.getElementById('editReviewId');
+            const form = document.getElementById('reviewForm');
+            const formHeading = form?.querySelector('h3');
+            
+            if (!formElement) return;
+            
+            // Remove editing mode
+            formElement.dataset.editing = 'false';
+            if (existingInput) {
+                existingInput.remove();
+            }
+            
+            // Reset heading and button text
+            if (formHeading) formHeading.textContent = 'Write Your Review';
+            if (submitBtn) {
+                submitBtn.innerHTML = 'Submit Review';
+            }
+            
+            // Clear form
+            selectedRating = 0;
+            const ratingValueEl = document.getElementById('ratingValue');
+            const reviewTitleEl = document.getElementById('reviewTitle');
+            const reviewTextEl = document.getElementById('reviewText');
+            
+            if (ratingValueEl) ratingValueEl.value = '';
+            if (reviewTitleEl) reviewTitleEl.value = '';
+            if (reviewTextEl) reviewTextEl.value = '';
+            updateStars();
+        }
+        
         // Toggle review form
         function toggleReviewForm() {
             const form = document.getElementById('reviewForm');
-            form.classList.toggle('active');
-            if (form.classList.contains('active')) {
+            if (!form) return;
+            
+            const hasReviewed = form.dataset.hasReviewed === 'true';
+            const formElement = document.getElementById('submitReviewForm');
+            const isEditing = formElement?.dataset.editing === 'true';
+            
+            if (form.style.display === 'none' || !form.classList.contains('active')) {
+                form.style.display = 'block';
+                form.classList.add('active');
+                resetReviewForm(); // Reset when opening
                 form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            } else {
+                form.classList.remove('active');
+                // If user has reviewed and was editing, hide the form
+                if (hasReviewed && isEditing) {
+                    form.style.display = 'none';
+                }
+                resetReviewForm(); // Reset form state
             }
         }
         
@@ -1140,9 +1213,11 @@ if (isset($_SESSION['customer_id']) && $check_table) {
             }
             
             const formData = new FormData(this);
+            const isEditing = this.dataset.editing === 'true';
+            const actionUrl = isEditing ? '../actions/update_review_action.php' : '../actions/add_review_action.php';
             
             $.ajax({
-                url: '../actions/add_review_action.php',
+                url: actionUrl,
                 method: 'POST',
                 data: formData,
                 processData: false,
@@ -1150,7 +1225,7 @@ if (isset($_SESSION['customer_id']) && $check_table) {
                 dataType: 'json',
                 success: function(response) {
                     if (response.status === 'success') {
-                        showMessage('Review submitted successfully! Refreshing page...', 'success');
+                        showMessage((isEditing ? 'Review updated' : 'Review submitted') + ' successfully! Refreshing page...', 'success');
                         setTimeout(function() {
                             location.reload();
                         }, 2000);
@@ -1174,6 +1249,105 @@ if (isset($_SESSION['customer_id']) && $check_table) {
             messageDiv.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
             messageDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
+
+        // Initialize edit/delete button handlers using jQuery ready
+        $(document).ready(function() {
+            console.log('DOM ready - checking for buttons');
+            console.log('Edit buttons found:', $('.btn-edit-review').length);
+            console.log('Delete buttons found:', $('.btn-delete-review').length);
+            
+            // Edit review
+            $('.btn-edit-review').on('click', function() {
+                console.log('Edit button clicked');
+                const reviewId = $(this).data('review-id');
+                const rating = $(this).data('rating');
+                const title = $(this).data('title');
+                const text = $(this).data('text');
+
+                console.log('Review data:', { reviewId, rating, title, text });
+
+                // Get form elements
+                const ratingValueEl = document.getElementById('ratingValue');
+                const reviewTitleEl = document.getElementById('reviewTitle');
+                const reviewTextEl = document.getElementById('reviewText');
+                const form = document.getElementById('reviewForm');
+                const submitBtn = document.querySelector('#submitReviewForm button[type="submit"]');
+                const formElement = document.getElementById('submitReviewForm');
+                const formHeading = form.querySelector('h3');
+
+                // Check if form elements exist
+                if (!ratingValueEl || !reviewTitleEl || !reviewTextEl || !form || !submitBtn || !formElement) {
+                    console.error('Review form elements not found');
+                    alert('Error: Review form not available. Please make sure you are logged in.');
+                    return;
+                }
+
+                // Populate form with existing values
+                selectedRating = parseInt(rating);
+                ratingValueEl.value = rating;
+                updateStars();
+                reviewTitleEl.value = title;
+                reviewTextEl.value = text;
+
+                // Show form
+                form.style.display = 'block';
+                form.classList.add('active');
+                form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+                // Change heading and submit button
+                if (formHeading) formHeading.textContent = 'Edit Your Review';
+                submitBtn.innerHTML = '<i class="fas fa-save"></i> Update Review';
+                
+                // Remove existing review_id input if any
+                const existingInput = document.getElementById('editReviewId');
+                if (existingInput) {
+                    existingInput.remove();
+                }
+                
+                const reviewIdInput = document.createElement('input');
+                reviewIdInput.type = 'hidden';
+                reviewIdInput.name = 'review_id';
+                reviewIdInput.value = reviewId;
+                reviewIdInput.id = 'editReviewId';
+                formElement.appendChild(reviewIdInput);
+
+                // Update form submission handler
+                formElement.dataset.editing = 'true';
+            });
+
+            // Delete review
+            $('.btn-delete-review').on('click', function() {
+                console.log('Delete button clicked');
+                
+                if (!confirm('Are you sure you want to delete this review? This action cannot be undone.')) {
+                    return;
+                }
+
+                const reviewId = $(this).data('review-id');
+                
+                console.log('Deleting review:', reviewId);
+
+                $.ajax({
+                    url: '../actions/delete_review_action.php',
+                    method: 'POST',
+                    data: { review_id: reviewId },
+                    dataType: 'json',
+                    success: function(response) {
+                        console.log('Delete response:', response);
+                        if (response.status === 'success') {
+                            alert('Review deleted successfully!');
+                            location.reload();
+                        } else {
+                            alert(response.message || 'Failed to delete review');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Delete error:', error);
+                        alert('Error deleting review. Please try again.');
+                    }
+                });
+            });
+        });
         
         // Add to cart functionality
         function addToCart(productId) {
