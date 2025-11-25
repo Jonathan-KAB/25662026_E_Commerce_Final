@@ -145,7 +145,7 @@ $brands = $db->db_fetch_all("SELECT brand_id, brand_name FROM brands ORDER BY br
     <div class="container" style="margin-top: 40px; margin-bottom: 60px; max-width: 800px;">
         <div class="card" style="box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); border-radius: 12px; overflow: hidden; border: none;">
             <div class="card-header" style="background: linear-gradient(135deg, <?= $is_service_provider ? '#8b5cf6 0%, #6d28d9 100%' : '#10b981 0%, #059669 100%' ?>); color: white; border-radius: 12px 12px 0 0; padding: 24px; border: none;">
-                <h3 style="margin: 0; font-size: 1.5rem; font-weight: 700;">
+                <h3 style="margin: 0; font-size: 1.5rem; font-weight: 700; color: white;">
                     <?= $is_service_provider ? '<i class="fas fa-scissors"></i> Service Information' : '<i class="fas fa-box"></i> Product Information' ?>
                 </h3>
                 <p style="margin: 8px 0 0 0; opacity: 0.95; font-size: 0.95rem;">

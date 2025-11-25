@@ -1,7 +1,6 @@
 <?php
-require_once __DIR__ . '/../controllers/product_controller.php';
 require_once __DIR__ . '/../settings/core.php';
-session_start();
+require_once __DIR__ . '/../controllers/product_controller.php';
 header('Content-Type: application/json');
 $response = ['status' => 'error', 'message' => 'Invalid request'];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -37,11 +36,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data['product_price'] = isset($_POST['product_price']) ? (float)$_POST['product_price'] : 0;
     $data['product_desc'] = isset($_POST['product_desc']) ? trim($_POST['product_desc']) : '';
     $data['product_keywords'] = isset($_POST['product_keywords']) ? trim($_POST['product_keywords']) : '';
-    $data['product_stock'] = isset($_POST['product_stock']) ? (int)$_POST['product_stock'] : 0;
+    
+    // Only update stock if it's actually provided (not for services where field is hidden)
+    if (isset($_POST['product_stock'])) {
+        $data['product_stock'] = (int)$_POST['product_stock'];
+    }
     
     // Include product_type if provided (for maintaining service vs fabric distinction)
     if (isset($_POST['product_type'])) {
         $data['product_type'] = trim($_POST['product_type']);
+    }
+    
+    // Handle image upload if file was provided
+    if (isset($_FILES['product_image']) && $_FILES['product_image']['error'] === UPLOAD_ERR_OK) {
+        require_once __DIR__ . '/../classes/image_helper.php';
+        $imageHelper = new ImageUploadHelper();
+        $uploadResult = $imageHelper->uploadProductImage($_FILES['product_image'], $product_id, $_SESSION['customer_id']);
+        
+        if ($uploadResult['success']) {
+            $data['product_image'] = $uploadResult['path'];
+        }
     }
     
     $res = update_product_ctr($product_id, $data);

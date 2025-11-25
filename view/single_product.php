@@ -375,12 +375,13 @@ if (isset($_SESSION['customer_id']) && $check_table) {
             flex: 1;
             background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
             color: white;
-            box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+            border: 2px solid transparent;
         }
 
         .add-to-cart-btn:hover {
             background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
-            box-shadow: 0 4px 8px rgba(59, 130, 246, 0.4);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
             transform: translateY(-1px);
         }
 
@@ -388,6 +389,7 @@ if (isset($_SESSION['customer_id']) && $check_table) {
             background: white;
             color: #6b7280;
             border: 2px solid #e5e7eb;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
         }
 
         .back-btn:hover {
