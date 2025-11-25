@@ -37,6 +37,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         if ($uploadResult['success']) {
             $imagePath = $uploadResult['path'];
+        } else {
+            $message = 'Profile updated but image upload failed: ' . $uploadResult['message'];
+            $messageType = 'warning';
         }
     }
     
@@ -45,8 +48,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($updated) {
         $customer = get_customer_by_id_ctr($_SESSION['customer_id']);
         $_SESSION['customer_name'] = $customer['customer_name'];
-        $message = 'Profile updated successfully!';
-        $messageType = 'success';
+        if (empty($message)) {
+            $message = 'Profile updated successfully!';
+            $messageType = 'success';
+        }
     } else {
         $message = 'Failed to update profile. Please try again.';
         $messageType = 'error';

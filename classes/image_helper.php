@@ -88,7 +88,7 @@ class ImageUploadHelper
             return [
                 'success' => false,
                 'path' => '',
-                'message' => 'Failed to create upload directory'
+                'message' => 'Failed to create upload directory. Check permissions on uploads folder.'
             ];
         }
         
@@ -102,7 +102,7 @@ class ImageUploadHelper
             return [
                 'success' => false,
                 'path' => '',
-                'message' => 'Failed to move uploaded file'
+                'message' => 'Failed to move uploaded file to: ' . $targetPath
             ];
         }
         
