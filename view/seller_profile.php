@@ -21,13 +21,8 @@ $db->db_connect();
 // Get seller profile info
 $seller_sql = "SELECT c.customer_id, c.customer_name, c.customer_email, c.customer_contact, 
                c.customer_city, c.customer_country, c.created_at, c.service_type, c.user_role,
-               c.customer_image,
-               sp.store_name, sp.store_description, sp.store_logo, sp.store_banner,
-               sp.contact_phone, sp.contact_email, sp.business_address,
-               sp.social_facebook, sp.social_instagram, sp.social_twitter,
-               sp.rating_average, sp.total_sales, sp.verified, sp.created_at as seller_since
+               c.customer_image
                FROM customer c
-               LEFT JOIN seller_profiles sp ON c.customer_id = sp.seller_id
                WHERE c.customer_id = $seller_id AND (c.user_role = 3 OR c.user_role = 4)";
 
 $seller = $db->db_fetch_one($seller_sql);
@@ -36,6 +31,22 @@ if (!$seller) {
     header("Location: ../index.php");
     exit();
 }
+
+// Add default values for seller_profiles fields that don't exist
+$seller['store_name'] = null;
+$seller['store_description'] = null;
+$seller['store_logo'] = null;
+$seller['store_banner'] = null;
+$seller['contact_phone'] = null;
+$seller['contact_email'] = null;
+$seller['business_address'] = null;
+$seller['social_facebook'] = null;
+$seller['social_instagram'] = null;
+$seller['social_twitter'] = null;
+$seller['rating_average'] = 0;
+$seller['total_sales'] = 0;
+$seller['verified'] = false;
+$seller['seller_since'] = $seller['created_at'];
 
 // Get seller's products
 $products_sql = "SELECT p.*, c.cat_name, b.brand_name,
