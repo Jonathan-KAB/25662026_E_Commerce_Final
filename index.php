@@ -400,7 +400,7 @@ if (!$featured_products) {
 						<div class="hero-stat-icon"><i class="fas fa-users-cog"></i></div>
 						<div class="hero-stat-value">
 							<?php 
-							$seller_count = $db->db_fetch_one("SELECT COUNT(*) as total FROM customer WHERE user_role = 3");
+							$seller_count = $db->db_fetch_one("SELECT COUNT(*) as total FROM customer WHERE user_role = 4");
 							echo ($seller_count['total'] ?? '100') . '+';
 							?>
 						</div>
@@ -410,7 +410,7 @@ if (!$featured_products) {
 						<div class="hero-stat-icon"><i class="fas fa-tshirt"></i></div>
 						<div class="hero-stat-value">
 							<?php 
-							$count_result = $db->db_fetch_one("SELECT COUNT(*) as total FROM products");
+							$count_result = $db->db_fetch_one("SELECT COUNT(*) as total FROM products WHERE product_type = 'fabric' OR product_type IS NULL");
 							echo $count_result['total'] ?? '500+';
 							?>
 						</div>
