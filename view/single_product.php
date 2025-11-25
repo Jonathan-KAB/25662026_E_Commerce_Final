@@ -993,11 +993,11 @@ if (isset($_SESSION['customer_id']) && $check_table) {
                     <div class="form-group">
                         <label class="form-label">Rating *</label>
                         <div class="star-rating" id="starRating">
-                            <span data-rating="5">☆</span>
-                            <span data-rating="4">☆</span>
-                            <span data-rating="3">☆</span>
-                            <span data-rating="2">☆</span>
                             <span data-rating="1">☆</span>
+                            <span data-rating="2">☆</span>
+                            <span data-rating="3">☆</span>
+                            <span data-rating="4">☆</span>
+                            <span data-rating="5">☆</span>
                         </div>
                         <input type="hidden" name="rating" id="ratingValue" required>
                     </div>
