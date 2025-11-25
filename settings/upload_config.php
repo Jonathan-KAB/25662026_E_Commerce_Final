@@ -6,14 +6,17 @@
 
 // Detect environment
 function getUploadBasePath() {
-    // Check if we're on the school server (outside public_html)
-    // Look for uploads directory one level up from the web root
-    $uploadsOutside = __DIR__ . '/../../uploads';
-    
-    // Check if we're in a public_html structure
-    if (strpos(__DIR__, 'public_html') !== false && is_dir($uploadsOutside)) {
-        // School server: uploads is outside public_html
-        return realpath($uploadsOutside);
+    // Check if we're on a server with public_html structure
+    if (strpos(__DIR__, 'public_html') !== false) {
+        // School server: uploads should be inside public_html for web access
+        $uploadsPath = __DIR__ . '/../uploads';
+        
+        // Create the directory if it doesn't exist
+        if (!is_dir($uploadsPath)) {
+            mkdir($uploadsPath, 0777, true);
+        }
+        
+        return realpath($uploadsPath);
     }
     
     // Local XAMPP: uploads is inside the project
@@ -22,12 +25,10 @@ function getUploadBasePath() {
 
 // Get the web-accessible path for uploaded images
 function getUploadWebPath() {
-    // Check if we're on the school server
-    $uploadsOutside = __DIR__ . '/../../uploads';
-    
-    if (strpos(__DIR__, 'public_html') !== false && is_dir($uploadsOutside)) {
-        // School server: uploads is accessed from root
-        return '/uploads';
+    // Check if we're on a server with public_html structure
+    if (strpos(__DIR__, 'public_html') !== false) {
+        // School server: use relative path from web root
+        return 'uploads';
     }
     
     // Local XAMPP: uploads is relative to project
