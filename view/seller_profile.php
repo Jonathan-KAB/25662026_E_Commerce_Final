@@ -21,6 +21,7 @@ $db->db_connect();
 // Get seller profile info
 $seller_sql = "SELECT c.customer_id, c.customer_name, c.customer_email, c.customer_contact, 
                c.customer_city, c.customer_country, c.created_at, c.service_type, c.user_role,
+               c.customer_image,
                sp.store_name, sp.store_description, sp.store_logo, sp.store_banner,
                sp.contact_phone, sp.contact_email, sp.business_address,
                sp.social_facebook, sp.social_instagram, sp.social_twitter,
@@ -62,6 +63,7 @@ $total_reviews = $review_stats['total'] ?? 0;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($seller['store_name'] ?? $seller['customer_name']) ?> - SeamLink</title>
     <link rel="stylesheet" href="../css/app.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         .seller-banner {
             width: 100%;
@@ -142,10 +144,23 @@ $total_reviews = $review_stats['total'] ?? 0;
             <div style="display: grid; grid-template-columns: 120px 1fr; gap: 24px; align-items: start;">
                 <!-- Seller Logo -->
                 <div class="seller-logo">
-                    <?php if ($seller['store_logo']): ?>
+                    <?php if ($seller['customer_image']): ?>
+                        <?php
+                        // Handle image path for Ashesi server
+                        $imagePath = $seller['customer_image'];
+                        if (strpos($imagePath, '/uploads') === 0) {
+                            $imageSrc = htmlspecialchars($imagePath);
+                        } elseif (strpos($imagePath, 'uploads/') === 0) {
+                            $imageSrc = '../' . htmlspecialchars($imagePath);
+                        } else {
+                            $imageSrc = '../' . htmlspecialchars($imagePath);
+                        }
+                        ?>
+                        <img src="<?= $imageSrc ?>" alt="<?= htmlspecialchars($seller['customer_name']) ?>" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+                    <?php elseif ($seller['store_logo']): ?>
                         <img src="../uploads/<?= htmlspecialchars($seller['store_logo']) ?>" alt="Store Logo" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
                     <?php else: ?>
-                        🏪
+                        <?= strtoupper(substr($seller['customer_name'], 0, 1)) ?>
                     <?php endif; ?>
                 </div>
 
@@ -259,7 +274,18 @@ $total_reviews = $review_stats['total'] ?? 0;
                     <?php foreach ($products as $product): ?>
                         <div class="product-card">
                             <?php if ($product['product_image']): ?>
-                                <img src="../uploads/<?= htmlspecialchars($product['product_image']) ?>" alt="<?= htmlspecialchars($product['product_title']) ?>">
+                                <?php
+                                // Handle image path for Ashesi server
+                                $prodImagePath = $product['product_image'];
+                                if (strpos($prodImagePath, '/uploads') === 0) {
+                                    $prodImageSrc = htmlspecialchars($prodImagePath);
+                                } elseif (strpos($prodImagePath, 'uploads/') === 0) {
+                                    $prodImageSrc = '../' . htmlspecialchars($prodImagePath);
+                                } else {
+                                    $prodImageSrc = '../' . htmlspecialchars($prodImagePath);
+                                }
+                                ?>
+                                <img src="<?= $prodImageSrc ?>" alt="<?= htmlspecialchars($product['product_title']) ?>">
                             <?php else: ?>
                                 <div class="product-image-placeholder">📦</div>
                             <?php endif; ?>
@@ -285,8 +311,8 @@ $total_reviews = $review_stats['total'] ?? 0;
                                 
                                 <div class="price">GH₵ <?= number_format($product['product_price'], 2) ?></div>
                                 
-                                <!-- Stock Display -->
-                                <?php if (isset($product['product_stock'])): ?>
+                                <!-- Stock Display - hide for services (stock 999) -->
+                                <?php if (isset($product['product_stock']) && $product['product_stock'] < 999): ?>
                                     <?php if ($product['product_stock'] > 0): ?>
                                         <?php if ($product['product_stock'] <= 10): ?>
                                             <div style="color: #dc3545; font-size: 0.875rem; font-weight: 600; margin: 8px 0;">
@@ -304,10 +330,17 @@ $total_reviews = $review_stats['total'] ?? 0;
                                     <?php endif; ?>
                                 <?php endif; ?>
                                 
-                                <button onclick="addToCart(<?= $product['product_id'] ?>)" class="btn btn-primary btn-sm" style="width: 100%; margin-top: 8px;"
-                                    <?= (isset($product['product_stock']) && $product['product_stock'] <= 0) ? 'disabled style="background: #ccc; cursor: not-allowed; width: 100%; margin-top: 8px;"' : '' ?>>
-                                    <?= (isset($product['product_stock']) && $product['product_stock'] <= 0) ? 'Out of Stock' : 'Add to Cart' ?>
-                                </button>
+                                <!-- Button - View Details for services, Add to Cart for products -->
+                                <?php if (isset($product['product_stock']) && $product['product_stock'] >= 999): ?>
+                                    <a href="single_product.php?id=<?= $product['product_id'] ?>" class="btn btn-primary btn-sm" style="width: 100%; margin-top: 8px; text-decoration: none; display: block; text-align: center;">
+                                        View Details
+                                    </a>
+                                <?php else: ?>
+                                    <button onclick="addToCart(<?= $product['product_id'] ?>)" class="btn btn-primary btn-sm" style="width: 100%; margin-top: 8px;"
+                                        <?= (isset($product['product_stock']) && $product['product_stock'] <= 0) ? 'disabled style="background: #ccc; cursor: not-allowed; width: 100%; margin-top: 8px;"' : '' ?>>
+                                        <?= (isset($product['product_stock']) && $product['product_stock'] <= 0) ? 'Out of Stock' : 'Add to Cart' ?>
+                                    </button>
+                                <?php endif; ?>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -315,6 +348,9 @@ $total_reviews = $review_stats['total'] ?? 0;
             <?php endif; ?>
         </div>
     </div>
+
+    <!-- Footer Spacing -->
+    <div style="height: 60px;"></div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="../js/cart.js"></script>

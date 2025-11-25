@@ -28,7 +28,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $service_type = 'none';
     }
     
-    $updated = update_customer_ctr($_SESSION['customer_id'], $name, $contact, $country, $city, $service_type);
+    // Handle profile picture upload
+    $imagePath = $customer['customer_image'] ?? '';
+    if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] === UPLOAD_ERR_OK) {
+        require_once __DIR__ . '/../classes/image_helper.php';
+        $imageHelper = new ImageUploadHelper();
+        $uploadResult = $imageHelper->uploadCustomerImage($_FILES['profile_picture'], $_SESSION['customer_id']);
+        
+        if ($uploadResult['success']) {
+            $imagePath = $uploadResult['path'];
+        }
+    }
+    
+    $updated = update_customer_ctr($_SESSION['customer_id'], $name, $contact, $country, $city, $service_type, $imagePath);
     
     if ($updated) {
         $customer = get_customer_by_id_ctr($_SESSION['customer_id']);
@@ -72,8 +84,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <h3 style="margin: 0;">Profile Information</h3>
             </div>
             <div class="card-body">
-                <form method="post">
+                <form method="post" enctype="multipart/form-data" id="profile-form">
                     <div style="display: grid; gap: 24px;">
+                        <!-- Profile Picture Section -->
+                        <div style="text-align: center; padding: 24px; background: var(--gray-50); border-radius: 12px;">
+                            <label for="profile_picture" style="cursor: pointer;">
+                                <div style="width: 120px; height: 120px; margin: 0 auto 12px; border-radius: 50%; overflow: hidden; border: 4px solid var(--primary); position: relative;">
+                                    <?php if (!empty($customer['customer_image'])): ?>
+                                        <img src="../<?= htmlspecialchars($customer['customer_image']) ?>" 
+                                             alt="Profile" id="preview-image"
+                                             style="width: 100%; height: 100%; object-fit: cover;">
+                                    <?php else: ?>
+                                        <div id="preview-placeholder" style="width: 100%; height: 100%; background: var(--gray-200); display: flex; align-items: center; justify-content: center; font-size: 48px; color: var(--gray-400);">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                    <?php endif; ?>
+                                    <div style="position: absolute; bottom: 0; right: 0; background: var(--primary); color: white; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid white;">
+                                        <i class="fas fa-camera"></i>
+                                    </div>
+                                </div>
+                            </label>
+                            <input type="file" class="form-input" id="profile_picture" name="profile_picture" accept="image/*" style="display: none;">
+                            <p style="font-size: 0.875rem; color: var(--gray-600); margin: 0;">Click to upload profile picture</p>
+                        </div>
+                        
                         <div>
                             <label for="name" class="form-label" style="display: block; margin-bottom: 8px; font-weight: 600;">Full Name</label>
                             <input type="text" class="form-input" id="name" name="name" 
@@ -161,5 +195,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </div>
     </div>
+
+    <!-- Footer Spacing -->
+    <div style="height: 60px;"></div>
+
+    <script>
+        // Image preview
+        document.getElementById('profile_picture').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const previewImage = document.getElementById('preview-image');
+                    const previewPlaceholder = document.getElementById('preview-placeholder');
+                    
+                    if (previewImage) {
+                        previewImage.src = e.target.result;
+                    } else if (previewPlaceholder) {
+                        previewPlaceholder.outerHTML = '<img src="' + e.target.result + '" alt="Profile" id="preview-image" style="width: 100%; height: 100%; object-fit: cover;">';
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
 </body>
 </html>

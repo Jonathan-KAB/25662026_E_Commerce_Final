@@ -304,9 +304,10 @@ $brands = $db->db_fetch_all("SELECT brand_id, brand_name FROM brands ORDER BY br
                                 <?php endif; ?>
                             <?php endif; ?>
                             
-                            <?php if ($type_filter === 'service'): ?>
+                            <!-- Button - View Details for services (stock >= 999), Add to Cart for products -->
+                            <?php if (isset($product['product_stock']) && $product['product_stock'] >= 999): ?>
                                 <a href="single_product.php?id=<?= $product['product_id'] ?>" class="add-to-cart-btn" style="background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); color: white; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 20px; border-radius: 8px; font-weight: 600; margin-top: 16px; box-shadow: 0 2px 4px rgba(139, 92, 246, 0.3); transition: all 0.2s;">
-                                    <i class="fas fa-info-circle"></i> View Service Details
+                                    <i class="fas fa-info-circle"></i> View Details
                                 </a>
                             <?php else: ?>
                                 <button class="add-to-cart-btn" onclick="addToCart(<?= $product['product_id'] ?>)" 

@@ -88,14 +88,26 @@ class User extends db_connection
         return $stmt->get_result()->fetch_assoc();
     }
 
-    public function updateCustomer($customerId, $name, $contact, $country, $city, $service_type = null)
+    public function updateCustomer($customerId, $name, $contact, $country, $city, $service_type = null, $image = null)
     {
-        if ($service_type !== null) {
-            $stmt = $this->db->prepare("UPDATE customer SET customer_name = ?, customer_contact = ?, customer_country = ?, customer_city = ?, service_type = ? WHERE customer_id = ?");
-            $stmt->bind_param("sssssi", $name, $contact, $country, $city, $service_type, $customerId);
+        if ($image !== null) {
+            // Update with image
+            if ($service_type !== null) {
+                $stmt = $this->db->prepare("UPDATE customer SET customer_name = ?, customer_contact = ?, customer_country = ?, customer_city = ?, service_type = ?, customer_image = ? WHERE customer_id = ?");
+                $stmt->bind_param("ssssssi", $name, $contact, $country, $city, $service_type, $image, $customerId);
+            } else {
+                $stmt = $this->db->prepare("UPDATE customer SET customer_name = ?, customer_contact = ?, customer_country = ?, customer_city = ?, customer_image = ? WHERE customer_id = ?");
+                $stmt->bind_param("sssssi", $name, $contact, $country, $city, $image, $customerId);
+            }
         } else {
-            $stmt = $this->db->prepare("UPDATE customer SET customer_name = ?, customer_contact = ?, customer_country = ?, customer_city = ? WHERE customer_id = ?");
-            $stmt->bind_param("ssssi", $name, $contact, $country, $city, $customerId);
+            // Update without image
+            if ($service_type !== null) {
+                $stmt = $this->db->prepare("UPDATE customer SET customer_name = ?, customer_contact = ?, customer_country = ?, customer_city = ?, service_type = ? WHERE customer_id = ?");
+                $stmt->bind_param("sssssi", $name, $contact, $country, $city, $service_type, $customerId);
+            } else {
+                $stmt = $this->db->prepare("UPDATE customer SET customer_name = ?, customer_contact = ?, customer_country = ?, customer_city = ? WHERE customer_id = ?");
+                $stmt->bind_param("ssssi", $name, $contact, $country, $city, $customerId);
+            }
         }
         return $stmt->execute();
     }

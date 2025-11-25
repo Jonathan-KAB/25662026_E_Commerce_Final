@@ -41,10 +41,10 @@ function get_customer_by_id_ctr($customerId)
 }
 
 // update customer profile
-function update_customer_ctr($customerId, $name, $contact, $country, $city, $service_type = null)
+function update_customer_ctr($customerId, $name, $contact, $country, $city, $service_type = null, $image = null)
 {
     $user = new User();
-    return $user->updateCustomer($customerId, $name, $contact, $country, $city, $service_type);
+    return $user->updateCustomer($customerId, $name, $contact, $country, $city, $service_type, $image);
 }
 
 ?>

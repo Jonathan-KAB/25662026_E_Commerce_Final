@@ -26,7 +26,7 @@ if (!empty($product['seller_id'])) {
     $db->db_connect();
     
     // Simple query - just get customer info
-    $seller_sql = "SELECT customer_id, customer_name, customer_email
+    $seller_sql = "SELECT customer_id, customer_name, customer_email, customer_image
                    FROM customer
                    WHERE customer_id = {$product['seller_id']}";
     
@@ -292,6 +292,7 @@ if (isset($_SESSION['customer_id']) && $check_table) {
             height: 40px;
             border-radius: 50%;
             object-fit: cover;
+            flex-shrink: 0;
         }
 
         .seller-avatar {
@@ -304,6 +305,7 @@ if (isset($_SESSION['customer_id']) && $check_table) {
             align-items: center;
             justify-content: center;
             font-weight: bold;
+            flex-shrink: 0;
         }
 
         .seller-info {
@@ -797,28 +799,24 @@ if (isset($_SESSION['customer_id']) && $check_table) {
                 <?php if ($seller_info): ?>
                 <div class="product-seller">
                     <div class="seller-content">
-                        <?php if (!empty($seller_info['store_logo'])): ?>
+                        <?php if (!empty($seller_info['customer_image'])): ?>
                             <?php
-                            // Handle seller logo path for Ashesi server
-                            $logoPath = $seller_info['store_logo'];
-                            if (strpos($logoPath, '/uploads') === 0) {
-                                // Already absolute path
-                                $logoSrc = htmlspecialchars($logoPath);
-                            } elseif (strpos($logoPath, 'uploads/') === 0) {
-                                // Make absolute from root
-                                $logoSrc = '/' . htmlspecialchars($logoPath);
+                            // Handle seller image path - same as seller_profile.php
+                            $imagePath = $seller_info['customer_image'];
+                            if (strpos($imagePath, '/uploads') === 0) {
+                                // Already absolute path from root
+                                $imageSrc = htmlspecialchars($imagePath);
+                            } elseif (strpos($imagePath, 'uploads/') === 0) {
+                                // Relative path - prepend ../
+                                $imageSrc = '../' . htmlspecialchars($imagePath);
                             } else {
-                                // Assume it's just a filename
-                                $logoSrc = '/uploads/' . htmlspecialchars($logoPath);
+                                // Fallback
+                                $imageSrc = '../' . htmlspecialchars($imagePath);
                             }
                             ?>
-                            <img src="<?= $logoSrc ?>" 
-                                 alt="Vendor Logo" 
-                                 class="seller-logo"
-                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                            <div class="seller-avatar" style="display: none;">
-                                <?= strtoupper(substr($seller_info['customer_name'], 0, 1)) ?>
-                            </div>
+                            <img src="<?= $imageSrc ?>" 
+                                 alt="<?= htmlspecialchars($seller_info['customer_name']) ?>" 
+                                 class="seller-logo">
                         <?php else: ?>
                             <div class="seller-avatar">
                                 <?= strtoupper(substr($seller_info['customer_name'], 0, 1)) ?>
@@ -828,16 +826,8 @@ if (isset($_SESSION['customer_id']) && $check_table) {
                             <div class="seller-label">Supplied by</div>
                             <div class="seller-details">
                                 <a href="seller_profile.php?id=<?= $seller_info['customer_id'] ?>" class="seller-name">
-                                    <?= htmlspecialchars($seller_info['store_name'] ?? $seller_info['customer_name']) ?>
+                                    <?= htmlspecialchars($seller_info['customer_name']) ?>
                                 </a>
-                                <?php if ($seller_info['verified']): ?>
-                                    <span class="seller-verified">✓ Verified Vendor</span>
-                                <?php endif; ?>
-                                <?php if ($seller_info['rating_average'] > 0): ?>
-                                    <span class="seller-rating">
-                                        ★ <?= number_format($seller_info['rating_average'], 1) ?>
-                                    </span>
-                                <?php endif; ?>
                             </div>
                         </div>
                     </div>

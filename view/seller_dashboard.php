@@ -66,6 +66,14 @@ $sellerOrders = get_orders_by_seller_ctr($_SESSION['customer_id']);
                     <p style="color: var(--gray-600);"><?= $is_service_provider ? 'Total Revenue' : 'Total Sales' ?></p>
                 </div>
             </div>
+            <div class="card">
+                <div class="card-body" style="text-align: center;">
+                    <div style="font-size: 48px; color: var(--gray-600); margin-bottom: 16px;"><i class="fas fa-user-circle"></i></div>
+                    <h3 class="card-title">Profile</h3>
+                    <p style="color: var(--gray-600); margin-bottom: 20px;">Manage your account</p>
+                    <a href="profile.php" class="btn btn-primary">Edit Profile</a>
+                </div>
+            </div>
         </div>
 
         <div class="card" style="margin-bottom: 40px;">
@@ -172,5 +180,8 @@ $sellerOrders = get_orders_by_seller_ctr($_SESSION['customer_id']);
             </div>
         </div>
     </div>
+
+    <!-- Footer Spacing -->
+    <div style="height: 60px;"></div>
 </body>
 </html>
