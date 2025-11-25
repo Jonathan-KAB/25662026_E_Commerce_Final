@@ -4,7 +4,7 @@
  * Handles adding items to the cart
  */
 
-session_start();
+require_once __DIR__ . '/../settings/core.php';
 require_once __DIR__ . '/../controllers/cart_controller.php';
 
 header('Content-Type: application/json');
