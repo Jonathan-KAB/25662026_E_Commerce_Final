@@ -224,9 +224,9 @@ Edit `settings/upload_config.php` to configure image uploads:
 
 ## Known Issues
 
--- ~~Fix logout functionality when going back to register page~~ Fixed
+- ~~Fix logout functionality when going back to register page~~ Fixed
 - Email notifications aren't hooked up yet
--- ~~Multiple product images work on the backend but need frontend work~~
+- ~~Multiple product images work on the backend but need frontend work~~
 
 ## Recent Updates
 
