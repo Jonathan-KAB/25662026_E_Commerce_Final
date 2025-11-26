@@ -779,9 +779,9 @@ if (isset($_SESSION['customer_id']) && $check_table) {
                         }
                         ?>
                     <?php else: ?>
-                        <img src="/uploads/placeholder.jpg" 
-                             alt="Product placeholder"
-                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22500%22 height=%22500%22%3E%3Crect fill=%22%23ddd%22 width=%22500%22 height=%22500%22/%3E%3Ctext fill=%22%23999%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 font-size=%2224%22%3ENo Image Available%3C/text%3E%3C/svg%3E'">
+                        <div role="img" aria-label="No image available" class="product-placeholder" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#f0f0f0;border-radius:8px;">
+                            <i class="fas fa-image" style="font-size:64px;color:#9ca3af;"></i>
+                        </div>
                     <?php endif; ?>
                 </div>
             </div>
@@ -853,7 +853,7 @@ if (isset($_SESSION['customer_id']) && $check_table) {
                                 ✓ Available for Production
                             </div>
                             <div style="color: #6b21a8; font-size: 16px;">
-                                This service is ready to fulfill your custom orders
+                                This service provider is ready to fulfill your custom orders
                             </div>
                         <?php elseif ($product['product_stock'] > 0): ?>
                             <?php if ($product['product_stock'] <= 10): ?>
@@ -1392,5 +1392,7 @@ if (isset($_SESSION['customer_id']) && $check_table) {
             });
         }
     </script>
-</body>
-</html>
+        <!-- Footer Spacing -->
+        <div style="height: 60px;"></div>
+    </body>
+    </html>

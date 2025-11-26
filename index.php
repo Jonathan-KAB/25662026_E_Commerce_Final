@@ -475,9 +475,9 @@ if (!$featured_products) {
 			
 			<div class="featured-grid">
 				<?php if ($featured_products && count($featured_products) > 0): ?>
-					<?php foreach ($featured_products as $product): ?>
+					<?php $fp_index = 0; foreach ($featured_products as $product): ?>
 						<div class="featured-card">
-							<?php if (!empty($product['product_image'])): ?>
+								<?php if (!empty($product['product_image'])): ?>
 								<?php
 								// Handle image paths more robustly
 								$imagePath = $product['product_image'];
@@ -496,14 +496,22 @@ if (!$featured_products) {
 								}
 								?>
 								<img src="<?= htmlspecialchars($imageUrl) ?>" 
-								     alt="<?= htmlspecialchars($product['product_title']) ?>"
-								     style="object-fit: cover;"
-								     onerror="console.log('Failed to load: <?= htmlspecialchars($imageUrl) ?>'); this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22200%22%3E%3Crect fill=%22%23e0e0e0%22 width=%22300%22 height=%22200%22/%3E%3Ctext fill=%22%23999%22 font-family=%22Arial%22 font-size=%2218%22 x=%2250%25%22 y=%2245%25%22 text-anchor=%22middle%22%3E%F0%9F%93%A6 No Image%3C/text%3E%3Ctext fill=%22%23999%22 font-family=%22Arial%22 font-size=%2214%22 x=%2250%25%22 y=%2260%25%22 text-anchor=%22middle%22%3E<?= htmlspecialchars(substr($product['product_title'], 0, 20)) ?>%3C/text%3E%3C/svg%3E';">
+									alt="<?= htmlspecialchars($product['product_title']) ?>"
+									style="object-fit: cover;"
+									onerror="console.log('Failed to load: <?= htmlspecialchars($imageUrl) ?>'); this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22200%22%3E%3Crect fill=%22%23e0e0e0%22 width=%22300%22 height=%22200%22/%3E%3Ctext fill=%22%23999%22 font-family=%22Arial%22 font-size=%2218%22 x=%2250%25%22 y=%2245%25%22 text-anchor=%22middle%22%3E%F0%9F%93%A6 No Image%3C/text%3E%3Ctext fill=%22%23999%22 font-family=%22Arial%22 font-size=%2214%22 x=%2250%25%22 y=%2260%25%22 text-anchor=%22middle%22%3E<?= htmlspecialchars(substr($product['product_title'], 0, 20)) ?>%3C/text%3E%3C/svg%3E';">
 							<?php else: ?>
-								<img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22200%22%3E%3Crect fill=%22%23e0e0e0%22 width=%22300%22 height=%22200%22/%3E%3Ctext fill=%22%23999%22 font-family=%22Arial%22 font-size=%2224%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3E%F0%9F%93%A6 No Image%3C/text%3E%3C/svg%3E" 
-								     alt="No image available"
-								     style="object-fit: cover;">
+								<?php if ($fp_index === 1): ?>
+									<!-- Second featured card: show Font Awesome placeholder when no image uploaded -->
+									<div role="img" aria-label="No image available" class="product-placeholder" style="width:100%;height:200px;display:flex;align-items:center;justify-content:center;background:#e0e0e0;">
+										<i class="fas fa-image" style="font-size:48px;color:#9ca3af;"></i>
+									</div>
+								<?php else: ?>
+									<img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22200%22%3E%3Crect fill=%22%23e0e0e0%22 width=%22300%22 height=%22200%22/%3E%3Ctext fill=%22%23999%22 font-family=%22Arial%22 font-size=%2224%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3E%F0%9F%93%A6 No Image%3C/text%3E%3C/svg%3E" 
+										 alt="No image available"
+										 style="object-fit: cover;">
+								<?php endif; ?>
 							<?php endif; ?>
+							<?php $fp_index++; ?>
 							
 							<div class="featured-card-body">
 								<?php if ($product['rating_count'] >= 5): ?>

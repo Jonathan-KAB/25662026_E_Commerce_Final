@@ -55,6 +55,11 @@ $brands = $db->db_fetch_all("SELECT brand_id, brand_name FROM brands ORDER BY br
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>All Products - SeamLink</title>
     <link rel="stylesheet" href="../css/app.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .product-placeholder{height:220px;display:flex;align-items:center;justify-content:center;background:#f3f4f6;color:#9ca3af;width:100%;}
+        .product-placeholder i{font-size:36px}
+    </style>
 </head>
 <body>
     <?php include __DIR__ . '/includes/menu.php'; ?>
@@ -226,10 +231,8 @@ $brands = $db->db_fetch_all("SELECT brand_id, brand_name FROM brands ORDER BY br
                             }
                             ?>
                         <?php else: ?>
-                            <div class="product-image-placeholder">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                </svg>
+                            <div class="product-placeholder" role="img" aria-label="No image available">
+                                <i class="fa fa-image" aria-hidden="true"></i>
                             </div>
                         <?php endif; ?>
                         <div class="card-body">

@@ -189,5 +189,7 @@ $customer = get_customer_by_id_ctr($customerId);
         };
     </script>
     <script src="../js/checkout.js"></script>
+    <!-- Footer Spacing -->
+    <div style="height: 60px;"></div>
 </body>
 </html>

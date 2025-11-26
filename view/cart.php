@@ -215,5 +215,7 @@ $cartCount = get_cart_count_ctr($ipAddress, $customerId); // Get actual quantity
             <?php endif; ?>
         }
     </script>
+    <!-- Footer Spacing -->
+    <div style="height: 60px;"></div>
 </body>
 </html>

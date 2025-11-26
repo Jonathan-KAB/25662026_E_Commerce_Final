@@ -170,5 +170,7 @@ if (!$canView || !$order) {
             </div>
         </div>
     </div>
+    <!-- Footer Spacing -->
+    <div style="height: 60px;"></div>
 </body>
 </html>

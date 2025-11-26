@@ -9,8 +9,11 @@
 	<title>Products</title>
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 	<link href="../css/app.css" rel="stylesheet">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 	<style>
-		.product-image{height:150px;object-fit:cover;width:100%;}
+		.product-image{height:220px;object-fit:cover;width:100%;}
+		.product-placeholder{height:220px;display:flex;align-items:center;justify-content:center;background:#f3f4f6;color:#9ca3af;width:100%;}
+		.product-placeholder i{font-size:28px}
 	</style>
 </head>
 <body>
@@ -54,9 +57,8 @@
 			var html = '';
 			if (Array.isArray(data) && data.length) {
 				data.forEach(function(p){
-					// Use local inline SVG placeholder when no image is provided (avoids external DNS lookups)
-					var placeholderSvg = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="600" height="300" viewBox="0 0 600 300"><rect width="100%" height="100%" fill="#f3f4f6"/><g fill="#9ca3af"><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="20">No Image</text></g></svg>');
-					var img = p.product_image ? ('../' + p.product_image) : placeholderSvg;
+					// Use Font Awesome placeholder when no image is provided
+					var imgHtml = p.product_image ? ('<img src="' + ('../' + p.product_image) + '" class="card-img-top" alt="' + (p.product_title || '') + '">') : '<div class="product-placeholder" role="img" aria-label="No image available"><i class="fa fa-image" aria-hidden="true"></i></div>';
 					// Safely build a short description (escape HTML and truncate)
 					var rawDesc = p.product_desc || p.description || '';
 					var escapedDesc = $('<div>').text(rawDesc).html();
@@ -67,7 +69,7 @@
 										<div class="position-relative">
 											<span class="product-badge">${p.brand_name || ''}</span>
 											<span class="product-like">❤</span>
-											<img src="${img}" class="card-img-top" alt="${p.product_title || ''}">
+											${imgHtml}
 										</div>
 										<div class="card-body">
 											<div class="product-meta mb-1">${p.cat_name || ''}</div>
@@ -91,5 +93,7 @@
 		});
 	});
 	</script>
-</body>
-</html>
+	<!-- Footer Spacing -->
+	<div style="height: 60px;"></div>
+	</body>
+	</html>

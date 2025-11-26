@@ -103,5 +103,7 @@ $errorMessage = isset($_GET['message']) ? htmlspecialchars($_GET['message']) : '
             <a href="cart.php" class="btn btn-secondary">Back to Cart</a>
         </div>
     </div>
+    <!-- Footer Spacing -->
+    <div style="height: 60px;"></div>
 </body>
 </html>

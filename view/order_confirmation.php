@@ -145,5 +145,7 @@ if (!$order || $order['customer_id'] != $customerId) {
         // Clear sessionStorage checkout data
         sessionStorage.removeItem('checkout_cart');
     </script>
+    <!-- Footer Spacing -->
+    <div style="height: 60px;"></div>
 </body>
 </html>

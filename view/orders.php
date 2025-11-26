@@ -84,5 +84,7 @@ $orders = get_orders_by_customer_ctr($_SESSION['customer_id']);
             <a href="dashboard.php" class="btn btn-outline-secondary">Back to Dashboard</a>
         </div>
     </div>
+    <!-- Footer Spacing -->
+    <div style="height: 60px;"></div>
 </body>
 </html>

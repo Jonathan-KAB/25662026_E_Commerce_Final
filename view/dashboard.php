@@ -37,6 +37,40 @@ $recentOrders = array_slice($orders, 0, 5);
     <title>Dashboard - SeamLink</title>
     <link rel="stylesheet" href="../css/app.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Dashboard - Recent Orders empty state */
+        .recent-empty {
+            text-align: center;
+            padding: 32px 20px;
+            color: var(--gray-600);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        .recent-empty .icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: var(--gray-100);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray-400);
+            font-size: 32px;
+            box-shadow: var(--shadow-sm);
+        }
+        .recent-empty h4 {
+            margin: 0;
+            font-size: 1.25rem;
+            color: var(--gray-700);
+            font-weight: 600;
+        }
+        .recent-empty p { margin: 0; }
+        .recent-empty a.cta { margin-top: 8px; padding: 8px 18px; border-radius: 8px; text-decoration: none; color: white; background: var(--primary); }
+        .recent-empty a.cta:hover { opacity: 0.95; }
+    </style>
 </head>
 <body>
     <?php include __DIR__ . '/includes/menu.php'; ?>
@@ -81,11 +115,14 @@ $recentOrders = array_slice($orders, 0, 5);
                 <h3 style="margin: 0;">Recent Orders</h3>
             </div>
             <div class="card-body">
-                <?php if (empty($recentOrders)): ?>
-                    <p style="color: var(--gray-600); text-align: center; padding: 20px;">
-                        No orders yet. <a href="all_product.php">Start shopping!</a>
-                    </p>
-                <?php else: ?>
+                        <?php if (empty($recentOrders)): ?>
+                            <div class="recent-empty">
+                                <div class="icon"> <i class="fas fa-box-open"></i> </div>
+                                <h4>No orders yet</h4>
+                                <p>Start shopping to see your orders here. Your recent purchases will appear in this list.</p>
+                                <a href="all_product.php" class="cta">Start shopping</a>
+                            </div>
+                        <?php else: ?>
                     <div style="overflow-x: auto;">
                         <table style="width: 100%; border-collapse: collapse;">
                             <thead>
@@ -156,5 +193,8 @@ $recentOrders = array_slice($orders, 0, 5);
             </div>
         </div>
     </div>
+</div>
+    <!-- Footer Spacing -->
+    <div style="height: 60px;"></div>
 </body>
 </html>

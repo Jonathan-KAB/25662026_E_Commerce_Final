@@ -280,7 +280,7 @@ $brands = $db->db_fetch_all("SELECT brand_id, brand_name FROM brands ORDER BY br
 
         .product-image {
             width: 100%;
-            height: 200px;
+            height: 220px;
             object-fit: cover;
             background-color: #f0f0f0;
         }
@@ -572,9 +572,9 @@ $brands = $db->db_fetch_all("SELECT brand_id, brand_name FROM brands ORDER BY br
                                 <img src="../uploads/<?= htmlspecialchars($product['product_image']) ?>" 
                                      alt="<?= htmlspecialchars($product['product_title']) ?>">
                             <?php else: ?>
-                                <img src="../uploads/placeholder.jpg" 
-                                     alt="Product placeholder"
-                                     onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22%3E%3Crect fill=%22%23ddd%22 width=%22200%22 height=%22200%22/%3E%3Ctext fill=%22%23999%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ENo Image%3C/text%3E%3C/svg%3E'">
+                                <div role="img" aria-label="No image available" class="product-placeholder" style="width:100%;height:220px;display:flex;align-items:center;justify-content:center;background:#f0f0f0;">
+                                    <i class="fas fa-image" style="font-size:36px;color:#9ca3af;"></i>
+                                </div>
                             <?php endif; ?>
                         </div>
                         <div class="product-info">
@@ -672,6 +672,7 @@ $brands = $db->db_fetch_all("SELECT brand_id, brand_name FROM brands ORDER BY br
                 }
             });
         }
-    </script>
+    <!-- Footer Spacing -->
+    <div style="height: 60px;"></div>
 </body>
 </html>

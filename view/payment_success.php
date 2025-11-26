@@ -116,5 +116,7 @@ $amount = isset($_GET['amount']) ? htmlspecialchars($_GET['amount']) : '0.00';
             <a href="all_product.php" class="btn btn-secondary">Continue Shopping</a>
         </div>
     </div>
-</body>
-</html>
+        <!-- Footer Spacing -->
+        <div style="height: 60px;"></div>
+    </body>
+    </html>
