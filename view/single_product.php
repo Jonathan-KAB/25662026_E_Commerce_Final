@@ -844,37 +844,37 @@ if (isset($_SESSION['customer_id']) && $check_table) {
                     <div style="margin: 20px 0; padding: 15px; border-radius: 8px; 
                         <?php if ($product['product_stock'] >= 999): ?>
                             background: #f3f0ff; border: 1px solid #d8b4fe;
-                        <?php elseif ($product['product_stock'] > 0): ?>
+                        <?php elseif ($product['product_stock'] > 0 && $product['product_stock'] <= 10): ?>
+                            background: #f8d7da; border: 1px solid #f5c6cb;
+                        <?php elseif ($product['product_stock'] > 10): ?>
                             background: #d4edda; border: 1px solid #c3e6cb;
                         <?php else: ?>
                             background: #f8d7da; border: 1px solid #f5c6cb;
                         <?php endif; ?>">
                         <?php if ($product['product_stock'] >= 999): ?>
                             <div style="color: #7c3aed; font-size: 18px; font-weight: 700; margin-bottom: 5px;">
-                                ✓ Available for Production
+                                <i class="fas fa-check-circle" style="margin-right:6px;color:inherit;"></i> Available for Production
                             </div>
                             <div style="color: #6b21a8; font-size: 16px;">
                                 This service provider is ready to fulfill your custom orders
                             </div>
-                        <?php elseif ($product['product_stock'] > 0): ?>
-                            <?php if ($product['product_stock'] <= 10): ?>
-                                <div style="color: #dc3545; font-size: 18px; font-weight: 700; margin-bottom: 5px;">
-                                    ⚠️ Limited Stock!
-                                </div>
-                                <div style="color: #721c24; font-size: 16px;">
-                                    Only <strong><?= $product['product_stock'] ?></strong> units remaining
-                                </div>
-                            <?php else: ?>
-                                <div style="color: #155724; font-size: 18px; font-weight: 700; margin-bottom: 5px;">
-                                    ✓ In Stock
-                                </div>
-                                <div style="color: #155724; font-size: 16px;">
-                                    <strong><?= $product['product_stock'] ?></strong> units available
-                                </div>
-                            <?php endif; ?>
+                        <?php elseif ($product['product_stock'] > 0 && $product['product_stock'] <= 10): ?>
+                            <div style="color: #721c24; font-size: 18px; font-weight: 700; margin-bottom: 5px;">
+                                <i class="fas fa-exclamation-triangle" style="margin-right:6px;color:inherit;"></i> Limited Stock!
+                            </div>
+                            <div style="color: #721c24; font-size: 16px;">
+                                Only <strong><?= $product['product_stock'] ?></strong> units remaining
+                            </div>
+                        <?php elseif ($product['product_stock'] > 10): ?>
+                            <div style="color: #155724; font-size: 18px; font-weight: 700; margin-bottom: 5px;">
+                                <i class="fas fa-check-circle" style="margin-right:6px;color:inherit;"></i> In Stock
+                            </div>
+                            <div style="color: #155724; font-size: 16px;">
+                                <strong><?= $product['product_stock'] ?></strong> units available
+                            </div>
                         <?php else: ?>
                             <div style="color: #721c24; font-size: 18px; font-weight: 700; margin-bottom: 5px;">
-                                ❌ Out of Stock
+                                <i class="fas fa-times-circle" style="margin-right:6px;color:inherit;"></i> Out of Stock
                             </div>
                             <div style="color: #721c24; font-size: 16px;">
                                 This item is currently unavailable
@@ -1028,9 +1028,9 @@ if (isset($_SESSION['customer_id']) && $check_table) {
             <div class="reviews-list">
                 <h3 style="margin-bottom: 20px;">Customer Reviews</h3>
                 
-                <?php if (empty($reviews)): ?>
+                    <?php if (empty($reviews)): ?>
                     <div class="no-reviews">
-                        <div style="font-size: 48px; margin-bottom: 12px;">💬</div>
+                        <div style="font-size: 48px; margin-bottom: 12px;"><i class="fas fa-comments" style="color:#9ca3af;"></i></div>
                         <h4 style="margin-bottom: 8px; color: #666;">No reviews yet</h4>
                         <p>Be the first to share your thoughts about this product!</p>
                     </div>
@@ -1046,7 +1046,7 @@ if (isset($_SESSION['customer_id']) && $check_table) {
                                     <h4>
                                         <?= htmlspecialchars($review['customer_name']) ?>
                                         <?php if (isset($review['verified_purchase']) && $review['verified_purchase']): ?>
-                                            <span class="verified-badge">✓ Verified Purchase</span>
+                                            <span class="verified-badge"><i class="fas fa-check-circle" aria-hidden="true" style="margin-right:6px;"></i> Verified Purchase</span>
                                         <?php endif; ?>
                                     </h4>
                                     <div class="review-meta">

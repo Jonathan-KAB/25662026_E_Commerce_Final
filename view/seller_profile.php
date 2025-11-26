@@ -227,7 +227,7 @@ if (empty($total_reviews)) {
                     <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
                         <h1 style="margin: 0;"><?= htmlspecialchars($seller['store_name'] ?? $seller['customer_name']) ?></h1>
                         <?php if ($seller['verified']): ?>
-                            <span class="verified-badge">✓ Verified Seller</span>
+                            <span class="verified-badge"><i class="fas fa-check-circle" aria-hidden="true" style="margin-right:6px;"></i> Verified Seller</span>
                         <?php endif; ?>
                         <?php 
                         // Check if this is a service provider (role 4)
@@ -261,18 +261,21 @@ if (empty($total_reviews)) {
                     <!-- Contact Info -->
                     <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 16px;">
                         <?php if ($seller['contact_phone'] ?? $seller['customer_contact']): ?>
-                            <span style="color: var(--gray-600); font-size: 0.9375rem;">
-                                📞 <?= htmlspecialchars($seller['contact_phone'] ?? $seller['customer_contact']) ?>
+                            <span style="color: var(--gray-600); font-size: 0.9375rem; display: inline-flex; gap:8px; align-items:center;">
+                                <i class="fas fa-phone" style="color:var(--primary);"></i>
+                                <?= htmlspecialchars($seller['contact_phone'] ?? $seller['customer_contact']) ?>
                             </span>
                         <?php endif; ?>
                         <?php if ($seller['contact_email'] ?? $seller['customer_email']): ?>
-                            <span style="color: var(--gray-600); font-size: 0.9375rem;">
-                                ✉️ <?= htmlspecialchars($seller['contact_email'] ?? $seller['customer_email']) ?>
+                            <span style="color: var(--gray-600); font-size: 0.9375rem; display: inline-flex; gap:8px; align-items:center;">
+                                <i class="fas fa-envelope" style="color:var(--primary);"></i>
+                                <?= htmlspecialchars($seller['contact_email'] ?? $seller['customer_email']) ?>
                             </span>
                         <?php endif; ?>
                         <?php if ($seller['business_address'] ?? ($seller['customer_city'] . ', ' . $seller['customer_country'])): ?>
-                            <span style="color: var(--gray-600); font-size: 0.9375rem;">
-                                📍 <?= htmlspecialchars($seller['business_address'] ?? ($seller['customer_city'] . ', ' . $seller['customer_country'])) ?>
+                            <span style="color: var(--gray-600); font-size: 0.9375rem; display: inline-flex; gap:8px; align-items:center;">
+                                <i class="fas fa-map-marker-alt" style="color:var(--primary);"></i>
+                                <?= htmlspecialchars($seller['business_address'] ?? ($seller['customer_city'] . ', ' . $seller['customer_country'])) ?>
                             </span>
                         <?php endif; ?>
                     </div>
@@ -301,7 +304,7 @@ if (empty($total_reviews)) {
                     <div class="stat-label"><?= $is_service_provider ? 'Service Listings' : 'Products' ?></div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-value"><?= number_format($seller['rating_average'] ?? 0, 1) ?> ⭐</div>
+                    <div class="stat-value"><?= number_format($seller['rating_average'] ?? 0, 1) ?> <i class="fas fa-star" style="color:var(--primary);"></i></div>
                     <div class="stat-label">Rating</div>
                 </div>
                 <div class="stat-card">
@@ -319,10 +322,10 @@ if (empty($total_reviews)) {
         <div style="margin-bottom: 60px;">
             <h2 style="margin-bottom: 24px;"><?= $is_service_provider ? 'Services from this Provider' : 'Products from this Store' ?></h2>
             
-            <?php if (empty($products)): ?>
+                    <?php if (empty($products)): ?>
                 <div class="card">
                     <div class="card-body" style="text-align: center; padding: 60px 20px;">
-                        <div style="font-size: 64px; margin-bottom: 16px;">📦</div>
+                        <div style="font-size: 64px; margin-bottom: 16px;"><i class="fas fa-box" style="color:var(--gray-400);"></i></div>
                         <h3 style="color: var(--gray-600); margin-bottom: 12px;">No Products Yet</h3>
                         <p style="color: var(--gray-500);">This seller hasn't listed any products yet.</p>
                     </div>
@@ -345,7 +348,7 @@ if (empty($total_reviews)) {
                                 ?>
                                 <img src="<?= $prodImageSrc ?>" alt="<?= htmlspecialchars($product['product_title']) ?>">
                             <?php else: ?>
-                                <div class="product-image-placeholder">📦</div>
+                                <div class="product-image-placeholder"><i class="fas fa-box" style="font-size:28px;color:var(--gray-400);"></i></div>
                             <?php endif; ?>
                             
                             <div class="card-body">
@@ -363,7 +366,7 @@ if (empty($total_reviews)) {
 
                                 <?php if ($product['review_count'] > 0): ?>
                                     <div style="font-size: 0.875rem; color: var(--gray-600); margin-bottom: 8px;">
-                                        ⭐ <?= number_format($product['avg_rating'], 1) ?> (<?= $product['review_count'] ?> reviews)
+                                        <i class="fas fa-star" style="color:var(--primary);"></i> <?= number_format($product['avg_rating'], 1) ?> (<?= $product['review_count'] ?> reviews)
                                     </div>
                                 <?php endif; ?>
                                 
@@ -374,16 +377,16 @@ if (empty($total_reviews)) {
                                     <?php if ($product['product_stock'] > 0): ?>
                                         <?php if ($product['product_stock'] <= 10): ?>
                                             <div style="color: #dc3545; font-size: 0.875rem; font-weight: 600; margin: 8px 0;">
-                                                ⚠️ Only <?= $product['product_stock'] ?> left!
+                                                <i class="fas fa-exclamation-triangle" style="margin-right:6px;color:inherit;"></i> Only <?= $product['product_stock'] ?> left!
                                             </div>
                                         <?php else: ?>
                                             <div style="color: #28a745; font-size: 0.875rem; margin: 8px 0;">
-                                                ✓ In Stock (<?= $product['product_stock'] ?> available)
+                                                <i class="fas fa-check-circle" style="margin-right:6px;color:inherit;"></i> In Stock (<?= $product['product_stock'] ?> available)
                                             </div>
                                         <?php endif; ?>
                                     <?php else: ?>
                                         <div style="color: #dc3545; font-size: 0.875rem; font-weight: 600; margin: 8px 0;">
-                                            ❌ Out of Stock
+                                            <i class="fas fa-times-circle" style="margin-right:6px;color:inherit;"></i> Out of Stock
                                         </div>
                                     <?php endif; ?>
                                 <?php endif; ?>

@@ -161,7 +161,7 @@ $customer = get_customer_by_id_ctr($customerId);
                         
                         <!-- Hidden button that shows after PayStack redirect -->
                         <button type="button" id="verifyPayment" class="btn btn-success btn-block" style="margin-top: 12px; display: none;">
-                            ✓ I've Completed Payment - Verify Now
+                            <i class="fas fa-check-circle" style="margin-right:8px;color:inherit;"></i> I've Completed Payment - Verify Now
                         </button>
                         
                         <a href="cart.php" class="btn btn-outline-secondary btn-block" style="margin-top: 12px;">
@@ -169,7 +169,7 @@ $customer = get_customer_by_id_ctr($customerId);
                         </a>
                         
                         <div id="paymentInstructions" style="display: none; margin-top: 16px; padding: 12px; background: #fff3cd; border: 1px solid #ffc107; border-radius: 6px; font-size: 0.875rem;">
-                            <strong>📌 Payment Window Opened</strong><br>
+                            <strong><i class="fas fa-thumbtack" style="margin-right:8px;color:inherit;"></i> Payment Window Opened</strong><br>
                             After completing payment on PayStack, close the payment window or click the "X" button. Then click the "Verify Now" button above.
                         </div>
                     </div>

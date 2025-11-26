@@ -67,7 +67,7 @@ $brands = $db->db_fetch_all("SELECT brand_id, brand_name FROM brands ORDER BY br
     <!-- Success Message for Payment -->
     <?php if (isset($_GET['payment_success'])): ?>
     <div id="paymentSuccessAlert" style="background: #d4edda; border: 1px solid #c3e6cb; color: #155724; padding: 16px 20px; text-align: center; position: sticky; top: 0; z-index: 999;">
-        <strong>✓ Payment Successful!</strong> Your order has been confirmed. 
+        <strong><i class="fas fa-check-circle" style="margin-right:8px;color:inherit;"></i> Payment Successful!</strong> Your order has been confirmed. 
         <?php if (isset($_GET['order_id'])): ?>
             <a href="orders.php" style="color: #155724; text-decoration: underline; margin-left: 8px;">View Order Details</a>
         <?php endif; ?>
@@ -293,16 +293,16 @@ $brands = $db->db_fetch_all("SELECT brand_id, brand_name FROM brands ORDER BY br
                                 <?php elseif ($product['product_stock'] > 0): ?>
                                     <?php if ($product['product_stock'] <= 10): ?>
                                         <div style="color: #dc3545; font-size: 0.875rem; font-weight: 600; margin: 8px 0;">
-                                            ⚠️ Only <?= $product['product_stock'] ?> left!
+                                            <i class="fas fa-exclamation-triangle" style="margin-right:6px;color:inherit;"></i> Only <?= $product['product_stock'] ?> left!
                                         </div>
                                     <?php else: ?>
                                         <div style="color: #28a745; font-size: 0.875rem; margin: 8px 0;">
-                                            ✓ In Stock (<?= $product['product_stock'] ?> available)
+                                            <i class="fas fa-check-circle" style="margin-right:6px;color:inherit;"></i> In Stock (<?= $product['product_stock'] ?> available)
                                         </div>
                                     <?php endif; ?>
                                 <?php else: ?>
                                     <div style="color: #dc3545; font-size: 0.875rem; font-weight: 600; margin: 8px 0;">
-                                        ❌ Out of Stock
+                                        <i class="fas fa-times-circle" style="margin-right:6px;color:inherit;"></i> Out of Stock
                                     </div>
                                 <?php endif; ?>
                             <?php endif; ?>

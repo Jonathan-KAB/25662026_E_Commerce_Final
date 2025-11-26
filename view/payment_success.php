@@ -14,6 +14,7 @@ $amount = isset($_GET['amount']) ? htmlspecialchars($_GET['amount']) : '0.00';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Payment Successful - SeamLink</title>
     <link rel="stylesheet" href="../css/app.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         .success-container {
             max-width: 600px;
@@ -96,7 +97,7 @@ $amount = isset($_GET['amount']) ? htmlspecialchars($_GET['amount']) : '0.00';
 </head>
 <body>
     <div class="success-container">
-        <div class="success-icon">✓</div>
+        <div class="success-icon"><i class="fas fa-check-circle" aria-hidden="true"></i></div>
         <h1 class="success-title">Payment Successful!</h1>
         <p class="success-message">Your order has been placed successfully.</p>
         

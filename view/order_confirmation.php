@@ -64,8 +64,8 @@ if (!$order || $order['customer_id'] != $customerId) {
 
     <div class="container" style="margin-top: 60px; margin-bottom: 60px; max-width: 800px;">
         <div class="card">
-            <div class="card-body" style="text-align: center; padding: 48px 32px;">
-                <div class="success-icon">✓</div>
+                <div class="card-body" style="text-align: center; padding: 48px 32px;">
+                <div class="success-icon"><i class="fas fa-check" aria-hidden="true"></i></div>
                 <h1 style="margin-bottom: 12px;">Order Confirmed!</h1>
                 <p style="color: var(--gray-600); margin-bottom: 32px;">Thank you for your order. We'll send you a confirmation email shortly.</p>
                 
