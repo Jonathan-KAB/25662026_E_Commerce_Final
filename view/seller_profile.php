@@ -77,6 +77,42 @@ if ($check_reviews_table) {
     $review_stats = $db->db_fetch_one($reviews_sql);
     $total_reviews = $review_stats['total'] ?? 0;
 }
+
+// Calculate seller's overall rating (average across all product reviews)
+$seller['rating_average'] = 0;
+if ($check_reviews_table) {
+    // Check if product_reviews has a status column and only consider approved reviews
+    $columns = $db->db_fetch_all("SHOW COLUMNS FROM product_reviews");
+    $has_status = false;
+    foreach ($columns as $col) {
+        if ($col['Field'] === 'status') { $has_status = true; break; }
+    }
+    $status_condition = $has_status ? "AND pr.status = 'approved'" : "";
+
+    // Only use reviews with a valid rating (>=1) to compute average
+    $seller_rating_sql = "SELECT COALESCE(AVG(pr.rating), 0) AS avg_rating, COUNT(*) AS total_reviews
+                          FROM product_reviews pr
+                          JOIN products p ON pr.product_id = p.product_id
+                          WHERE p.seller_id = $seller_id AND pr.rating >= 1 $status_condition";
+    $seller_rating_stats = $db->db_fetch_one($seller_rating_sql);
+    if ($seller_rating_stats) {
+        $seller['rating_average'] = (float)$seller_rating_stats['avg_rating'];
+        $total_reviews = (int)$seller_rating_stats['total_reviews'];
+    }
+}
+
+// Fallback: if there are no individual reviews found, aggregate from product-level stored ratings
+if (empty($total_reviews)) {
+    $product_agg_sql = "SELECT COALESCE(SUM(p.rating_average * p.rating_count) / NULLIF(SUM(p.rating_count),0), 0) AS avg_rating,
+                                COALESCE(SUM(p.rating_count), 0) AS total_reviews
+                         FROM products p
+                         WHERE p.seller_id = $seller_id AND COALESCE(p.rating_count, 0) > 0";
+    $product_agg = $db->db_fetch_one($product_agg_sql);
+    if ($product_agg) {
+        $seller['rating_average'] = (float)$product_agg['avg_rating'];
+        $total_reviews = (int)$product_agg['total_reviews'];
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
