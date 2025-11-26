@@ -2,7 +2,7 @@
 
 **SeamLink** is a comprehensive digital marketplace connecting customers with master tailors, seamstresses, and authentic fabric vendors across Ghana. Built with PHP/MySQL, it features custom tailoring services, fabric shopping, reviews, seller profiles, and order management.
 
-## 🌟 Features
+## Features
 
 ### For Customers
 - **Find Tailors & Seamstresses** - Browse verified master tailors with ratings and portfolios
@@ -38,24 +38,24 @@
 - **Brand Management** - Manage fabric brands and suppliers
 
 ### Review System
-- ✅ 5-star rating system for tailors and fabrics
-- ✅ Verified purchase badges so you know the review is real
-- ✅ Review titles and detailed customer experiences
-- ✅ Rating breakdown and stats
-- ✅ One review per customer per product/tailor
-- ✅ Ratings calculated automatically
-- ✅ Vote on helpful reviews
+- 5-star rating system for tailors and fabrics
+- Verified purchase badges so you know the review is real
+- Review titles and detailed customer experiences
+- Rating breakdown and stats
+- One review per customer per product/tailor
+- Ratings calculated automatically
+- Vote on helpful reviews
 
 ### Tailor/Vendor Features
-- ✅ Public storefronts
-- ✅ Custom branding with your own logo, banner, and bio
-- ✅ Ratings and verification badges
-- ✅ Portfolio to show off your work
-- ✅ Link to your social media
-- ✅ Client testimonials and reviews
-- ✅ Stats on orders and sales
+- Public storefronts
+- Custom branding with your own logo, banner, and bio
+- Ratings and verification badges
+- Portfolio to show off your work
+- Link to your social media
+- Client testimonials and reviews
+- Stats on orders and sales
 
-## 🚀 Installation
+## Installation
 
 ### Prerequisites
 - XAMPP (Apache + MySQL + PHP 7.4+)
@@ -101,7 +101,7 @@
    - Login: `http://localhost/25662026_Lab_02_Register_Login/login/login.php`
    - Admin Panel: Login with admin credentials
 
-## 🔐 Test Accounts
+## Test Accounts
 
 ### Buyer Account
 - **Email**: testuser@test.com
@@ -120,7 +120,7 @@
 
 > **Note**: If you don't have a tailor/vendor account, register a new account and update the `user_role` to `3` in the database.
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 ├── actions/              # Backend API endpoints
@@ -172,7 +172,7 @@
 └── index.php           # Homepage
 ```
 
-## 🎨 Design Features
+## Design Features
 
 - **SeamLink Branding** - Custom green theme (#198754) inspired by Ghana's colors
 - **Momo Trust Display Font** - Clean, professional typography
@@ -182,7 +182,7 @@
 - **Star Ratings** - Interactive 5-star reviews for artisans
 - **Fashion-Focused Icons** - Tailoring and fabric-specific imagery
 
-## 🛠️ Technologies Used
+## Technologies Used
 
 - **Backend**: PHP 7.4+
 - **Database**: MySQL 5.7+
@@ -191,7 +191,7 @@
 - **Server**: Apache (XAMPP)
 - **Architecture**: MVC Pattern
 
-## 📊 Database Schema
+## Database Schema
 
 ### Main Tables
 - `customer` - User accounts (buyers, sellers, admins)
@@ -222,24 +222,24 @@ Edit `settings/upload_config.php` to configure image uploads:
 - **2** = Customer (Buyer)
 - **3** = Tailor/Seamstress/Fabric Vendor
 
-## 🐛 Known Issues
+## Known Issues
 
-- ~~Fix logout functionality when going back to register page~~ ✅ Fixed
+-- ~~Fix logout functionality when going back to register page~~ Fixed
 - Email notifications aren't hooked up yet
-- Multiple product images work on the backend but need frontend work
+-- ~~Multiple product images work on the backend but need frontend work~~
 
-## 📝 Recent Updates
+## Recent Updates
 
 ### November 10, 2025
-- ✅ Added complete review system with 5-star ratings
-- ✅ Implemented seller profile pages
-- ✅ Added verified purchase detection
-- ✅ Created automatic rating calculation triggers
-- ✅ Added stock management columns
-- ✅ Updated all product queries to include ratings
-- ✅ Created database views for top products and sellers
+- Added complete review system with 5-star ratings
+- Implemented seller profile pages
+- Added verified purchase detection
+- Created automatic rating calculation triggers
+- Added stock management columns
+- Updated all product queries to include ratings
+- Created database views for top products and sellers
 
-## 🚧 Roadmap
+## Roadmap
 
 - [ ] Direct messaging between customers and tailors
 - [ ] Custom order forms with measurements
@@ -253,6 +253,6 @@ Edit `settings/upload_config.php` to configure image uploads:
 
 ---
 
-**Built with ❤️ in Ghana** | **SeamLink - Connecting Fashion & Heritage**
+**Built with love in Ghana** | **SeamLink - Connecting Fashion & Heritage**
 
 

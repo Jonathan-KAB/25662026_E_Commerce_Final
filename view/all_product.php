@@ -290,19 +290,17 @@ $brands = $db->db_fetch_all("SELECT brand_id, brand_name FROM brands ORDER BY br
                                     <div style="color: #8b5cf6; font-size: 0.875rem; font-weight: 600; margin: 12px 0; padding: 8px 12px; background: #f5f3ff; border-radius: 6px; display: inline-flex; align-items: center; gap: 6px;">
                                         <i class="fas fa-check-circle"></i> Available for Production
                                     </div>
-                                <?php elseif ($product['product_stock'] > 0): ?>
-                                    <?php if ($product['product_stock'] <= 10): ?>
-                                        <div style="color: #dc3545; font-size: 0.875rem; font-weight: 600; margin: 8px 0;">
-                                            <i class="fas fa-exclamation-triangle" style="margin-right:6px;color:inherit;"></i> Only <?= $product['product_stock'] ?> left!
-                                        </div>
-                                    <?php else: ?>
-                                        <div style="color: #28a745; font-size: 0.875rem; margin: 8px 0;">
-                                            <i class="fas fa-check-circle" style="margin-right:6px;color:inherit;"></i> In Stock (<?= $product['product_stock'] ?> available)
-                                        </div>
-                                    <?php endif; ?>
+                                <?php elseif ($product['product_stock'] > 0 && $product['product_stock'] <= 10): ?>
+                                    <div style="margin:8px 0; padding:8px 12px; border-radius:6px; background:#f8d7da; border:1px solid #f5c6cb; color:#721c24; font-size:0.875rem; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+                                        <i class="fas fa-exclamation-triangle" style="margin-right:8px;color:inherit;"></i> Only <?= $product['product_stock'] ?> left!
+                                    </div>
+                                <?php elseif ($product['product_stock'] > 10): ?>
+                                    <div style="margin:8px 0; padding:8px 12px; border-radius:6px; background:#d4edda; border:1px solid #c3e6cb; color:#155724; font-size:0.875rem; display:inline-flex; align-items:center; gap:6px;">
+                                        <i class="fas fa-check-circle" style="margin-right:8px;color:inherit;"></i> In Stock (<?= $product['product_stock'] ?> available)
+                                    </div>
                                 <?php else: ?>
-                                    <div style="color: #dc3545; font-size: 0.875rem; font-weight: 600; margin: 8px 0;">
-                                        <i class="fas fa-times-circle" style="margin-right:6px;color:inherit;"></i> Out of Stock
+                                    <div style="margin:8px 0; padding:8px 12px; border-radius:6px; background:#f8d7da; border:1px solid #f5c6cb; color:#721c24; font-size:0.875rem; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+                                        <i class="fas fa-times-circle" style="margin-right:8px;color:inherit;"></i> Out of Stock
                                     </div>
                                 <?php endif; ?>
                             <?php endif; ?>

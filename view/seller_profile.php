@@ -374,18 +374,16 @@ if (empty($total_reviews)) {
                                 
                                 <!-- Stock Display - hide for services (stock 999) -->
                                 <?php if (isset($product['product_stock']) && $product['product_stock'] < 999): ?>
-                                    <?php if ($product['product_stock'] > 0): ?>
-                                        <?php if ($product['product_stock'] <= 10): ?>
-                                            <div style="color: #dc3545; font-size: 0.875rem; font-weight: 600; margin: 8px 0;">
-                                                <i class="fas fa-exclamation-triangle" style="margin-right:6px;color:inherit;"></i> Only <?= $product['product_stock'] ?> left!
-                                            </div>
-                                        <?php else: ?>
-                                            <div style="color: #28a745; font-size: 0.875rem; margin: 8px 0;">
-                                                <i class="fas fa-check-circle" style="margin-right:6px;color:inherit;"></i> In Stock (<?= $product['product_stock'] ?> available)
-                                            </div>
-                                        <?php endif; ?>
+                                    <?php if ($product['product_stock'] > 0 && $product['product_stock'] <= 10): ?>
+                                        <div style="margin:8px 0; padding:8px 12px; border-radius:6px; background:#f8d7da; border:1px solid #f5c6cb; color:#721c24; font-size:0.875rem; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+                                            <i class="fas fa-exclamation-triangle" style="margin-right:6px;color:inherit;"></i> Only <?= $product['product_stock'] ?> left!
+                                        </div>
+                                    <?php elseif ($product['product_stock'] > 10): ?>
+                                        <div style="margin:8px 0; padding:8px 12px; border-radius:6px; background:#d4edda; border:1px solid #c3e6cb; color:#155724; font-size:0.875rem; display:inline-flex; align-items:center; gap:6px;">
+                                            <i class="fas fa-check-circle" style="margin-right:6px;color:inherit;"></i> In Stock (<?= $product['product_stock'] ?> available)
+                                        </div>
                                     <?php else: ?>
-                                        <div style="color: #dc3545; font-size: 0.875rem; font-weight: 600; margin: 8px 0;">
+                                        <div style="margin:8px 0; padding:8px 12px; border-radius:6px; background:#f8d7da; border:1px solid #f5c6cb; color:#721c24; font-size:0.875rem; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
                                             <i class="fas fa-times-circle" style="margin-right:6px;color:inherit;"></i> Out of Stock
                                         </div>
                                     <?php endif; ?>
