@@ -91,6 +91,7 @@ if ($check_table) {
         if (!$has_helpful) $review['helpful_count'] = 0;
         if (!$has_title) $review['review_title'] = '';
     }
+    unset($review);
 } else {
     // Table doesn't exist yet
     $reviews = [];
@@ -1206,16 +1207,24 @@ if (isset($_SESSION['customer_id']) && $check_table) {
         // Submit review
         document.getElementById('submitReviewForm')?.addEventListener('submit', function(e) {
             e.preventDefault();
-            
+
             if (selectedRating === 0) {
                 showMessage('Please select a rating', 'error');
                 return;
             }
-            
+
             const formData = new FormData(this);
             const isEditing = this.dataset.editing === 'true';
             const actionUrl = isEditing ? '../actions/update_review_action.php' : '../actions/add_review_action.php';
-            
+
+            // Disable submit button to prevent double submissions
+            const submitBtn = this.querySelector('button[type="submit"]');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                var previousBtnHtml = submitBtn.innerHTML;
+                submitBtn.innerHTML = 'Submitting...';
+            }
+
             $.ajax({
                 url: actionUrl,
                 method: 'POST',
@@ -1231,6 +1240,10 @@ if (isset($_SESSION['customer_id']) && $check_table) {
                         }, 2000);
                     } else {
                         showMessage(response.message || 'Failed to submit review', 'error');
+                        if (submitBtn) {
+                            submitBtn.disabled = false;
+                            submitBtn.innerHTML = previousBtnHtml;
+                        }
                     }
                 },
                 error: function(xhr) {
@@ -1239,6 +1252,10 @@ if (isset($_SESSION['customer_id']) && $check_table) {
                         showMessage(response.message || 'Error submitting review', 'error');
                     } catch (e) {
                         showMessage('Error submitting review. Please try again.', 'error');
+                    }
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = previousBtnHtml;
                     }
                 }
             });

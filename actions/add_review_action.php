@@ -55,8 +55,11 @@ if (!$check_product) {
 }
 
 // Check if user already reviewed this product
+// Prevent race: lock table while checking + inserting to avoid duplicate reviews from concurrent requests
+$db->db_query("LOCK TABLES product_reviews WRITE");
 $existing = $db->db_fetch_one("SELECT review_id FROM product_reviews WHERE product_id = $product_id AND customer_id = $customer_id");
 if ($existing) {
+    $db->db_query("UNLOCK TABLES");
     $response['message'] = 'You have already reviewed this product';
     echo json_encode($response);
     exit;
@@ -100,6 +103,8 @@ if ($has_title && $has_status) {
 }
 
 $result = $db->db_query($sql);
+// Unlock tables whether insert succeeded or not
+$db->db_query("UNLOCK TABLES");
 
 if ($result) {
     $review_id = $db->db_conn()->insert_id;
