@@ -35,6 +35,10 @@ function isSeller(){
     return in_array($role, [3,4], true);
 }
 
+// Userway accessibility widget configuration
+// Set to false to disable the widget (e.g., for local development or privacy-sensitive environments)
+// (UserWay configuration removed)
+
 //function to get user ID
 function get_user_id(){
     if (isLoggedIn()) {

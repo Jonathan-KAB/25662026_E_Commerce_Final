@@ -132,3 +132,5 @@
         });
     });
 </script>
+
+<!-- UserWay integration removed -->
