@@ -123,8 +123,6 @@
 - **Password**: testtailor1A
 - **Role**: Tailor
 
-> **Note**: If you don't have a tailor/vendor account, register a new account and update the `user_role` to `3` in the database.
-
 ## Project Structure
 
 ```
