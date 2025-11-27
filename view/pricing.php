@@ -52,6 +52,15 @@ if (!isSeller()) {
             <h1>Choose Your Plan</h1>
             <p>SeamLink subscription tiers for sellers and vendors — upgrade to unlock advanced features.</p>
         </div>
+        <?php if (isLoggedIn() && isSeller()): ?>
+            <div class="seller-default-note" role="note" aria-live="polite">
+                <div class="seller-default-note__title"><strong>Good<br>news!</strong></div>
+                <div class="seller-default-note__body">
+                    <div class="seller-default-note__text">New seller accounts start on <strong>the Basic (Free)</strong> tier by default. Upgrade anytime from your Dashboard.</div>
+                    <div class="seller-default-note__cta"><a href="dashboard.php" class="btn btn-sm btn-outline-primary">Learn how to upgrade</a></div>
+                </div>
+            </div>
+        <?php endif; ?>
         <div class="pricing-hero-card">
             <div class="hero-left">
                 <h2>Power up your storefront</h2>
@@ -69,7 +78,11 @@ if (!isSeller()) {
             <?php if ($plans && count($plans) > 0): ?>
                 <?php foreach ($plans as $plan): ?>
                     <?php $pid = $plan['id'] ?? $plan['plan_id'] ?? $plan['planId'] ?? $plan['planID'] ?? null; ?>
-                    <div class="pricing-card card <?= (strtolower($plan['name']) === 'pro' || floatval($plan['price']) === 150) ? 'popular' : '' ?>">
+                    <?php $is_default = (strtolower($plan['name']) === 'basic' || floatval($plan['price']) === 0); ?>
+                    <div class="pricing-card card <?= (strtolower($plan['name']) === 'pro' || floatval($plan['price']) === 150) ? 'popular' : '' ?> <?= $is_default ? 'default' : '' ?>">
+                        <?php if ($is_default): ?>
+                            <div class="plan-default-badge" aria-hidden="true">Default for new sellers</div>
+                        <?php endif; ?>
                         <div class="ribbon">Most popular</div>
                         <div class="card-body">
                             <div class="pricing-header">
@@ -84,7 +97,7 @@ if (!isSeller()) {
                                 <?php if ((float)$plan['price'] <= 0): ?>
                                     <div class="price-free">Free</div>
                                 <?php else: ?>
-                                    <span class="currency"><?= get_currency_symbol($plan['currency'] ?? 'GHS') ?></span>
+                                    <span class="currency"><?php $cur = $plan['currency'] ?? 'GHS'; echo ($cur === 'GHS') ? 'GH₵' : get_currency_symbol($cur); ?></span>
                                     <span class="amount"><?= number_format($plan['price'], 2) ?></span>
                                     <span class="interval">/ month</span>
                                 <?php endif; ?>
@@ -123,6 +136,16 @@ if (!isSeller()) {
     <script>
         // Client-side plan data for the modal
         const PRICING_PLANS = <?= json_encode($plans ?? []) ?>;
+        // Helper: client-side currency mapping
+        function getCurrencySymbolJS(code) {
+            if (!code) return '';
+            code = code.toUpperCase();
+            if (code === 'GHS') return 'GH₵';
+            if (code === 'USD') return '$';
+            if (code === 'EUR') return '€';
+            if (code === 'NGN') return '₦';
+            return code; // fallback
+        }
 
         function findPlanById(id) {
             if (!id && id !== 0) return null;
@@ -138,7 +161,8 @@ if (!isSeller()) {
             }
             modal.querySelector('.plan-title').textContent = plan.name;
             if (parseFloat(plan.price) > 0) {
-                modal.querySelector('.plan-price').innerHTML = `${get_currency_symbol(plan.currency || 'GHS')} ${parseFloat(plan.price).toFixed(2)} <span class="plan-interval">/ month</span>`;
+                const cs = getCurrencySymbolJS(plan.currency || 'GHS');
+                modal.querySelector('.plan-price').innerHTML = `${cs} ${parseFloat(plan.price).toFixed(2)} <span class="plan-interval">/ month</span>`;
             } else {
                 modal.querySelector('.plan-price').textContent = 'Free';
             }
