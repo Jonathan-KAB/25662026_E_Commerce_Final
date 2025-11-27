@@ -125,26 +125,27 @@ if (empty($total_reviews)) {
     <style>
         .seller-banner {
             width: 100%;
-            height: 250px;
+            height: 160px; /* reduce banner height for less vertical weight */
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
             background-size: cover;
             background-position: center;
             position: relative;
         }
         .seller-info-card {
-            max-width: 1200px;
-            margin: -80px auto 40px;
+            max-width: 1100px;
+            margin: -48px auto 20px; /* reduce overlap so header feels lighter */
             background: white;
             border-radius: var(--radius-lg);
             box-shadow: var(--shadow-xl);
-            padding: 24px;
+            padding: 14px; /* slightly smaller padding */
             position: relative;
         }
+        .seller-info-card h1 { margin: 0; font-size: 1.6rem; }
         .seller-logo {
-            width: 120px;
-            height: 120px;
+            width: 96px; /* smaller logo size */
+            height: 96px;
             border-radius: 50%;
-            border: 5px solid white;
+            border: 4px solid white; /* keep border but slightly smaller */
             box-shadow: var(--shadow-md);
             object-fit: cover;
             background: var(--gray-100);
@@ -157,17 +158,17 @@ if (empty($total_reviews)) {
         .seller-stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 24px;
-            margin-top: 24px;
+            gap: 10px; /* less vertical space between stat cards */
+            margin-top: 12px;
         }
         .stat-card {
             text-align: center;
-            padding: 16px;
+            padding: 12px; /* smaller paddings */
             background: var(--gray-50);
             border-radius: var(--radius-md);
         }
         .stat-value {
-            font-size: 2rem;
+            font-size: 1.5rem; /* smaller stat numbers */
             font-weight: 700;
             color: var(--primary);
         }
@@ -187,6 +188,24 @@ if (empty($total_reviews)) {
             align-items: center;
             gap: 4px;
         }
+        /* Mobile responsive adjustments for seller profile */
+        @media (max-width: 768px) {
+            .seller-banner { height: 140px; }
+            .seller-info-card { margin: -40px auto 16px; padding: 14px; }
+            /* override inline grid: stack logo above details */
+            .seller-info-card > div { display: grid !important; grid-template-columns: 1fr !important; gap: 12px !important; align-items: center !important; }
+            .seller-logo { width: 72px; height: 72px; font-size: 1.5rem; border-width: 4px; }
+            .seller-info-card h1 { font-size: 1.25rem; text-align: center; }
+            .seller-info-card > div > div:last-child { text-align: center; }
+            .seller-stats { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; }
+            .stat-card { padding: 10px; }
+            .products-grid { grid-template-columns: 1fr !important; gap: 16px !important; }
+            .product-card { display: flex; flex-direction: column; }
+            .product-card img, .product-image, .product-image-placeholder { height: 160px; }
+            .product-card .card-body { padding: 12px; }
+            .product-card .btn { width: 100%; }
+            .service-type-badge, .verified-badge { margin-left: 0; margin-top: 8px; }
+        }
     </style>
 </head>
 <body>
@@ -199,7 +218,7 @@ if (empty($total_reviews)) {
     <!-- Seller Info Card -->
     <div class="container">
         <div class="seller-info-card">
-            <div style="display: grid; grid-template-columns: 120px 1fr; gap: 24px; align-items: start;">
+            <div style="display: grid; grid-template-columns: 96px 1fr; gap: 16px; align-items: center;">
                 <!-- Seller Logo -->
                 <div class="seller-logo">
                     <?php if ($seller['customer_image']): ?>
@@ -253,7 +272,7 @@ if (empty($total_reviews)) {
                     </div>
 
                     <?php if ($seller['store_description']): ?>
-                        <p style="color: var(--gray-700); margin-bottom: 16px; line-height: 1.6;">
+                        <p style="color: var(--gray-700); margin-bottom: 8px; line-height: 1.45; font-size: 0.95rem;">
                             <?= nl2br(htmlspecialchars($seller['store_description'])) ?>
                         </p>
                     <?php endif; ?>
@@ -261,19 +280,19 @@ if (empty($total_reviews)) {
                     <!-- Contact Info -->
                     <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 16px;">
                         <?php if ($seller['contact_phone'] ?? $seller['customer_contact']): ?>
-                            <span style="color: var(--gray-600); font-size: 0.9375rem; display: inline-flex; gap:8px; align-items:center;">
+                            <span style="color: var(--gray-600); font-size: 0.9rem; display: inline-flex; gap:8px; align-items:center;">
                                 <i class="fas fa-phone" style="color:var(--primary);"></i>
                                 <?= htmlspecialchars($seller['contact_phone'] ?? $seller['customer_contact']) ?>
                             </span>
                         <?php endif; ?>
                         <?php if ($seller['contact_email'] ?? $seller['customer_email']): ?>
-                            <span style="color: var(--gray-600); font-size: 0.9375rem; display: inline-flex; gap:8px; align-items:center;">
+                            <span style="color: var(--gray-600); font-size: 0.9rem; display: inline-flex; gap:8px; align-items:center;">
                                 <i class="fas fa-envelope" style="color:var(--primary);"></i>
                                 <?= htmlspecialchars($seller['contact_email'] ?? $seller['customer_email']) ?>
                             </span>
                         <?php endif; ?>
                         <?php if ($seller['business_address'] ?? ($seller['customer_city'] . ', ' . $seller['customer_country'])): ?>
-                            <span style="color: var(--gray-600); font-size: 0.9375rem; display: inline-flex; gap:8px; align-items:center;">
+                            <span style="color: var(--gray-600); font-size: 0.9rem; display: inline-flex; gap:8px; align-items:center;">
                                 <i class="fas fa-map-marker-alt" style="color:var(--primary);"></i>
                                 <?= htmlspecialchars($seller['business_address'] ?? ($seller['customer_city'] . ', ' . $seller['customer_country'])) ?>
                             </span>
@@ -375,15 +394,15 @@ if (empty($total_reviews)) {
                                 <!-- Stock Display - hide for services (stock 999) -->
                                 <?php if (isset($product['product_stock']) && $product['product_stock'] < 999): ?>
                                     <?php if ($product['product_stock'] > 0 && $product['product_stock'] <= 10): ?>
-                                        <div style="margin:8px 0; padding:8px 12px; border-radius:6px; background:#f8d7da; border:1px solid #f5c6cb; color:#721c24; font-size:0.875rem; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+                                        <div style="margin:6px 0; padding:6px 10px; border-radius:6px; background:#f8d7da; border:1px solid #f5c6cb; color:#721c24; font-size:0.85rem; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
                                             <i class="fas fa-exclamation-triangle" style="margin-right:6px;color:inherit;"></i> Only <?= $product['product_stock'] ?> left!
                                         </div>
                                     <?php elseif ($product['product_stock'] > 10): ?>
-                                        <div style="margin:8px 0; padding:8px 12px; border-radius:6px; background:#d4edda; border:1px solid #c3e6cb; color:#155724; font-size:0.875rem; display:inline-flex; align-items:center; gap:6px;">
+                                        <div style="margin:6px 0; padding:6px 10px; border-radius:6px; background:#d4edda; border:1px solid #c3e6cb; color:#155724; font-size:0.85rem; display:inline-flex; align-items:center; gap:6px;">
                                             <i class="fas fa-check-circle" style="margin-right:6px;color:inherit;"></i> In Stock (<?= $product['product_stock'] ?> available)
                                         </div>
                                     <?php else: ?>
-                                        <div style="margin:8px 0; padding:8px 12px; border-radius:6px; background:#f8d7da; border:1px solid #f5c6cb; color:#721c24; font-size:0.875rem; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+                                        <div style="margin:6px 0; padding:6px 10px; border-radius:6px; background:#f8d7da; border:1px solid #f5c6cb; color:#721c24; font-size:0.85rem; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
                                             <i class="fas fa-times-circle" style="margin-right:6px;color:inherit;"></i> Out of Stock
                                         </div>
                                     <?php endif; ?>
@@ -391,11 +410,11 @@ if (empty($total_reviews)) {
                                 
                                 <!-- Button - View Details for services, Add to Cart for products -->
                                 <?php if (isset($product['product_stock']) && $product['product_stock'] >= 999): ?>
-                                    <a href="single_product.php?id=<?= $product['product_id'] ?>" class="btn btn-primary btn-sm" style="width: 100%; margin-top: 8px; text-decoration: none; display: block; text-align: center;">
+                                    <a href="single_product.php?id=<?= $product['product_id'] ?>" class="btn btn-primary btn-sm" style="width: 100%; margin-top: 6px; text-decoration: none; display: block; text-align: center;">
                                         View Details
                                     </a>
                                 <?php else: ?>
-                                    <button onclick="addToCart(<?= $product['product_id'] ?>)" class="btn btn-primary btn-sm" style="width: 100%; margin-top: 8px;"
+                                    <button onclick="addToCart(<?= $product['product_id'] ?>)" class="btn btn-primary btn-sm" style="width: 100%; margin-top: 6px;"
                                         <?= (isset($product['product_stock']) && $product['product_stock'] <= 0) ? 'disabled style="background: #ccc; cursor: not-allowed; width: 100%; margin-top: 8px;"' : '' ?>>
                                         <?= (isset($product['product_stock']) && $product['product_stock'] <= 0) ? 'Out of Stock' : 'Add to Cart' ?>
                                     </button>
@@ -409,7 +428,7 @@ if (empty($total_reviews)) {
     </div>
 
     <!-- Footer Spacing -->
-    <div style="height: 60px;"></div>
+    <div style="height: 40px;"></div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="../js/cart.js"></script>
