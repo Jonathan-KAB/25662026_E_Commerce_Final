@@ -116,7 +116,12 @@
 ### Seller Account
 - **Email**: testseller@test.com
 - **Password**: testpass3A,
-- **Role**: Tailor/Fabric Vendor
+- **Role**: Fabric Vendor
+
+### Tailor Account
+- **Email**: testtailor@test.com
+- **Password**: testtailor1A
+- **Role**: Tailor
 
 > **Note**: If you don't have a tailor/vendor account, register a new account and update the `user_role` to `3` in the database.
 
