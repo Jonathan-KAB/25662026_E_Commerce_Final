@@ -284,7 +284,24 @@
                         <label for="password">
                             <i class="fas fa-lock"></i> Password
                         </label>
-                        <input type="password" class="form-control" id="password" name="password" placeholder="Create a strong password" required>
+                        <div class="password-wrapper">
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Create a strong password" required>
+                            <button type="button" class="password-toggle" data-target="#password" aria-pressed="false" aria-label="Show password">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirm_password">
+                            <i class="fas fa-lock"></i> Confirm Password
+                        </label>
+                        <div class="password-wrapper">
+                            <input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="Confirm your password" required>
+                            <button type="button" class="password-toggle" data-target="#confirm_password" aria-pressed="false" aria-label="Show password">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
                     </div>
 
                     <div class="form-row">
@@ -376,6 +393,7 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../js/ui.js"></script>
     <script>
         // Show/hide service type based on role selection
         $(document).ready(function() {

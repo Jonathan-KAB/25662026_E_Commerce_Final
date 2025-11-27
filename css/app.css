@@ -420,6 +420,28 @@ html, body {
   transition: all 0.2s ease;
 }
 
+/* Password toggle styling */
+.password-wrapper { position: relative; }
+.password-wrapper .password-toggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  color: var(--gray-600);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.password-wrapper .password-toggle:focus { outline: none; box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.12); }
+.password-wrapper .password-toggle i { font-size: 16px; }
+
+.password-wrapper .form-control { padding-right: 44px; }
+
 .form-control:focus, .form-select:focus, textarea:focus {
   outline: none;
   border-color: var(--primary);

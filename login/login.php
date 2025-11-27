@@ -195,7 +195,12 @@
                         <label for="password">
                             <i class="fas fa-lock"></i> Password
                         </label>
-                        <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+                        <div class="password-wrapper">
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+                            <button type="button" class="password-toggle" data-target="#password" aria-pressed="false" aria-label="Show password">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
                     </div>
                     <button type="submit" class="btn-login">
                         <i class="fas fa-sign-in-alt"></i> Login to SeamLink
@@ -210,6 +215,7 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../js/ui.js"></script>
     <script src="../js/login.js"></script>
 </body>
 

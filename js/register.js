@@ -5,6 +5,7 @@ $(document).ready(function() {
         name = $('#name').val();
         email = $('#email').val();
         password = $('#password').val();
+        confirm_password = $('#confirm_password').val();
         phone_number = $('#phone_number').val();
         country = $('#country').val();  // Added this
         city = $('#city').val();        // Added this
@@ -23,6 +24,14 @@ $(document).ready(function() {
                 icon: 'error',
                 title: 'Oops...',
                 text: 'Password must be at least 6 characters long and contain at least one lowercase letter, one uppercase letter, and one number!',
+            });
+
+            return;
+        } else if (confirm_password == '' || confirm_password !== password) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Please make sure the Confirm Password matches the Password',
             });
 
             return;

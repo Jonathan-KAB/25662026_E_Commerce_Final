@@ -2,12 +2,8 @@ $(document).ready(function() {
     $('#login-form').submit(function(e) {
         e.preventDefault();
         
-        console.log('Form submitted'); // Debug
-        
         var email = $('#email').val();
         var password = $('#password').val();
-        
-        console.log('Email:', email, 'Password:', password); // Debug
 
         if (email == '' || password == '') {
             alert('Please fill in all fields!');
@@ -25,7 +21,7 @@ $(document).ready(function() {
                 password: password
             },
             success: function(response) {
-                console.log('Parsed response:', response); // Debug
+                // console.log('Parsed response:', response); // Debug
                 if (response.status === 'success') {
                     alert('Login successful!');
                     if (response.redirect) {
