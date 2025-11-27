@@ -50,6 +50,9 @@
         
         <a href="<?= $homePrefix ?>index.php" class="btn btn-sm <?= $currentPage === 'index.php' ? 'btn-primary' : 'btn-outline-secondary' ?>">Home</a>
         <a href="<?= $viewPrefix ?>all_product.php" class="btn btn-sm <?= $currentPage === 'all_product.php' ? 'btn-primary' : 'btn-outline-secondary' ?>">All Products</a>
+        <?php if (isLoggedIn() && isSeller()): ?>
+            <a href="<?= $viewPrefix ?>pricing.php" class="btn btn-sm <?= $currentPage === 'pricing.php' ? 'btn-primary' : 'btn-outline-secondary' ?>">Pricing</a>
+        <?php endif; ?>
         <a href="<?= $viewPrefix ?>cart.php" class="btn btn-sm btn-outline-secondary">
             Cart <?php if (isset($cartCount) && $cartCount > 0): ?><span class="cart-badge" id="cart-count"><?= $cartCount ?></span><?php endif; ?>
         </a>

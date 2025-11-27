@@ -801,6 +801,79 @@ td {
   box-shadow: var(--shadow-xl);
 }
 
+/* Pricing Page */
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 24px;
+  margin-bottom: 40px;
+  justify-content: center; /* center the grid columns horizontally */
+  max-width: 1100px; /* prevent the grid from stretching too wide */
+  margin-left: auto; /* center the whole grid */
+  margin-right: auto; /* center the whole grid */
+}
+.pricing-card { display: flex; flex-direction: column; align-items: stretch; justify-content: space-between; }
+.pricing-card .card-body { display: flex; flex-direction: column; gap: 12px; min-height: 300px; }
+.pricing-card .price { font-size: 1.625rem; color: var(--primary); font-weight: 800; }
+.pricing-card .features { list-style: none; padding-left: 0; color: var(--gray-600); }
+.pricing-card .features li { padding: 6px 0; border-bottom: 1px dashed var(--gray-100); }
+.pricing-card .features li:last-child { border-bottom: none; }
+.pricing-card .badge { font-weight: 700; }
+
+@media (max-width: 768px) {
+  .pricing-grid { grid-template-columns: 1fr; }
+}
+
+/* Hero Card for pricing */
+.pricing-hero-card {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 24px;
+  margin-bottom: 24px;
+  align-items: center;
+  max-width: 1100px; /* center hero area */
+  margin-left: auto; /* center hero area */
+  margin-right: auto; /* center hero area */
+}
+.pricing-hero-card .hero-left h2 { font-size: 1.6rem; color: var(--gray-900); margin-bottom: 8px; }
+.pricing-hero-card .hero-left p { color: var(--gray-600); }
+.pricing-hero-card .hero-left { text-align: left; }
+.pricing-hero-card .hero-right { justify-self: end; }
+.pricing-hero-card .hero-right { display:flex; justify-content:flex-end; }
+.featured-note { background: linear-gradient(90deg, #f59e0b, #f97316); color:#fff; padding:12px 16px; border-radius: 10px; font-weight:700; display:inline-flex; align-items:center; gap:8px; }
+
+/* Pricing Card specific styles */
+.pricing-card { transition: all 0.25s cubic-bezier(.4,.0,.2,1); border: 1px solid var(--gray-200); position: relative; padding-top: 16px; }
+.pricing-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-xl); }
+.pricing-card.popular { border: 2px solid #8b5cf6; box-shadow: 0 8px 24px rgba(139, 92, 246, 0.12); }
+.pricing-card.popular .price { color: #8b5cf6; }
+.pricing-card.popular .btn-primary { background: linear-gradient(90deg,#8b5cf6,#6d28d9); border: none; }
+.pricing-card.popular .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(109, 40, 217, 0.14) }
+
+.ribbon { position: absolute; top: -6px; right: -6px; background: linear-gradient(90deg,#8b5cf6,#6d28d9); color: white; padding: 8px 12px; border-radius: 6px; font-weight: 700; box-shadow: var(--shadow-md); transform: rotate(7deg); }
+.pricing-card.popular .ribbon { display:block; }
+.pricing-card .ribbon { display:none; }
+
+.pricing-card .features li i { margin-right: 8px; }
+.pricing-card .price .amount { font-size: 1.6rem; font-weight: 900; }
+.pricing-card .price .interval { font-size: 0.9rem; color: var(--gray-600); margin-left: 6px; }
+.pricing-card .price .currency { font-size: 0.7rem; margin-right: 6px; }
+
+.price-free { font-size: 1.5rem; font-weight: 900; color: var(--gray-700); }
+
+@media (max-width: 768px) {
+  .pricing-hero-card { grid-template-columns: 1fr; }
+  .pricing-hero-card .hero-left { text-align: center; }
+  .pricing-hero-card .hero-right { justify-self: center; }
+}
+
+/* Modal Styles (pricing page) */
+.modal { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,0.45); z-index: 9999; }
+.modal.show { display: flex; }
+.modal-content { background: var(--surface); padding: 20px; border-radius: var(--radius-md); width: min(560px, 92%); box-shadow: var(--shadow-xl); }
+.modal-header { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom: 12px; }
+.modal-body { color: var(--gray-700); font-size: 0.96rem; }
+
 .hero-section h1 {
   font-size: 3rem;
   font-weight: 800;

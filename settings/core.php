@@ -28,6 +28,13 @@ function isAdmin(){
     }
 }
 
+// function to check for seller/service roles (role id 3 = Fabric seller, 4 = Service provider)
+function isSeller(){
+    if (!isLoggedIn()) return false;
+    $role = $_SESSION['user_role'] ?? null;
+    return in_array($role, [3,4], true);
+}
+
 //function to get user ID
 function get_user_id(){
     if (isLoggedIn()) {
