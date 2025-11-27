@@ -873,6 +873,10 @@ td {
 .modal-content { background: var(--surface); padding: 20px; border-radius: var(--radius-md); width: min(560px, 92%); box-shadow: var(--shadow-xl); }
 .modal-header { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom: 12px; }
 .modal-body { color: var(--gray-700); font-size: 0.96rem; }
+.plan-features li { padding: 8px 0; border-bottom: 1px dashed var(--gray-100); }
+.plan-features li i { margin-right: 8px; }
+.learn-more-btn { border-radius: 8px; padding: 6px 12px; }
+.learn-more-btn:hover { transform: translateY(-1px); }
 
 .hero-section h1 {
   font-size: 3rem;

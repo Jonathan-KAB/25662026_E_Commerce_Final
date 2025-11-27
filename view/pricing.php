@@ -97,12 +97,12 @@ if (!isSeller()) {
                             </ul>
 
                             <div style="margin-top: 16px; display:flex; gap:10px;">
-                                <?php if ((float)$plan['price'] <= 0): ?>
+                                    <?php if ((float)$plan['price'] <= 0): ?>
                                     <a href="javascript:void(0)" class="btn btn-block btn-sm btn-outline-secondary" onclick="chooseFree(<?= json_encode($pid) ?>)">Get Started</a>
                                 <?php else: ?>
                                     <button class="btn btn-block btn-sm btn-primary" onclick="subscribe(<?= json_encode($pid) ?>, <?= json_encode($plan['name']) ?>)">Subscribe</button>
                                 <?php endif; ?>
-                                <a href="profile.php" class="btn btn-sm btn-outline-primary">Learn More</a>
+                                <button class="btn btn-sm btn-outline-primary learn-more-btn" onclick="openPlanModal(<?= json_encode($pid) ?>)">Learn More</button>
                             </div>
                         </div>
                     </div>
@@ -120,6 +120,45 @@ if (!isSeller()) {
     <div style="height: 60px;"></div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Client-side plan data for the modal
+        const PRICING_PLANS = <?= json_encode($plans ?? []) ?>;
+
+        function findPlanById(id) {
+            if (!id && id !== 0) return null;
+            return PRICING_PLANS.find(p => (p.id && p.id == id) || (p.plan_id && p.plan_id == id) || (p.planId && p.planId == id));
+        }
+
+        function openPlanModal(id) {
+            const plan = findPlanById(id);
+            const modal = document.getElementById('planDetailsModal');
+            if (!plan) {
+                alert('Plan not found');
+                return;
+            }
+            modal.querySelector('.plan-title').textContent = plan.name;
+            if (parseFloat(plan.price) > 0) {
+                modal.querySelector('.plan-price').innerHTML = `${get_currency_symbol(plan.currency || 'GHS')} ${parseFloat(plan.price).toFixed(2)} <span class="plan-interval">/ month</span>`;
+            } else {
+                modal.querySelector('.plan-price').textContent = 'Free';
+            }
+            const list = modal.querySelector('.plan-features');
+            list.innerHTML = '';
+            const features = JSON.parse(plan.features || '[]');
+            features.forEach(f => {
+                const li = document.createElement('li');
+                li.innerHTML = `<i class="fas fa-check" style="color:var(--primary)"></i> ${f}`;
+                list.appendChild(li);
+            });
+            modal.classList.add('show');
+            modal.setAttribute('aria-hidden', 'false');
+        }
+        function closePlanModal() {
+            const modal = document.getElementById('planDetailsModal');
+            modal.classList.remove('show');
+            modal.setAttribute('aria-hidden', 'true');
+        }
+    </script>
     <script>
         function subscribe(planId, planName) {
             if (!confirm('Proceed to subscribe to ' + planName + '?')) return;
@@ -186,6 +225,23 @@ if (!isSeller()) {
         </div>
     </div>
     
+    <!-- Plan Details Modal -->
+    <div id="planDetailsModal" class="modal" role="dialog" aria-hidden="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="plan-title">Plan Name</h3>
+                <button onclick="closePlanModal()" class="btn btn-sm btn-outline-secondary">Close</button>
+            </div>
+            <div class="modal-body">
+                <div class="plan-price" style="font-weight:900; font-size:1.25rem; margin-bottom:10px">GHS 0.00</div>
+                <ul class="plan-features" style="list-style:none; padding-left:0; margin-bottom: 12px;"></ul>
+                <div style="display:flex; gap:8px;">
+                    <button class="btn btn-primary" onclick="closePlanModal()">Subscribe</button>
+                    <button class="btn btn-outline-secondary" onclick="closePlanModal()">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
 
