@@ -212,7 +212,7 @@
 - `wishlist` - Customer saved items
 - `review_votes` - Review helpfulness votes
 
-## 🔧 Configuration
+## Configuration
 
 ### Upload Settings
 Edit `settings/upload_config.php` to configure image uploads:
