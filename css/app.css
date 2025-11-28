@@ -39,6 +39,9 @@
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  /* Product image heights */
+  --product-image-height-desktop: 220px;
+  --product-image-height-mobile: 160px;
 }
 
 /* Base Styles */
@@ -398,7 +401,8 @@ html, body {
 
 .card-title {
   font-size: 1.125rem;
-  font-weight: 600;
+  gap: 6px;
+  justify-content: space-between;
   color: var(--gray-900);
   margin-bottom: 8px;
 }
@@ -535,7 +539,7 @@ h3 {
 
 .product-card img {
   width: 100%;
-  height: 220px;
+  height: var(--product-image-height-desktop);
   object-fit: cover;
   background: var(--gray-100);
   display: block;
@@ -543,13 +547,23 @@ h3 {
 
 .product-card .product-image-placeholder {
   width: 100%;
-  height: 220px;
+  height: var(--product-image-height-desktop);
   background: linear-gradient(135deg, var(--gray-100) 0%, var(--gray-200) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--gray-400);
   font-size: 3rem;
+}
+
+/* Make product placeholder expand to fill a hero/main image container where needed */
+.main-product-image .product-image-placeholder {
+  height: 100%;
+  display: flex; /* ensure centering */
+  align-items: center;
+  justify-content: center;
+  background: #f0f0f0; /* fallback background */
+  border-radius: 8px;
 }
 
 .product-card .product-image-placeholder svg {
@@ -564,6 +578,7 @@ h3 {
   flex-direction: column;
   flex: 1;
   gap: 8px;
+  justify-content: space-between;
 }
 
 .product-title {
@@ -1009,7 +1024,7 @@ td {
 .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; margin-bottom: 32px; }
 .product-card { background: var(--surface); border-radius: 8px; overflow: hidden; box-shadow: var(--shadow-md); transition: transform 0.2s ease, box-shadow 0.2s ease; display:flex; flex-direction:column; }
 .product-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
-.product-image, .product-image img, .product-card img, .product-image-placeholder { width: 100%; height: 180px; object-fit: cover; background: var(--gray-100); display:block; }
+.product-image, .product-image img, .product-card img, .product-image-placeholder { width: 100%; height: var(--product-image-height-desktop); object-fit: cover; background: var(--gray-100); display:block; }
 .product-image-placeholder { display:flex; align-items:center; justify-content:center; }
 .product-image img { width:100%; height:100%; object-fit:cover; }
 .product-card .card-body { padding: 10px; display:flex; flex-direction:column; gap:6px; }
@@ -1018,13 +1033,89 @@ td {
 .product-meta { color:var(--gray-600); font-size:0.85rem; }
 .product-price { font-size: 16px; font-weight: 700; color: #28a745; margin-bottom: 8px; }
 .price { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--primary); }
+.product-price { font-size: 16px; font-weight: 700; color: #28a745; margin-bottom: 8px; }
+.price { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--primary); }
+
+/* Stock bubble / availability indicator */
+.stock-bubble { margin: 12px 0; padding: 8px 12px; border-radius: 8px; display: inline-flex; align-items: center; gap: 8px; font-size: 0.9rem; font-weight: 700; }
+.stock-bubble.production { background: #f5f3ff; color: #6b21a8; border: 1px solid #e9d5ff; }
+.stock-bubble.warn { background: #fff1f2; color: #991b1b; border: 1px solid #fecaca; }
+.stock-bubble.in-stock { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+.stock-bubble.out-of-stock { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+/* Service price styling - consistent with card design */
+.price.service { background: linear-gradient(135deg, #059669 0%, #047857 100%); color: white; padding: 12px 16px; border-radius: 8px; display: inline-flex; align-items: center; gap: 8px; }
+.product-price.service { background: linear-gradient(135deg, #059669 0%, #047857 100%); color: white; padding: 12px 16px; border-radius: 8px; display: inline-flex; align-items: center; gap: 8px; }
+.product-supplier { font-size: 0.9rem; color: var(--gray-600); margin-top: 6px; }
+.product-supplier a { color: inherit; text-decoration: underline; }
+
+/* Compact supplier block for product cards */
+.product-seller--compact {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+}
+.product-seller--compact .seller-logo {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid white;
+}
+.product-seller--compact .seller-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--gray-100);
+  color: var(--gray-700);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+.product-seller--compact .seller-label {
+  font-size: 11px;
+  color: var(--gray-600);
+}
+.product-seller--compact .seller-name { color: var(--primary); font-weight: 700; text-decoration: none; }
+.product-seller--compact .seller-name:hover { text-decoration: underline; }
 .product-card .btn { width:100%; }
-.product-card .btn-sm { padding: 8px 10px; font-size: 0.95rem; }
+.product-card .btn-sm { padding: 12px 22px; font-size: 1rem; min-height: 54px; display: inline-flex; align-items: center; justify-content: center; }
+
+/* Ensure buttons in cards (including product display cards) have consistent height */
+.card .btn-sm,
+.product-card .add-to-cart-btn,
+.product-card a.add-to-cart-btn,
+.card .add-to-cart-btn {
+  padding: 12px 24px;
+  min-height: 52px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+}
+
+/* Tiny image thumbnail used in search suggestions and other places */
+.thumb-xs { width: 40px; height: 40px; object-fit: cover; margin-right: 10px; border-radius: 6px; }
 
 @media (max-width: 768px) {
   .products-grid { grid-template-columns: 1fr; gap: 16px; }
-  .product-image, .product-image img, .product-image-placeholder { height: 180px; }
+  .product-image, .product-image img, .product-image-placeholder { height: var(--product-image-height-mobile); }
 }
+
+/* vendor-specific smaller grids (seller profile) */
+.products-grid.seller-profile .product-image,
+.products-grid.seller-profile .product-image img,
+.products-grid.seller-profile .product-image-placeholder,
+.products-grid.seller-profile .product-card img { height: var(--product-image-height-mobile); }
 
 .quick-link-card {
   background: var(--surface);
@@ -1345,6 +1436,21 @@ td {
   margin-bottom: 16px;
 }
 
+/* Hero product price used on single product pages */
+.product-price.hero {
+  font-size: 32px;
+  font-weight: 800;
+  color: white;
+  padding: 18px 22px;
+  border-radius: 10px;
+  display: inline-block;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+  margin-bottom: 12px;
+}
+.product-price.hero.service {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+}
+
 .add-to-cart-btn {
   width: 100%;
   padding: 12px 16px;
@@ -1358,6 +1464,38 @@ td {
   transition: all 0.2s ease;
   margin-top: 8px;
 }
+
+/* Single product / hero CTA sizing - keep both CTAs equal height/width */
+.product-actions .cta-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex: 1;
+  width: auto; /* allow flex to control the sizing instead of fixed width */
+  min-height: 64px; /* increase height to match Back to Store and provide balanced CTAs */
+  line-height: 1;
+  box-sizing: border-box;
+  padding: 10px 14px; /* increase vertical padding slightly to visually balance with the Back button */
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+.product-actions .cta-btn.primary { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: #fff; border: 2px solid transparent; }
+.product-actions .cta-btn.primary:hover { background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%); }
+.product-actions .cta-btn.secondary { background: white; color: #6b7280; border: 2px solid #e5e7eb; }
+.product-actions .cta-btn.secondary:hover { background: #f9fafb; color: #374151; border-color: #d1d5db; }
+.product-actions .cta-btn[disabled], .product-actions .cta-btn.disabled { background: #e5e7eb; color: #9ca3af; cursor: not-allowed; border-color: #d1d5db; box-shadow: none; }
+
+/* fine-tune icon size in CTAs so icons don't become large placeholders */
+.product-actions .cta-btn i { font-size: 16px; line-height: 1; display: inline-block; margin-right: 8px; }
+
+/* Ensure .add-to-cart-btn does not add extra vertical padding when used inside product actions */
+.product-actions .add-to-cart-btn { padding-top: 10px; padding-bottom: 10px; }
+
+/* Ensure anchors/links used as CTAs (like .back-btn) do not inherit margin or extra line-height */
+.product-actions .back-btn { margin-top: 0; margin-bottom: 0; }
 
 .add-to-cart-btn:hover {
   background-color: var(--primary-hover);

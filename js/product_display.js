@@ -54,12 +54,31 @@ function displaySuggestions(products) {
     // Build suggestions HTML
     let html = '<ul class="list-group">';
     products.forEach(product => {
+        const supplierName = product.seller_name || product.brand_name || 'Unknown';
+        const supplierHtml = product.seller_id ? `<a href="seller_profile.php?id=${product.seller_id}">${supplierName}</a>` : supplierName;
+        const supplierAvatar = product.seller_image ? `<img class="seller-logo" src="${(product.seller_image && product.seller_image.startsWith('/uploads')) ? product.seller_image : ('../' + product.seller_image)}" alt="${supplierName}">` : `<div class="seller-avatar">${(supplierName || 'U').charAt(0).toUpperCase()}</div>`;
+        // Stock bubble
+        let stockHtml = '';
+        if (typeof product.product_stock !== 'undefined') {
+            if (product.product_stock >= 999) {
+                stockHtml = `<div class="stock-bubble production"><i class="fas fa-check-circle"></i> Available for Production</div>`;
+            } else if (product.product_stock > 0 && product.product_stock <= 10) {
+                stockHtml = `<div class="stock-bubble warn"><i class="fas fa-exclamation-triangle"></i> Only ${product.product_stock} left!</div>`;
+            } else if (product.product_stock > 10) {
+                stockHtml = `<div class="stock-bubble in-stock"><i class="fas fa-check-circle"></i> In Stock (${product.product_stock} available)</div>`;
+            } else {
+                stockHtml = `<div class="stock-bubble out-of-stock"><i class="fas fa-times-circle"></i> Out of Stock</div>`;
+            }
+        }
+        const supplierName = product.seller_name || product.brand_name || 'Unknown';
+        const supplierHtml = product.seller_id ? `<a href="seller_profile.php?id=${product.seller_id}">${supplierName}</a>` : supplierName;
+        const supplierAvatar = product.seller_image ? `<img class="seller-logo" src="${(product.seller_image && product.seller_image.startsWith('/uploads')) ? product.seller_image : ('../' + product.seller_image)}" alt="${supplierName}">` : `<div class="seller-avatar">${(supplierName || 'U').charAt(0).toUpperCase()}</div>`;
         html += `
             <li class="list-group-item list-group-item-action" onclick="selectSuggestion('${product.product_title}')">
                 <div class="d-flex align-items-center">
                     ${product.product_image ? 
-                        `<img src="../uploads/${product.product_image}" alt="${product.product_title}" style="width: 40px; height: 40px; object-fit: cover; margin-right: 10px;">` : 
-                        '<div style="width: 40px; height: 40px; background: #ddd; margin-right: 10px;"></div>'
+                        `<img src="../uploads/${product.product_image}" alt="${product.product_title}" class="thumb-xs">` : 
+                        '<div class="thumb-xs" style="background: #ddd; display:inline-block"></div>'
                     }
                     <div>
                         <strong>${product.product_title}</strong>
@@ -168,7 +187,7 @@ function renderProducts(products) {
     let html = '';
     products.forEach(product => {
         const imageHtml = product.product_image 
-            ? `<img src="../uploads/${product.product_image}" class="card-img-top" alt="${product.product_title}" style="height: 220px; object-fit: cover;">`
+            ? `<img src="../uploads/${product.product_image}" class="card-img-top product-image" alt="${product.product_title}">`
             : `<div class="product-image-placeholder">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -182,7 +201,9 @@ function renderProducts(products) {
                     <div class="card-body">
                         <h5 class="card-title">${product.product_title}</h5>
                         <p class="card-text text-muted">${product.product_desc.substring(0, 100)}...</p>
-                        <p class="card-text"><strong>GH₵ ${parseFloat(product.product_price).toFixed(2)}</strong></p>
+                        <p class="card-text"><strong class="price${product.product_type === 'service' ? ' service' : ''}">GH₵ ${parseFloat(product.product_price).toFixed(2)}</strong></p>
+                        <div class="product-seller--compact">${supplierAvatar}<div class="seller-info"><div class="seller-label">Supplied by</div><div class="seller-details">${supplierHtml}</div></div></div>
+                        ${stockHtml}
                         <a href="single_product.php?id=${product.product_id}" class="btn btn-sm btn-primary">View Details</a>
                         <button class="btn btn-sm btn-success" onclick="addToCart(${product.product_id})">Add to Cart</button>
                     </div>

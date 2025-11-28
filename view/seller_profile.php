@@ -201,7 +201,7 @@ if (empty($total_reviews)) {
             .stat-card { padding: 10px; }
             .products-grid { grid-template-columns: 1fr !important; gap: 16px !important; }
             .product-card { display: flex; flex-direction: column; }
-            .product-card img, .product-image, .product-image-placeholder { height: 160px; }
+            /* product images at this breakpoint rely on global app.css variables */
             .product-card .card-body { padding: 12px; }
             .product-card .btn { width: 100%; }
             .service-type-badge, .verified-badge { margin-left: 0; margin-top: 8px; }
@@ -350,7 +350,7 @@ if (empty($total_reviews)) {
                     </div>
                 </div>
             <?php else: ?>
-                <div class="products-grid">
+                <div class="products-grid seller-profile">
                     <?php foreach ($products as $product): ?>
                         <div class="product-card">
                             <?php if ($product['product_image']): ?>
@@ -382,6 +382,24 @@ if (empty($total_reviews)) {
                                 <div class="product-meta">
                                     <?= htmlspecialchars($product['brand_name']) ?>
                                 </div>
+                                <div class="product-seller--compact">
+                                    <?php if (!empty($product['seller_image'])): ?>
+                                        <?php $simg = htmlspecialchars($product['seller_image']); $simgsrc = (strpos($simg, '/uploads') === 0) ? $simg : ('../' . $simg); ?>
+                                        <img class="seller-logo" src="<?= $simgsrc ?>" alt="<?= htmlspecialchars($product['seller_name'] ?? $product['brand_name'] ?? 'Seller') ?>">
+                                    <?php else: ?>
+                                        <div class="seller-avatar"><?= strtoupper(substr(($product['seller_name'] ?? $product['brand_name'] ?? 'U'), 0, 1)) ?></div>
+                                    <?php endif; ?>
+                                    <div class="seller-info">
+                                        <div class="seller-label">Supplied by</div>
+                                        <div class="seller-details">
+                                            <?php if (!empty($product['seller_id'])): ?>
+                                                <a href="seller_profile.php?id=<?= (int)$product['seller_id'] ?>" class="seller-name"><?= htmlspecialchars($product['seller_name'] ?? $product['brand_name'] ?? 'Unknown') ?></a>
+                                            <?php else: ?>
+                                                <?= htmlspecialchars($product['brand_name'] ?? 'Unknown') ?>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                </div>
 
                                 <?php if ($product['review_count'] > 0): ?>
                                     <div style="font-size: 0.875rem; color: var(--gray-600); margin-bottom: 8px;">
@@ -394,17 +412,11 @@ if (empty($total_reviews)) {
                                 <!-- Stock Display - hide for services (stock 999) -->
                                 <?php if (isset($product['product_stock']) && $product['product_stock'] < 999): ?>
                                     <?php if ($product['product_stock'] > 0 && $product['product_stock'] <= 10): ?>
-                                        <div style="margin:6px 0; padding:6px 10px; border-radius:6px; background:#f8d7da; border:1px solid #f5c6cb; color:#721c24; font-size:0.85rem; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
-                                            <i class="fas fa-exclamation-triangle" style="margin-right:6px;color:inherit;"></i> Only <?= $product['product_stock'] ?> left!
-                                        </div>
+                                        <div class="stock-bubble warn"><i class="fas fa-exclamation-triangle"></i> Only <?= $product['product_stock'] ?> left!</div>
                                     <?php elseif ($product['product_stock'] > 10): ?>
-                                        <div style="margin:6px 0; padding:6px 10px; border-radius:6px; background:#d4edda; border:1px solid #c3e6cb; color:#155724; font-size:0.85rem; display:inline-flex; align-items:center; gap:6px;">
-                                            <i class="fas fa-check-circle" style="margin-right:6px;color:inherit;"></i> In Stock (<?= $product['product_stock'] ?> available)
-                                        </div>
+                                        <div class="stock-bubble in-stock"><i class="fas fa-check-circle"></i> In Stock (<?= $product['product_stock'] ?> available)</div>
                                     <?php else: ?>
-                                        <div style="margin:6px 0; padding:6px 10px; border-radius:6px; background:#f8d7da; border:1px solid #f5c6cb; color:#721c24; font-size:0.85rem; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
-                                            <i class="fas fa-times-circle" style="margin-right:6px;color:inherit;"></i> Out of Stock
-                                        </div>
+                                        <div class="stock-bubble out-of-stock"><i class="fas fa-times-circle"></i> Out of Stock</div>
                                     <?php endif; ?>
                                 <?php endif; ?>
                                 

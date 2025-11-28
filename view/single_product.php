@@ -223,12 +223,8 @@ if (isset($_SESSION['customer_id']) && $check_table) {
             color: #333;
         }
 
-        .product-price {
-            font-size: 36px;
-            font-weight: bold;
-            color: #28a745;
-            margin-bottom: 20px;
-        }
+        /* Product price styling is handled via `css/app.css`.
+           Use `.product-price.hero` for the single-product hero block. */
 
         .divider {
             height: 1px;
@@ -352,56 +348,8 @@ if (isset($_SESSION['customer_id']) && $check_table) {
             font-size: 14px;
         }
 
-        /* Action Buttons */
-        .product-actions {
-            display: flex;
-            gap: 16px;
-            margin-top: auto;
-        }
-
-        .add-to-cart-btn,
-        .back-btn {
-            padding: 14px 32px;
-            font-size: 16px;
-            font-weight: 600;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-decoration: none;
-            text-align: center;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .add-to-cart-btn {
-            flex: 1;
-            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-            color: white;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
-            border: 2px solid transparent;
-        }
-
-        .add-to-cart-btn:hover {
-            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
-            transform: translateY(-1px);
-        }
-
-        .back-btn {
-            background: white;
-            color: #6b7280;
-            border: 2px solid #e5e7eb;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
-        }
-
-        .back-btn:hover {
-            background: #f9fafb;
-            border-color: #d1d5db;
-            color: #374151;
-        }
+        /* Action Buttons - place CTAs immediately after content (not bottom-aligned) to reduce visual gap */
+        .product-actions { display: flex; gap: 16px; margin-top: 12px; }
 
         /* Reviews Section Styles */
         .reviews-section {
@@ -719,7 +667,7 @@ if (isset($_SESSION['customer_id']) && $check_table) {
                 font-size: 24px;
             }
 
-            .product-price {
+            .product-price.hero {
                 font-size: 28px;
             }
 
@@ -759,131 +707,87 @@ if (isset($_SESSION['customer_id']) && $check_table) {
             <!-- Product Image Section -->
             <div class="product-image-section">
                 <div class="main-product-image">
-                    <?php if (!empty($product['product_image'])): ?>
-                        <?php 
-                        // Handle image paths for both local XAMPP and Ashesi server
-                        $imagePath = $product['product_image'];
-                        
-                        // If path already starts with /uploads (absolute from root)
-                        if (strpos($imagePath, '/uploads') === 0) {
-                            // Ashesi server - uploads is at root level
-                            echo '<img src="' . htmlspecialchars($imagePath) . '" alt="' . htmlspecialchars($product['product_title']) . '">';
-                        } 
-                        // If path starts with uploads/ (relative)
-                        elseif (strpos($imagePath, 'uploads/') === 0) {
-                            // Use absolute path from root for Ashesi server
-                            echo '<img src="../' . htmlspecialchars($imagePath) . '" alt="' . htmlspecialchars($product['product_title']) . '">';
-                        }
-                        // Otherwise relative path from view folder
-                        else {
-                            echo '<img src="../' . htmlspecialchars($imagePath) . '" alt="' . htmlspecialchars($product['product_title']) . '">';
-                        }
-                        ?>
-                    <?php else: ?>
-                        <div role="img" aria-label="No image available" class="product-placeholder" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#f0f0f0;border-radius:8px;">
-                            <i class="fas fa-image" style="font-size:64px;color:#9ca3af;"></i>
-                        </div>
-                    <?php endif; ?>
+                        <?php if (!empty($product['product_image'])): ?>
+                            <?php 
+                            // Handle image paths for both local XAMPP and Ashesi server
+                            $imagePath = $product['product_image'];
+                            // If path already starts with /uploads (absolute from root)
+                            if (strpos($imagePath, '/uploads') === 0) {
+                                echo '<img src="' . htmlspecialchars($imagePath) . '" alt="' . htmlspecialchars($product['product_title']) . '">';
+                            } elseif (strpos($imagePath, 'uploads/') === 0) {
+                                echo '<img src="../' . htmlspecialchars($imagePath) . '" alt="' . htmlspecialchars($product['product_title']) . '">';
+                            } else {
+                                echo '<img src="../' . htmlspecialchars($imagePath) . '" alt="' . htmlspecialchars($product['product_title']) . '">';
+                            }
+                            ?>
+                        <?php else: ?>
+                            <div role="img" aria-label="No image available" class="product-image-placeholder">
+                                <i class="fas fa-image" style="font-size:64px;color:#9ca3af;"></i>
+                            </div>
+                        <?php endif; ?>
+                    </div>
                 </div>
-            </div>
-
-            <!-- Product Info Section -->
-            <div class="product-info-section">
-                <div class="product-category-badge">
-                    <?= htmlspecialchars($product['cat_name'] ?? 'Uncategorized') ?>
-                </div>
-
-                <h1 class="product-title"><?= htmlspecialchars($product['product_title']) ?></h1>
+                <div class="product-info-section">
+                    <h1 class="product-title"><?= htmlspecialchars($product['product_title']) ?></h1>
 
                 <div class="product-brand">
-                    <strong>Vendor:</strong> <?= htmlspecialchars($product['brand_name'] ?? 'Unknown') ?>
+                    <strong>Vendor:</strong> <?php if (!empty($product['seller_id'])): ?> <a href="seller_profile.php?id=<?= (int)$product['seller_id'] ?>"><?= htmlspecialchars($product['seller_name'] ?? $product['brand_name'] ?? 'Unknown') ?></a><?php else: ?><?= htmlspecialchars($product['brand_name'] ?? 'Unknown') ?><?php endif; ?>
                 </div>
 
-                <?php if ($seller_info): ?>
+                <?php
+                    // Compute fallback seller display values
+                    $displaySellerName = $seller_info['customer_name'] ?? ($product['seller_name'] ?? $product['brand_name'] ?? 'Unknown');
+                    $displaySellerImage = $seller_info['customer_image'] ?? ($product['seller_image'] ?? '');
+                    $displaySellerId = $seller_info['customer_id'] ?? ($product['seller_id'] ?? 0);
+                ?>
                 <div class="product-seller">
                     <div class="seller-content">
-                        <?php if (!empty($seller_info['customer_image'])): ?>
+                        <?php if (!empty($displaySellerImage)): ?>
                             <?php
-                            // Handle seller image path - same as seller_profile.php
-                            $imagePath = $seller_info['customer_image'];
+                            $imagePath = $displaySellerImage;
                             if (strpos($imagePath, '/uploads') === 0) {
-                                // Already absolute path from root
                                 $imageSrc = htmlspecialchars($imagePath);
                             } elseif (strpos($imagePath, 'uploads/') === 0) {
-                                // Relative path - prepend ../
                                 $imageSrc = '../' . htmlspecialchars($imagePath);
                             } else {
-                                // Fallback
                                 $imageSrc = '../' . htmlspecialchars($imagePath);
                             }
                             ?>
-                            <img src="<?= $imageSrc ?>" 
-                                 alt="<?= htmlspecialchars($seller_info['customer_name']) ?>" 
-                                 class="seller-logo">
+                            <img src="<?= $imageSrc ?>" alt="<?= htmlspecialchars($displaySellerName) ?>" class="seller-logo">
                         <?php else: ?>
-                            <div class="seller-avatar">
-                                <?= strtoupper(substr($seller_info['customer_name'], 0, 1)) ?>
-                            </div>
+                            <div class="seller-avatar"><?= strtoupper(substr($displaySellerName, 0, 1)) ?></div>
                         <?php endif; ?>
                         <div class="seller-info">
                             <div class="seller-label">Supplied by</div>
                             <div class="seller-details">
-                                <a href="seller_profile.php?id=<?= $seller_info['customer_id'] ?>" class="seller-name">
-                                    <?= htmlspecialchars($seller_info['customer_name']) ?>
-                                </a>
+                                <?php if (!empty($displaySellerId)): ?>
+                                    <a href="seller_profile.php?id=<?= (int)$displaySellerId ?>" class="seller-name"><?= htmlspecialchars($displaySellerName) ?></a>
+                                <?php else: ?>
+                                    <?= htmlspecialchars($displaySellerName) ?>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
                 </div>
-                <?php endif; ?>
 
-                <div class="product-price">GH₵ <?= number_format($product['product_price'], 2) ?></div>
+                <div class="product-price hero <?= ($product['product_type'] ?? '') === 'service' ? 'service' : '' ?>">GH₵ <?= number_format($product['product_price'], 2) ?></div>
 
                 <!-- Stock Availability -->
                 <?php if (isset($product['product_stock'])): ?>
-                    <div style="margin: 20px 0; padding: 15px; border-radius: 8px; 
-                        <?php if ($product['product_stock'] >= 999): ?>
-                            background: #f3f0ff; border: 1px solid #d8b4fe;
-                        <?php elseif ($product['product_stock'] > 0 && $product['product_stock'] <= 10): ?>
-                            background: #f8d7da; border: 1px solid #f5c6cb;
-                        <?php elseif ($product['product_stock'] > 10): ?>
-                            background: #d4edda; border: 1px solid #c3e6cb;
-                        <?php else: ?>
-                            background: #f8d7da; border: 1px solid #f5c6cb;
-                        <?php endif; ?>">
-                        <?php if ($product['product_stock'] >= 999): ?>
-                            <div style="color: #7c3aed; font-size: 18px; font-weight: 700; margin-bottom: 5px;">
-                                <i class="fas fa-check-circle" style="margin-right:6px;color:inherit;"></i> Available for Production
-                            </div>
-                            <div style="color: #6b21a8; font-size: 16px;">
-                                This service provider is ready to fulfill your custom orders
-                            </div>
-                        <?php elseif ($product['product_stock'] > 0 && $product['product_stock'] <= 10): ?>
-                            <div style="color: #721c24; font-size: 18px; font-weight: 700; margin-bottom: 5px;">
-                                <i class="fas fa-exclamation-triangle" style="margin-right:6px;color:inherit;"></i> Limited Stock!
-                            </div>
-                            <div style="color: #721c24; font-size: 16px;">
-                                Only <strong><?= $product['product_stock'] ?></strong> units remaining
-                            </div>
-                        <?php elseif ($product['product_stock'] > 10): ?>
-                            <div style="color: #155724; font-size: 18px; font-weight: 700; margin-bottom: 5px;">
-                                <i class="fas fa-check-circle" style="margin-right:6px;color:inherit;"></i> In Stock
-                            </div>
-                            <div style="color: #155724; font-size: 16px;">
-                                <strong><?= $product['product_stock'] ?></strong> units available
-                            </div>
-                        <?php else: ?>
-                            <div style="color: #721c24; font-size: 18px; font-weight: 700; margin-bottom: 5px;">
-                                <i class="fas fa-times-circle" style="margin-right:6px;color:inherit;"></i> Out of Stock
-                            </div>
-                            <div style="color: #721c24; font-size: 16px;">
-                                This item is currently unavailable
-                            </div>
-                        <?php endif; ?>
-                    </div>
+                    <?php if ($product['product_stock'] >= 999): ?>
+                        <div class="stock-bubble production"><i class="fas fa-check-circle"></i> Available for Production</div>
+                        <div style="color: #6b21a8; font-size: 16px; margin-top: 6px;">This service provider is ready to fulfill your custom orders</div>
+                    <?php elseif ($product['product_stock'] > 0 && $product['product_stock'] <= 10): ?>
+                        <div class="stock-bubble warn"><i class="fas fa-exclamation-triangle"></i> Only <strong><?= $product['product_stock'] ?></strong> units remaining</div>
+                    <?php elseif ($product['product_stock'] > 10): ?>
+                        <div class="stock-bubble in-stock"><i class="fas fa-check-circle"></i> <strong><?= $product['product_stock'] ?></strong> units available</div>
+                    <?php else: ?>
+                        <div class="stock-bubble out-of-stock"><i class="fas fa-times-circle"></i> Out of Stock</div>
+                    <?php endif; ?>
                 <?php endif; ?>
 
-                <div class="product-id-info">Product ID: #<?= $product['product_id'] ?></div>
+                <!-- Product ID hidden in single product view for privacy/UX -->
+                <!-- <div class="product-id-info">Product ID: #<?= $product['product_id'] ?></div> -->
 
                 <div class="divider"></div>
 
@@ -917,12 +821,12 @@ if (isset($_SESSION['customer_id']) && $check_table) {
 
                 <!-- Action Buttons -->
                 <div class="product-actions">
-                    <button class="add-to-cart-btn" onclick="addToCart(<?= $product['product_id'] ?>)"
-                        <?= (isset($product['product_stock']) && $product['product_stock'] <= 0) ? 'disabled style="background: #e5e7eb; cursor: not-allowed; border: 1px solid #d1d5db; color: #9ca3af; box-shadow: none;"' : '' ?>>
+                    <button class="add-to-cart-btn cta-btn primary" onclick="addToCart(<?= $product['product_id'] ?>)"
+                        <?= (isset($product['product_stock']) && $product['product_stock'] <= 0) ? 'disabled' : '' ?>>
                         <i class="fas fa-shopping-cart"></i>
                         <?= (isset($product['product_stock']) && $product['product_stock'] <= 0) ? 'Out of Stock' : 'Add to Cart' ?>
                     </button>
-                    <a href="all_product.php" class="back-btn">
+                    <a href="all_product.php" class="back-btn cta-btn secondary">
                         <i class="fas fa-arrow-left"></i>
                         Back to Store
                     </a>

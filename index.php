@@ -502,7 +502,7 @@ if (!$featured_products) {
 							<?php else: ?>
 								<?php if ($fp_index === 1): ?>
 									<!-- Second featured card: show Font Awesome placeholder when no image uploaded -->
-									<div role="img" aria-label="No image available" class="product-placeholder" style="width:100%;height:200px;display:flex;align-items:center;justify-content:center;background:#e0e0e0;">
+									<div role="img" aria-label="No image available" class="product-image-placeholder">
 										<i class="fas fa-image" style="font-size:48px;color:#9ca3af;"></i>
 									</div>
 								<?php else: ?>

@@ -74,9 +74,10 @@ class Product extends db_connection
      */
     public function fetchAllProducts()
     {
-        $sql = "SELECT p.*, c.cat_name, b.brand_name FROM products p 
+        $sql = "SELECT p.*, c.cat_name, b.brand_name, cu.customer_name as seller_name, cu.customer_image as seller_image FROM products p 
                 LEFT JOIN categories c ON p.product_cat = c.cat_id 
                 LEFT JOIN brands b ON p.product_brand = b.brand_id
+                LEFT JOIN customer cu ON p.seller_id = cu.customer_id
                 ORDER BY p.product_id DESC";
         return $this->db_fetch_all($sql);
     }
@@ -87,9 +88,10 @@ class Product extends db_connection
     public function getProductById($product_id)
     {
         $product_id = (int)$product_id;
-        $sql = "SELECT p.*, c.cat_name, b.brand_name FROM products p 
+        $sql = "SELECT p.*, c.cat_name, b.brand_name, cu.customer_name as seller_name, cu.customer_image as seller_image FROM products p 
                 LEFT JOIN categories c ON p.product_cat = c.cat_id 
                 LEFT JOIN brands b ON p.product_brand = b.brand_id
+                LEFT JOIN customer cu ON p.seller_id = cu.customer_id
                 WHERE p.product_id = $product_id LIMIT 1";
         return $this->db_fetch_one($sql);
     }
@@ -104,12 +106,13 @@ class Product extends db_connection
     {
         $limit = (int)$limit;
         $offset = (int)$offset;
-        $sql = "SELECT p.*, c.cat_name, b.brand_name,
+        $sql = "SELECT p.*, c.cat_name, b.brand_name, cu.customer_name as seller_name, cu.customer_image as seller_image,
                 COALESCE(p.rating_average, 0) as rating_average,
                 COALESCE(p.rating_count, 0) as rating_count
                 FROM products p 
                 LEFT JOIN categories c ON p.product_cat = c.cat_id 
                 LEFT JOIN brands b ON p.product_brand = b.brand_id
+                LEFT JOIN customer cu ON p.seller_id = cu.customer_id
                 ORDER BY p.product_id DESC
                 LIMIT $limit OFFSET $offset";
         return $this->db_fetch_all($sql);
@@ -139,12 +142,13 @@ class Product extends db_connection
         $limit = (int)$limit;
         $offset = (int)$offset;
         
-        $sql = "SELECT p.*, c.cat_name, b.brand_name,
+        $sql = "SELECT p.*, c.cat_name, b.brand_name, cu.customer_name as seller_name, cu.customer_image as seller_image,
                 COALESCE(p.rating_average, 0) as rating_average,
                 COALESCE(p.rating_count, 0) as rating_count
                 FROM products p 
                 LEFT JOIN categories c ON p.product_cat = c.cat_id 
                 LEFT JOIN brands b ON p.product_brand = b.brand_id
+                LEFT JOIN customer cu ON p.seller_id = cu.customer_id
                 WHERE p.product_title LIKE '%$query%' 
                    OR p.product_desc LIKE '%$query%' 
                    OR p.product_keywords LIKE '%$query%'
@@ -182,12 +186,13 @@ class Product extends db_connection
         $limit = (int)$limit;
         $offset = (int)$offset;
         
-        $sql = "SELECT p.*, c.cat_name, b.brand_name,
+        $sql = "SELECT p.*, c.cat_name, b.brand_name, cu.customer_name as seller_name, cu.customer_image as seller_image,
                 COALESCE(p.rating_average, 0) as rating_average,
                 COALESCE(p.rating_count, 0) as rating_count
                 FROM products p 
                 LEFT JOIN categories c ON p.product_cat = c.cat_id 
                 LEFT JOIN brands b ON p.product_brand = b.brand_id
+                LEFT JOIN customer cu ON p.seller_id = cu.customer_id
                 WHERE p.product_cat = $cat_id
                 ORDER BY p.product_id DESC
                 LIMIT $limit OFFSET $offset";
@@ -220,12 +225,13 @@ class Product extends db_connection
         $limit = (int)$limit;
         $offset = (int)$offset;
         
-        $sql = "SELECT p.*, c.cat_name, b.brand_name,
+        $sql = "SELECT p.*, c.cat_name, b.brand_name, cu.customer_name as seller_name,
                 COALESCE(p.rating_average, 0) as rating_average,
                 COALESCE(p.rating_count, 0) as rating_count
                 FROM products p 
                 LEFT JOIN categories c ON p.product_cat = c.cat_id 
                 LEFT JOIN brands b ON p.product_brand = b.brand_id
+                LEFT JOIN customer cu ON p.seller_id = cu.customer_id
                 WHERE p.product_brand = $brand_id
                 ORDER BY p.product_id DESC
                 LIMIT $limit OFFSET $offset";
@@ -296,7 +302,7 @@ class Product extends db_connection
         
         $where_clause = !empty($where) ? 'WHERE ' . implode(' AND ', $where) : '';
         
-        $sql = "SELECT p.*, c.cat_name, b.brand_name FROM products p 
+        $sql = "SELECT p.*, c.cat_name, b.brand_name, cu.customer_name as seller_name FROM products p 
                 LEFT JOIN categories c ON p.product_cat = c.cat_id 
                 LEFT JOIN brands b ON p.product_brand = b.brand_id
                 $where_clause
@@ -371,10 +377,11 @@ class Product extends db_connection
         
         $seller_id = (int)$seller_id;
         
-        $sql = "SELECT p.*, c.cat_name, b.brand_name 
+        $sql = "SELECT p.*, c.cat_name, b.brand_name, cu.customer_name as seller_name, cu.customer_image as seller_image 
                 FROM products p
                 LEFT JOIN categories c ON p.product_cat = c.cat_id
                 LEFT JOIN brands b ON p.product_brand = b.brand_id
+                LEFT JOIN customer cu ON p.seller_id = cu.customer_id
                 WHERE p.seller_id = $seller_id
                 ORDER BY p.product_id DESC";
         
@@ -394,12 +401,13 @@ class Product extends db_connection
         $limit = (int)$limit;
         $offset = (int)$offset;
         
-        $sql = "SELECT p.*, c.cat_name, b.brand_name,
+        $sql = "SELECT p.*, c.cat_name, b.brand_name, cu.customer_name as seller_name,
                 COALESCE(p.rating_average, 0) as rating_average,
                 COALESCE(p.rating_count, 0) as rating_count
                 FROM products p 
                 LEFT JOIN categories c ON p.product_cat = c.cat_id 
                 LEFT JOIN brands b ON p.product_brand = b.brand_id
+            LEFT JOIN customer cu ON p.seller_id = cu.customer_id
                 WHERE p.product_type = '$type'
                 ORDER BY p.product_id DESC
                 LIMIT $limit OFFSET $offset";

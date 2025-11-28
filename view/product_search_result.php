@@ -280,8 +280,7 @@ $brands = $db->db_fetch_all("SELECT brand_id, brand_name FROM brands ORDER BY br
 
         .product-image {
             width: 100%;
-            height: 220px;
-            object-fit: cover;
+            /* height and object-fit are controlled by css/app.css variables */
             background-color: #f0f0f0;
         }
 
@@ -572,7 +571,7 @@ $brands = $db->db_fetch_all("SELECT brand_id, brand_name FROM brands ORDER BY br
                                 <img src="../uploads/<?= htmlspecialchars($product['product_image']) ?>" 
                                      alt="<?= htmlspecialchars($product['product_title']) ?>">
                             <?php else: ?>
-                                <div role="img" aria-label="No image available" class="product-placeholder" style="width:100%;height:220px;display:flex;align-items:center;justify-content:center;background:#f0f0f0;">
+                                <div role="img" aria-label="No image available" class="product-image-placeholder">
                                     <i class="fas fa-image" style="font-size:36px;color:#9ca3af;"></i>
                                 </div>
                             <?php endif; ?>
@@ -582,7 +581,25 @@ $brands = $db->db_fetch_all("SELECT brand_id, brand_name FROM brands ORDER BY br
                             <a href="single_product.php?id=<?= $product['product_id'] ?>" class="product-title">
                                 <?= htmlspecialchars($product['product_title']) ?>
                             </a>
-                            <div class="product-brand">Brand: <?= htmlspecialchars($product['brand_name'] ?? 'Unknown') ?></div>
+                                <div class="product-brand">Brand: <?= htmlspecialchars($product['brand_name'] ?? 'Unknown') ?></div>
+                                <div class="product-seller--compact">
+                                    <?php if (!empty($product['seller_image'])): ?>
+                                        <?php $simg = htmlspecialchars($product['seller_image']); $simgsrc = (strpos($simg, '/uploads') === 0) ? $simg : ('../' . $simg); ?>
+                                        <img class="seller-logo" src="<?= $simgsrc ?>" alt="<?= htmlspecialchars($product['seller_name'] ?? $product['brand_name'] ?? 'Seller') ?>">
+                                    <?php else: ?>
+                                        <div class="seller-avatar"><?= strtoupper(substr(($product['seller_name'] ?? $product['brand_name'] ?? 'U'), 0, 1)) ?></div>
+                                    <?php endif; ?>
+                                    <div class="seller-info">
+                                        <div class="seller-label">Supplied by</div>
+                                        <div class="seller-details">
+                                            <?php if (!empty($product['seller_id'])): ?>
+                                                <a href="seller_profile.php?id=<?= (int)$product['seller_id'] ?>" class="seller-name"><?= htmlspecialchars($product['seller_name'] ?? $product['brand_name'] ?? 'Unknown') ?></a>
+                                            <?php else: ?>
+                                                <?= htmlspecialchars($product['brand_name'] ?? 'Unknown') ?>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                </div>
                             <div class="product-price">GH₵ <?= number_format($product['product_price'], 2) ?></div>
                             <button class="add-to-cart-btn" onclick="addToCart(<?= $product['product_id'] ?>)">
                                 Add to Cart

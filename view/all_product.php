@@ -56,10 +56,7 @@ $brands = $db->db_fetch_all("SELECT brand_id, brand_name FROM brands ORDER BY br
     <title>All Products - SeamLink</title>
     <link rel="stylesheet" href="../css/app.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <style>
-        .product-placeholder{height:220px;display:flex;align-items:center;justify-content:center;background:#f3f4f6;color:#9ca3af;width:100%;}
-        .product-placeholder i{font-size:36px}
-    </style>
+    <!-- product image placeholder styling is handled by css/app.css using .product-image-placeholder -->
 </head>
 <body>
     <?php include __DIR__ . '/includes/menu.php'; ?>
@@ -231,7 +228,7 @@ $brands = $db->db_fetch_all("SELECT brand_id, brand_name FROM brands ORDER BY br
                             }
                             ?>
                         <?php else: ?>
-                            <div class="product-placeholder" role="img" aria-label="No image available">
+                            <div class="product-image-placeholder" role="img" aria-label="No image available">
                                 <i class="fa fa-image" aria-hidden="true"></i>
                             </div>
                         <?php endif; ?>
@@ -245,7 +242,7 @@ $brands = $db->db_fetch_all("SELECT brand_id, brand_name FROM brands ORDER BY br
                                     <?= htmlspecialchars($product['product_title']) ?>
                                 </a>
                                 <div class="product-brand" style="color: #059669; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; font-size: 0.95rem;">
-                                    <i class="fas fa-store" style="color: #10b981;"></i> By: <?= htmlspecialchars($product['brand_name'] ?? 'Unknown') ?>
+                                    <i class="fas fa-store" style="color: #10b981;"></i> By: <a href="seller_profile.php?id=<?= (int)$product['seller_id'] ?>" style="color: inherit; text-decoration: underline;"><?= htmlspecialchars($product['seller_name'] ?? $product['brand_name'] ?? 'Unknown') ?></a>
                                 </div>
                                 <div style="margin: 12px 0; padding: 12px; background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%); border-left: 3px solid #8b5cf6; border-radius: 8px; font-size: 0.9rem; color: #4c1d95;">
                                     <i class="fas fa-cut" style="color: #8b5cf6;"></i> <strong>Can Make:</strong> <?= htmlspecialchars($product['cat_name'] ?? 'Various Garments') ?>
@@ -256,7 +253,24 @@ $brands = $db->db_fetch_all("SELECT brand_id, brand_name FROM brands ORDER BY br
                                 <a href="single_product.php?id=<?= $product['product_id'] ?>" class="product-title">
                                     <?= htmlspecialchars($product['product_title']) ?>
                                 </a>
-                                <div class="product-brand">Vendor: <?= htmlspecialchars($product['brand_name'] ?? 'Unknown') ?></div>
+                                <div class="product-seller--compact">
+                                    <?php if (!empty($product['seller_image'])): ?>
+                                        <?php $simg = htmlspecialchars($product['seller_image']); $simgsrc = (strpos($simg, '/uploads') === 0) ? $simg : ('../' . $simg); ?>
+                                        <img class="seller-logo" src="<?= $simgsrc ?>" alt="<?= htmlspecialchars($product['seller_name'] ?? $product['brand_name'] ?? 'Seller') ?>">
+                                    <?php else: ?>
+                                        <div class="seller-avatar"><?= strtoupper(substr(($product['seller_name'] ?? $product['brand_name'] ?? 'U'), 0, 1)) ?></div>
+                                    <?php endif; ?>
+                                    <div class="seller-info">
+                                        <div class="seller-label">Supplied by</div>
+                                        <div class="seller-details">
+                                            <?php if (!empty($product['seller_id'])): ?>
+                                                <a href="seller_profile.php?id=<?= (int)$product['seller_id'] ?>" class="seller-name"><?= htmlspecialchars($product['seller_name'] ?? $product['brand_name'] ?? 'Unknown') ?></a>
+                                            <?php else: ?>
+                                                <?= htmlspecialchars($product['brand_name'] ?? 'Unknown') ?>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                </div>
                             <?php endif; ?>
                             
                             <?php if (isset($product['rating_average']) && $product['rating_average'] > 0): ?>
@@ -275,7 +289,7 @@ $brands = $db->db_fetch_all("SELECT brand_id, brand_name FROM brands ORDER BY br
                                 </div>
                             <?php endif; ?>
                             
-                            <div class="price" style="<?= $type_filter === 'service' ? 'background: linear-gradient(135deg, #059669 0%, #047857 100%); color: white; padding: 12px 16px; border-radius: 8px; font-size: 1.1rem; font-weight: 700; margin: 12px 0; display: flex; align-items: center; gap: 8px;' : '' ?>">
+                            <div class="price <?= $type_filter === 'service' ? 'service' : '' ?>">
                                 <?php if ($type_filter === 'service'): ?>
                                     <i class="fas fa-money-bill-wave"></i> Starting at GH₵ <?= number_format($product['product_price'], 2) ?>
                                 <?php else: ?>
@@ -287,27 +301,19 @@ $brands = $db->db_fetch_all("SELECT brand_id, brand_name FROM brands ORDER BY br
                             <?php if (isset($product['product_stock'])): ?>
                                 <?php if ($product['product_stock'] >= 999): ?>
                                     <!-- Services or unlimited availability -->
-                                    <div style="color: #8b5cf6; font-size: 0.875rem; font-weight: 600; margin: 12px 0; padding: 8px 12px; background: #f5f3ff; border-radius: 6px; display: inline-flex; align-items: center; gap: 6px;">
-                                        <i class="fas fa-check-circle"></i> Available for Production
-                                    </div>
+                                    <div class="stock-bubble production"><i class="fas fa-check-circle"></i> Available for Production</div>
                                 <?php elseif ($product['product_stock'] > 0 && $product['product_stock'] <= 10): ?>
-                                    <div style="margin:8px 0; padding:8px 12px; border-radius:6px; background:#f8d7da; border:1px solid #f5c6cb; color:#721c24; font-size:0.875rem; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
-                                        <i class="fas fa-exclamation-triangle" style="margin-right:8px;color:inherit;"></i> Only <?= $product['product_stock'] ?> left!
-                                    </div>
+                                    <div class="stock-bubble warn"><i class="fas fa-exclamation-triangle"></i> Only <?= $product['product_stock'] ?> left!</div>
                                 <?php elseif ($product['product_stock'] > 10): ?>
-                                    <div style="margin:8px 0; padding:8px 12px; border-radius:6px; background:#d4edda; border:1px solid #c3e6cb; color:#155724; font-size:0.875rem; display:inline-flex; align-items:center; gap:6px;">
-                                        <i class="fas fa-check-circle" style="margin-right:8px;color:inherit;"></i> In Stock (<?= $product['product_stock'] ?> available)
-                                    </div>
+                                    <div class="stock-bubble in-stock"><i class="fas fa-check-circle"></i> In Stock (<?= $product['product_stock'] ?> available)</div>
                                 <?php else: ?>
-                                    <div style="margin:8px 0; padding:8px 12px; border-radius:6px; background:#f8d7da; border:1px solid #f5c6cb; color:#721c24; font-size:0.875rem; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
-                                        <i class="fas fa-times-circle" style="margin-right:8px;color:inherit;"></i> Out of Stock
-                                    </div>
+                                    <div class="stock-bubble out-of-stock"><i class="fas fa-times-circle"></i> Out of Stock</div>
                                 <?php endif; ?>
                             <?php endif; ?>
                             
                             <!-- Button - View Details for services (stock >= 999), Add to Cart for products -->
                             <?php if (isset($product['product_stock']) && $product['product_stock'] >= 999): ?>
-                                <a href="single_product.php?id=<?= $product['product_id'] ?>" class="add-to-cart-btn" style="background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); color: white; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 20px; border-radius: 8px; font-weight: 600; margin-top: 16px; box-shadow: 0 2px 4px rgba(139, 92, 246, 0.3); transition: all 0.2s;">
+                                <a href="single_product.php?id=<?= $product['product_id'] ?>" class="add-to-cart-btn" style="background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); color: white; text-decoration: none; margin-top: 16px; box-shadow: 0 2px 4px rgba(139, 92, 246, 0.3); transition: all 0.2s;">
                                     <i class="fas fa-info-circle"></i> View Details
                                 </a>
                             <?php else: ?>
